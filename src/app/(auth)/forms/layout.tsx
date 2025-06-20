@@ -1,4 +1,4 @@
-'use client';
+import Image from "next/image";
 
 export default function AdminHomeLayout({ children }: { children: React.ReactNode }) {
 
@@ -13,7 +13,7 @@ export default function AdminHomeLayout({ children }: { children: React.ReactNod
                     <div className="flex items-center space-x-3 md:space-x-4">
                         {/* School Logo */}
                         <div className="flex-shrink-0">
-                            <img
+                            <Image
                                 src="/assets/sjsfi_logo.svg"
                                 alt="SJSFI Logo"
                                 className="h-10 w-10 sm:h-12 sm:w-12 md:h-16 md:w-16"
@@ -44,7 +44,7 @@ export default function AdminHomeLayout({ children }: { children: React.ReactNod
                     {/* Logo and School Name Row */}
                     <div className="flex items-center space-x-2 mb-2">
                         <div className="flex-shrink-0">
-                            <img
+                            <Image
                                 src="/assets/sjsfi_logo.svg"
                                 alt="SJSFI Logo"
                                 className="h-8 w-8"
