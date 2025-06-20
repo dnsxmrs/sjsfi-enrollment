@@ -10,8 +10,7 @@ const clerkClient = createClerkClient({
 function checkRoleForRoute(pathname: string, userRole: string): boolean {
     const role = userRole.toLowerCase();
 
-    if (pathname.startsWith("/student/")) return role === "student";
-    if (pathname.startsWith("/registrar/")) return role === "registrar";
+    if (pathname.startsWith("/forms/")) return role === "registrar";
 
     return false;
 }
@@ -21,10 +20,8 @@ function getRoleHomePage(userRole: string): string {
     const role = userRole.toLowerCase();
 
     switch (role) {
-        case "student":
-            return "/student/home";
         case "registrar":
-            return "/registrar/home";
+            return "/forms/home";
         default:
             return "/workaround/sign-out";
     }
@@ -33,23 +30,12 @@ function getRoleHomePage(userRole: string): string {
 const isPublicRoute = createRouteMatcher([
     "/",
     "/auth/(.*)",
-    "/terms-of-use",
-    "/privacy-statement",
     "/workaround/sign-out"
-    // ,
-    // '/test/setUserRole'
 ]);
 
 // Define protected routes (require authentication)
 const isProtectedRoute = createRouteMatcher([
-    "/student/home",
-    "/student/(.*)",
-    "/faculty/home",
-    "/faculty/(.*)",
-    "/admin/home",
-    "/admin/(.*)",
-    "/registrar/home",
-    "/registrar/(.*)"
+    "/forms/(.*)"
 ]);
 
 export default clerkMiddleware(
@@ -105,11 +91,8 @@ export default clerkMiddleware(
                 // Determine redirect based on role
                 if (userRole) {
                     switch (userRole) {
-                        case "student":
-                            redirectUrl = "/student/home";
-                            break;
                         case "registrar":
-                            redirectUrl = "/registrar/home";
+                            redirectUrl = "/forms/home";
                             break;
                         default:
                             redirectUrl = "/workaround/sign-out";
