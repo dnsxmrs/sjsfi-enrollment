@@ -21,7 +21,7 @@ function getRoleHomePage(userRole: string): string {
 
     switch (role) {
         case "registrar":
-            return "/forms/home";
+            return "/forms/student-registration";
         default:
             return "/workaround/sign-out";
     }
@@ -92,7 +92,7 @@ export default clerkMiddleware(
                 if (userRole) {
                     switch (userRole) {
                         case "registrar":
-                            redirectUrl = "/forms/home";
+                            redirectUrl = "/forms/student-registration"; // redirect to student registration form
                             break;
                         default:
                             redirectUrl = "/workaround/sign-out";
