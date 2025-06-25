@@ -1,5 +1,6 @@
 import Image from 'next/image';
-import RegistrarLoginForm from '@/components/registrar/RegistrarLoginForm';
+import RoleButton from '@/components/atoms/RoleButton';
+import LoginFooter from '@/components/atoms/LoginFooter';
 
 
 export default async function Home() {
@@ -7,7 +8,7 @@ export default async function Home() {
   // await new Promise(resolve => setTimeout(resolve, 1000));
 
   return (
-    <div className="flex h-screen w-screen bg-white min-w-[360px]">
+    <div className="flex h-screen w-screen bg-white min-width-[360px]">
       <div className="container">
         {/* Main Screen - BG IMAGE */}
         <div
@@ -29,19 +30,35 @@ export default async function Home() {
                   height={90}
                   className="mb-2"
                 />
-                <h1 className="text-3xl text-center text-[#000] w-full mx-1">
-                  <span className='font-bold text-[#800000]'>SJSFI-SIS</span> Registrar Module
+                <h1 className="text-3xl text-center text-[#800000] w-full">
+                  Welcome to <span className='font-bold'>SJSFI-SIS Portal</span>
                 </h1>
               </div>
 
               {/* BODY */}
               <div className="flex flex-col items-center justify-center w-full">
                 <p className='text-center text-black text-sm mb-4'>
-                  Sign in to start your session
+                  Please click or tap your role to sign in
                 </p>
 
-                {/* FORM */}
-                <RegistrarLoginForm />
+                <div className="w-full px-4" >
+                  <div className="mb-4 w-full">
+                    <RoleButton
+                      label="Forms"
+                      color="bg-[#800000]"
+                      href="/auth/forms"
+                    />
+                  </div>
+                  <div className="mb-4 w-full">
+                    <RoleButton
+                      label="Registrar"
+                      color="bg-[#ffd700]"
+                      hoverClass="hover:bg-[#DAA520]"
+                      href="/auth/registrar"
+                    />
+                  </div>
+                  <LoginFooter />
+                </div>
               </div>
             </div>
           </div>

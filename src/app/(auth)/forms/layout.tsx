@@ -17,6 +17,8 @@ export default function AdminHomeLayout({ children }: { children: React.ReactNod
                                 src="/assets/sjsfi_logo.svg"
                                 alt="SJSFI Logo"
                                 className="h-10 w-10 sm:h-12 sm:w-12 md:h-16 md:w-16"
+                                width={64}
+                                height={64}
                             />
                         </div>
 
@@ -48,6 +50,8 @@ export default function AdminHomeLayout({ children }: { children: React.ReactNod
                                 src="/assets/sjsfi_logo.svg"
                                 alt="SJSFI Logo"
                                 className="h-8 w-8"
+                                width={32}
+                                height={32}
                             />
                         </div>
                         <div className="min-w-0 flex-1">

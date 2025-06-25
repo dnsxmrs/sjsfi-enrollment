@@ -13,9 +13,11 @@ datasource db {
 model User {
   id             Int       @id @default(autoincrement())
   email          String    @unique @db.VarChar(255)
-  passwordHashed String    @db.VarChar(255)
   role           String    @default("student") @db.VarChar(50)
-  name           String    @db.VarChar(255)
+  firstName      String    @db.VarChar(255)
+  middleName     String?   @db.VarChar(255)
+  lastName       String    @db.VarChar(255)
+  suffix         String?   @db.VarChar(50)
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @default(now())
   deletedAt      DateTime?
@@ -127,15 +129,18 @@ model Subject {
 }
 
 model Grade {
-  id         Int       @id @default(autoincrement())
-  subjectId  Int
-  studentId  Int
-  quarter    String    @db.VarChar(20)
-  grade      Float
-  remarks    String?   @db.VarChar(255)
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @default(now())
-  deletedAt  DateTime?
+  id                Int       @id @default(autoincrement())
+  subjectId         Int
+  studentId         Int
+  firstGrading      Float
+  secondGrading     Float
+  thirdGrading      Float
+  fourthGrading     Float
+  finalGrade        Float
+  remarks           String?   @db.VarChar(255)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @default(now())
+  deletedAt         DateTime?
 
   subject    Subject   @relation(fields: [subjectId], references: [id])
   student    Student   @relation(fields: [studentId], references: [id])

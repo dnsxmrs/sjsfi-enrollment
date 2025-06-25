@@ -2,12 +2,26 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
+import { toast } from 'react-hot-toast';
 
 const HomePage: React.FC = () => {
   const router = useRouter();
 
   const handleStudentRegistrationClick = () => {
     router.push('/forms/student-registration');
+  };
+
+  const handleStudentApplicationClick = () => {
+    // toast.info('This feature is under development. Please check back later.');
+    // router.push('/forms/student-application');
+    // toast("Hello World")
+    toast('Feature coming soon!', {
+      icon: '🚧',
+      style: {
+        background: '#800',
+        color: '#fff',
+      },
+    });
   };
 
   return (
@@ -21,7 +35,9 @@ const HomePage: React.FC = () => {
           Student Registration
         </button>
 
-        <button className="bg-red-800 text-white px-6 py-3 rounded hover:bg-red-900 transition">
+        <button
+          onClick={handleStudentApplicationClick}
+          className="bg-red-800 text-white px-6 py-3 rounded hover:bg-red-900 transition">
           Student Application
         </button>
       </div>

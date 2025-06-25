@@ -60,7 +60,7 @@ export async function getCurrentUser() {
                 role: "unregistered",
             };
         }
-        console.log("User found:", user.name, user.role);
+        console.log("User found:", user.firstName, user.role);
         console.log("User student data:", user.student);
         console.log("User teacher data:", user.teacher);
         console.log(
@@ -87,7 +87,7 @@ export async function getCurrentUser() {
                     user.student.studentNumber
                 );
                 const result = {
-                    name: user.name,
+                    name: user.firstName,
                     studentNo: user.student.studentNumber,
                     schoolYear:
                         user.student.enrollments[0]?.schoolYear ||
@@ -103,7 +103,7 @@ export async function getCurrentUser() {
                     "❌ User has student role but no student data found"
                 );
                 return {
-                    name: user.name,
+                    name: user.firstName,
                     studentNo: "Student data not found",
                     schoolYear: "N/A",
                     email: user.email,
@@ -117,7 +117,7 @@ export async function getCurrentUser() {
                 user.teacher.employeeNumber
             );
             return {
-                name: user.name,
+                name: user.firstName,
                 employeeNo: user.teacher.employeeNumber,
                 studentNo: "N/A", // Add studentNo for compatibility
                 email: user.email,
@@ -130,7 +130,7 @@ export async function getCurrentUser() {
             console.log("Teacher data exists?", !!user.teacher);
             // For admin or other roles
             return {
-                name: user.name,
+                name: user.firstName,
                 studentNo: "N/A", // Add studentNo for compatibility
                 email: user.email,
                 role: user.role,
