@@ -63,8 +63,6 @@ export default function RegistrarLoginForm() {
                 return;
             }
 
-            const role = String(facultyCheck.role || "registrar");
-
             // STEP 3: Now try to complete with password
             const result = await signInAttempt.attemptFirstFactor({
                 strategy: "password",
