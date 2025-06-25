@@ -24,8 +24,8 @@ async function main() {
         prisma.user.create({
             data: {
                 email: 'maria.juarez@example.com',
-                passwordHashed: 'hashedpassword123',
-                name: 'Maria Juarez',
+                firstName: 'Maria',
+                lastName: 'Juarez',
                 role: 'parent',
                 parent: {
                     create: {
@@ -38,8 +38,8 @@ async function main() {
         prisma.user.create({
             data: {
                 email: 'carlos.santos@example.com',
-                passwordHashed: 'hashedpassword124',
-                name: 'Carlos Santos',
+                firstName: 'Carlos',
+                lastName: 'Santos',
                 role: 'parent',
                 parent: {
                     create: {
@@ -52,8 +52,9 @@ async function main() {
         prisma.user.create({
             data: {
                 email: 'ana.dela.cruz@example.com',
-                passwordHashed: 'hashedpassword125',
-                name: 'Ana Dela Cruz',
+                firstName: 'Ana',
+                middleName: 'Dela',
+                lastName: 'Cruz',
                 role: 'parent',
                 parent: {
                     create: {
@@ -71,8 +72,8 @@ async function main() {
         prisma.user.create({
             data: {
                 email: 'prof.rivera@sjsfi.edu.ph',
-                passwordHashed: 'hashedpassword200',
-                name: 'Prof. Carmen Rivera',
+                firstName: 'Carmen',
+                lastName: 'Rivera',
                 role: 'teacher',
                 teacher: {
                     create: {
@@ -88,8 +89,8 @@ async function main() {
         prisma.user.create({
             data: {
                 email: 'prof.garcia@sjsfi.edu.ph',
-                passwordHashed: 'hashedpassword201',
-                name: 'Prof. Roberto Garcia',
+                firstName: 'Roberto',
+                lastName: 'Garcia',
                 role: 'teacher',
                 teacher: {
                     create: {
@@ -105,8 +106,8 @@ async function main() {
         prisma.user.create({
             data: {
                 email: 'prof.mendoza@sjsfi.edu.ph',
-                passwordHashed: 'hashedpassword202',
-                name: 'Prof. Elena Mendoza',
+                firstName: 'Elena',
+                lastName: 'Mendoza',
                 role: 'teacher',
                 teacher: {
                     create: {
@@ -122,8 +123,8 @@ async function main() {
         prisma.user.create({
             data: {
                 email: 'prof.torres@sjsfi.edu.ph',
-                passwordHashed: 'hashedpassword203',
-                name: 'Prof. Michael Torres',
+                firstName: 'Michael',
+                lastName: 'Torres',
                 role: 'teacher',
                 teacher: {
                     create: {
@@ -170,8 +171,9 @@ async function main() {
         prisma.user.create({
             data: {
                 email: 'jose.reyes@student.sjsfi.edu.ph',
-                passwordHashed: 'hashedpassword301',
-                name: 'Jose Miguel Reyes',
+                firstName: 'Jose',
+                middleName: 'Miguel',
+                lastName: 'Reyes',
                 role: 'student',
                 student: {
                     create: {
@@ -192,8 +194,8 @@ async function main() {
         prisma.user.create({
             data: {
                 email: 'angelica.tan@student.sjsfi.edu.ph',
-                passwordHashed: 'hashedpassword302',
-                name: 'Angelica Tan',
+                firstName: 'Angelica',
+                lastName: 'Tan',
                 role: 'student',
                 student: {
                     create: {
@@ -214,8 +216,8 @@ async function main() {
         prisma.user.create({
             data: {
                 email: 'daniel.santos@student.sjsfi.edu.ph',
-                passwordHashed: 'hashedpassword303',
-                name: 'Daniel Santos',
+                firstName: 'Daniel',
+                lastName: 'Santos',
                 role: 'student',
                 student: {
                     create: {
@@ -236,8 +238,8 @@ async function main() {
         prisma.user.create({
             data: {
                 email: 'sophia.cruz@student.sjsfi.edu.ph',
-                passwordHashed: 'hashedpassword304',
-                name: 'Sophia Cruz',
+                firstName: 'Sophia',
+                lastName: 'Cruz',
                 role: 'student',
                 student: {
                     create: {
@@ -258,8 +260,8 @@ async function main() {
         prisma.user.create({
             data: {
                 email: 'marco.perez@student.sjsfi.edu.ph',
-                passwordHashed: 'hashedpassword305',
-                name: 'Marco Perez',
+                firstName: 'Marco',
+                lastName: 'Perez',
                 role: 'student',
                 student: {
                     create: {
@@ -354,24 +356,30 @@ async function main() {
 
     // 7. Create Grades
     console.log('📊 Creating grades...');
-    const quarters = ['1st Quarter', '2nd Quarter', '3rd Quarter', '4th Quarter'];
     const grades = [];
 
     for (const subject of subjects) {
         const enrollment = enrollments.find(e => e.id === subject.enrollmentId);
         if (enrollment) {
-            for (const quarter of quarters) {
-                const grade = await prisma.grade.create({
-                    data: {
-                        subjectId: subject.id,
-                        studentId: enrollment.studentId,
-                        quarter: quarter,
-                        grade: Math.floor(Math.random() * 30) + 70, // Random grade between 70-100
-                        remarks: Math.random() > 0.7 ? 'Excellent work' : null
-                    }
-                });
-                grades.push(grade);
-            }
+            const firstGrading = Math.floor(Math.random() * 30) + 70; // Random grade between 70-100
+            const secondGrading = Math.floor(Math.random() * 30) + 70;
+            const thirdGrading = Math.floor(Math.random() * 30) + 70;
+            const fourthGrading = Math.floor(Math.random() * 30) + 70;
+            const finalGrade = (firstGrading + secondGrading + thirdGrading + fourthGrading) / 4;
+
+            const grade = await prisma.grade.create({
+                data: {
+                    subjectId: subject.id,
+                    studentId: enrollment.studentId,
+                    firstGrading: firstGrading,
+                    secondGrading: secondGrading,
+                    thirdGrading: thirdGrading,
+                    fourthGrading: fourthGrading,
+                    finalGrade: Math.round(finalGrade * 100) / 100,
+                    remarks: finalGrade >= 75 ? 'Passed' : 'Failed'
+                }
+            });
+            grades.push(grade);
         }
     }
 
@@ -380,7 +388,7 @@ async function main() {
     const attendanceStatuses = ['Present', 'Absent', 'Late', 'Excused'];
     const startDate = new Date('2024-09-01');
     const endDate = new Date('2025-06-30');
-    
+
     for (const studentUser of studentUsers) {
         // Create attendance for random days
         for (let i = 0; i < 50; i++) {
@@ -417,8 +425,10 @@ async function main() {
     console.log('📋 Creating report cards...');
     for (const studentUser of studentUsers) {
         const studentGrades = grades.filter(g => g.studentId === studentUser.student!.id);
-        const averageGrade = studentGrades.reduce((sum, g) => sum + g.grade, 0) / studentGrades.length;
-        
+        const averageGrade = studentGrades.length > 0
+            ? studentGrades.reduce((sum, g) => sum + g.finalGrade, 0) / studentGrades.length
+            : 85;
+
         await prisma.reportCard.create({
             data: {
                 studentId: studentUser.student!.id,

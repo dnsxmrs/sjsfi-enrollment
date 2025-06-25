@@ -1,178 +1,168 @@
 generator client {
-  provider        = "prisma-client-js"
-  output          = "../src/generated/prisma"
-  binaryTargets   = ["native", "linux-musl", "rhel-openssl-3.0.x"]
+  provider      = "prisma-client-js"
+  output        = "../src/generated/prisma"
+  binaryTargets = ["native", "linux-musl", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
-  provider   = "postgresql"
-  url        = env("DATABASE_URL")
-  directUrl  = env("DIRECT_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
-  id             Int       @id @default(autoincrement())
-  email          String    @unique @db.VarChar(255)
-  role           String    @default("student") @db.VarChar(50)
-  firstName      String    @db.VarChar(255)
-  middleName     String?   @db.VarChar(255)
-  lastName       String    @db.VarChar(255)
-  suffix         String?   @db.VarChar(50)
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @default(now())
-  deletedAt      DateTime?
-
-  student        Student?
-  teacher        Teacher?
-  parent         Parent?
+  id         Int       @id @default(autoincrement())
+  email      String    @unique @db.VarChar(255)
+  role       String    @default("student") @db.VarChar(50)
+  createdAt  DateTime  @default(now())
+  deletedAt  DateTime?
+  updatedAt  DateTime  @default(now())
+  firstName  String    @db.VarChar(255)
+  lastName   String    @db.VarChar(255)
+  middleName String?   @db.VarChar(255)
+  suffix     String?   @db.VarChar(50)
+  parent     Parent?
+  student    Student?
+  teacher    Teacher?
 }
 
 model Parent {
-  id             Int       @id @default(autoincrement())
-  userId         Int       @unique
-  contactNumber  String    @db.VarChar(50)
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @default(now())
-  deletedAt      DateTime?
-
-  user           User      @relation(fields: [userId], references: [id])
-  students       Student[]
+  id            Int       @id @default(autoincrement())
+  userId        Int       @unique
+  contactNumber String    @db.VarChar(50)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @default(now())
+  deletedAt     DateTime?
+  user          User      @relation(fields: [userId], references: [id])
+  students      Student[]
 }
 
 model Student {
-  id               Int       @id @default(autoincrement())
-  userId           Int       @unique
-  parentId         Int
-  studentNumber    String    @db.VarChar(100)
-  dateOfBirth      DateTime
-  gender           String    @db.VarChar(10)
-  guardianName     String    @db.VarChar(100)
-  guardianContact  String    @db.VarChar(100)
-  address          String    @db.VarChar(255)
-  gradeLevel       String    @db.VarChar(50)
-  status           String    @default("active") @db.VarChar(50)
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @default(now())
-  deletedAt        DateTime?
-
-  user             User      @relation(fields: [userId], references: [id])
-  parent           Parent    @relation(fields: [parentId], references: [id])
-  enrollments      Enrollment[]
-  evaluations      Evaluation[]
-  grades           Grade[]
-  attendances      Attendance[]
-  reportCards      ReportCard[]
-  payments         Payment[]
+  id              Int          @id @default(autoincrement())
+  userId          Int          @unique
+  parentId        Int
+  studentNumber   String       @db.VarChar(100)
+  dateOfBirth     DateTime     @db.Date
+  gender          String       @db.VarChar(10)
+  guardianName    String       @db.VarChar(100)
+  guardianContact String       @db.VarChar(100)
+  address         String       @db.VarChar(255)
+  gradeLevel      String       @db.VarChar(50)
+  status          String       @default("active") @db.VarChar(50)
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @default(now())
+  deletedAt       DateTime?
+  attendances     Attendance[]
+  enrollments     Enrollment[]
+  evaluations     Evaluation[]
+  grades          Grade[]
+  payments        Payment[]
+  reportCards     ReportCard[]
+  parent          Parent       @relation(fields: [parentId], references: [id])
+  user            User         @relation(fields: [userId], references: [id])
 }
 
 model Teacher {
-  id               Int       @id @default(autoincrement())
-  userId           Int       @unique
-  employeeNumber   String    @db.VarChar(100)
-  specialization   String    @db.VarChar(100)
-  contactNumber    String    @db.VarChar(50)
-  assignedSections String?   @db.VarChar(255)
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @default(now())
+  id               Int          @id @default(autoincrement())
+  userId           Int          @unique
+  employeeNumber   String       @db.VarChar(100)
+  specialization   String       @db.VarChar(100)
+  contactNumber    String       @db.VarChar(50)
+  assignedSections String?      @db.VarChar(255)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @default(now())
   deletedAt        DateTime?
-
-  user             User      @relation(fields: [userId], references: [id])
-  subjects         Subject[]
-  sections         Section[]
   evaluations      Evaluation[]
+  sections         Section[]
+  subjects         Subject[]
+  user             User         @relation(fields: [userId], references: [id])
 }
 
 model Enrollment {
-  id          Int       @id @default(autoincrement())
-  studentId   Int
-  sectionId   Int
-  schoolYear  String    @db.VarChar(20)
-  status      String    @default("enrolled") @db.VarChar(50)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @default(now())
-  deletedAt   DateTime?
-
-  student     Student   @relation(fields: [studentId], references: [id])
-  section     Section   @relation(fields: [sectionId], references: [id])
-  subjects    Subject[]
-  payments    Payment[]
+  id         Int       @id @default(autoincrement())
+  studentId  Int
+  sectionId  Int
+  schoolYear String    @db.VarChar(20)
+  status     String    @default("enrolled") @db.VarChar(50)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @default(now())
+  deletedAt  DateTime?
+  section    Section   @relation(fields: [sectionId], references: [id])
+  student    Student   @relation(fields: [studentId], references: [id])
+  payments   Payment[]
+  subjects   Subject[]
 }
 
 model Section {
-  id         Int       @id @default(autoincrement())
-  teacherId  Int
-  name       String    @db.VarChar(100)
-  gradeLevel String    @db.VarChar(50)
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @default(now())
-  deletedAt  DateTime?
-
-  teacher    Teacher   @relation(fields: [teacherId], references: [id])
+  id          Int          @id @default(autoincrement())
+  teacherId   Int
+  name        String       @db.VarChar(100)
+  gradeLevel  String       @db.VarChar(50)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @default(now())
+  deletedAt   DateTime?
   enrollments Enrollment[]
+  teacher     Teacher      @relation(fields: [teacherId], references: [id])
 }
 
 model Subject {
-  id          Int       @id @default(autoincrement())
+  id           Int          @id @default(autoincrement())
   enrollmentId Int
-  teacherId   Int
-  name        String    @db.VarChar(100)
-  description String?   @db.VarChar(255)
-  gradeLevel  String    @db.VarChar(50)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @default(now())
-  deletedAt   DateTime?
-
-  enrollment  Enrollment @relation(fields: [enrollmentId], references: [id])
-  teacher     Teacher    @relation(fields: [teacherId], references: [id])
-  grades      Grade[]
-  evaluations Evaluation[]
+  teacherId    Int
+  name         String       @db.VarChar(100)
+  description  String?      @db.VarChar(255)
+  gradeLevel   String       @db.VarChar(50)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @default(now())
+  deletedAt    DateTime?
+  evaluations  Evaluation[]
+  grades       Grade[]
+  enrollment   Enrollment   @relation(fields: [enrollmentId], references: [id])
+  teacher      Teacher      @relation(fields: [teacherId], references: [id])
 }
 
 model Grade {
-  id                Int       @id @default(autoincrement())
-  subjectId         Int
-  studentId         Int
-  firstGrading      Float
-  secondGrading     Float
-  thirdGrading      Float
-  fourthGrading     Float
-  finalGrade        Float
-  remarks           String?   @db.VarChar(255)
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @default(now())
-  deletedAt         DateTime?
-
-  subject    Subject   @relation(fields: [subjectId], references: [id])
-  student    Student   @relation(fields: [studentId], references: [id])
+  id            Int       @id @default(autoincrement())
+  subjectId     Int
+  studentId     Int
+  remarks       String?   @db.VarChar(255)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @default(now())
+  deletedAt     DateTime?
+  finalGrade    Float
+  firstGrading  Float
+  fourthGrading Float
+  secondGrading Float
+  thirdGrading  Float
+  student       Student   @relation(fields: [studentId], references: [id])
+  subject       Subject   @relation(fields: [subjectId], references: [id])
 }
 
 model Evaluation {
-  id         Int       @id @default(autoincrement())
-  studentId  Int
-  subjectId  Int
-  teacherId  Int
-  rating     Int
-  comments   String?   @db.VarChar(255)
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @default(now())
-  deletedAt  DateTime?
-
-  student    Student   @relation(fields: [studentId], references: [id])
-  subject    Subject   @relation(fields: [subjectId], references: [id])
-  teacher    Teacher   @relation(fields: [teacherId], references: [id])
+  id        Int       @id @default(autoincrement())
+  studentId Int
+  subjectId Int
+  teacherId Int
+  rating    Int
+  comments  String?   @db.VarChar(255)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now())
+  deletedAt DateTime?
+  student   Student   @relation(fields: [studentId], references: [id])
+  subject   Subject   @relation(fields: [subjectId], references: [id])
+  teacher   Teacher   @relation(fields: [teacherId], references: [id])
 }
 
 model Attendance {
-  id         Int       @id @default(autoincrement())
-  studentId  Int
-  date       DateTime
-  status     String    @db.VarChar(50)
-  remarks    String?   @db.VarChar(255)
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @default(now())
-  deletedAt  DateTime?
-
-  student    Student   @relation(fields: [studentId], references: [id])
+  id        Int       @id @default(autoincrement())
+  studentId Int
+  date      DateTime
+  status    String    @db.VarChar(50)
+  remarks   String?   @db.VarChar(255)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now())
+  deletedAt DateTime?
+  student   Student   @relation(fields: [studentId], references: [id])
 }
 
 model ReportCard {
@@ -185,24 +175,32 @@ model ReportCard {
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @default(now())
   deletedAt    DateTime?
-
   student      Student   @relation(fields: [studentId], references: [id])
 }
 
 model Payment {
-  id             Int       @id @default(autoincrement())
-  studentId      Int
-  enrollmentId   Int
-  amount         Float
-  paymentType    String    @db.VarChar(50)
-  paymentMethod  String    @db.VarChar(50)
-  referenceNumber String   @db.VarChar(100)
-  status         String    @db.VarChar(50)
-  paymentDate    DateTime
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @default(now())
-  deletedAt      DateTime?
+  id              Int        @id @default(autoincrement())
+  studentId       Int
+  enrollmentId    Int
+  amount          Float
+  paymentType     String     @db.VarChar(50)
+  paymentMethod   String     @db.VarChar(50)
+  referenceNumber String     @db.VarChar(100)
+  status          String     @db.VarChar(50)
+  paymentDate     DateTime
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @default(now())
+  deletedAt       DateTime?
+  enrollment      Enrollment @relation(fields: [enrollmentId], references: [id])
+  student         Student    @relation(fields: [studentId], references: [id])
+}
 
-  student        Student   @relation(fields: [studentId], references: [id])
-  enrollment     Enrollment @relation(fields: [enrollmentId], references: [id])
+model Feedback {
+  id         Int       @id @default(autoincrement())
+  type       String    @db.VarChar(50)
+  message    String
+  suggestion String?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @default(now())
+  deletedAt  DateTime?
 }
