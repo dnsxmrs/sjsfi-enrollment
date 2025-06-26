@@ -3,17 +3,13 @@ import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { rateLimiter } from "@/lib/limiter";
 import { getClientIp } from "@/lib/ip";
-import { z } from "zod";
 import crypto from "crypto";
 
 const SHARED_SECRET = process.env.SJSFI_SHARED_SECRET || "";
 const VALID_API_KEYS = {
+    // 'sis': process.env.SJSFI_SIS_API_KEY,
     hrms: process.env.SJSFI_HRMS_API_KEY, // don't use self apikey
 };
-
-const schema = z.object({
-    email: z.string().email(),
-});
 
 function verifySignature(
     body: string,
@@ -38,9 +34,9 @@ function verifySignature(
     }
 }
 
-export async function POST(request: NextRequest) {
+export async function GET(request: NextRequest) {
     const requestId = crypto.randomUUID().slice(0, 8);
-    console.log(`[${requestId}] POST /api/xr/getStudent called`);
+    console.log(`[${requestId}] GET /api/xr/getStudents called`);
 
     // Get client IP from headers
     const userIP = await getClientIp();
@@ -147,57 +143,16 @@ export async function POST(request: NextRequest) {
             { status: 403 }
         );
     }
-    let email: string;
-    try {
-        const parsed = schema.parse(JSON.parse(rawBody));
-        email = parsed.email;
-        console.log(`[${requestId}] Request parsed successfully:`, {
-            email: email,
-            emailValid: !!email,
-        });
-    } catch (parseError) {
-        console.error(`[${requestId}] Request parsing failed:`, {
-            error: parseError,
-            rawBody: rawBody.slice(0, 200),
-            errorType: "REQUEST_PARSE_ERROR",
-            errorMessage:
-                parseError instanceof Error
-                    ? parseError.message
-                    : "Unknown parse error",
-        });
-        return Response.json(
-            {
-                error: "Invalid request format",
-                requestId,
-                timestamp: new Date().toISOString(),
-            },
-            { status: 400 }
-        );
-    }
 
-    if (!email) {
-        console.error(`[${requestId}] Missing email in request`, {
-            errorType: "MISSING_EMAIL",
-        });
-        return Response.json(
-            {
-                error: "Invalid request, contact the administrator for help.",
-                requestId,
-                timestamp: new Date().toISOString(),
-            },
-            { status: 400 }
-        );
-    }
     try {
-        console.log(
-            `[${requestId}] Starting database query for email: ${email}`
-        );
 
-        const user = await prisma.user.findFirst({
-            where: { email: email },
+        // selects all students with their student id, name, section, grade, account status (active, inactive, graduated, disabled, etc.)
+        const user = await prisma.user.findMany({
+            where: { role: 'student' },
             select: {
                 id: true,
                 firstName: true,
+                lastName: true,
                 email: true,
                 role: true,
                 student: {
@@ -205,26 +160,13 @@ export async function POST(request: NextRequest) {
                         gradeLevel: true,
                         status: true,
                         studentNumber: true,
-                        dateOfBirth: true,
-                        gender: true,
-                        guardianName: true,
-                        guardianContact: true,
-                        address: true,
                     },
                 },
             },
         });
 
-        console.log(`[${requestId}] Database query completed:`, {
-            userFound: !!user,
-            userId: user?.id,
-            userRole: user?.role,
-            hasStudentData: !!user?.student,
-        });
-
         if (!user) {
             console.log(`[${requestId}] User not found:`, {
-                email,
                 errorType: "USER_NOT_FOUND",
             });
             return Response.json(
@@ -238,37 +180,14 @@ export async function POST(request: NextRequest) {
         }
 
         // Transform the response to flatten student data
-        const transformedUser = {
-            id: user.id,
-            firstName: user.firstName,
-            lastName: user.firstName, // Assuming firstName is used for both
-            email: user.email,
-            role: user.role,
-            // Student-specific fields (if user is a student)
-            ...(user.student && {
-                gradeLevel: user.student.gradeLevel,
-                status: user.student.status,
-                studentNumber: user.student.studentNumber,
-                dateOfBirth: user.student.dateOfBirth,
-                gender: user.student.gender,
-                guardianName: user.student.guardianName,
-                guardianContact: user.student.guardianContact,
-                address: user.student.address,
-            }),
-        };
-        console.log(`[${requestId}] User found and transformed successfully:`, {
-            userId: transformedUser.id,
-            userRole: transformedUser.role,
-            hasStudentFields: !!(
-                transformedUser as typeof transformedUser & {
-                    gradeLevel?: string;
-                }
-            ).gradeLevel,
-            responseSize: JSON.stringify(transformedUser).length,
+        const userJson = JSON.stringify(user);
+
+        console.log(`[${requestId}] Students found and transformed successfully:`, {
+            responseSize: userJson.length,
         });
 
         return Response.json({
-            ...transformedUser,
+            ...JSON.parse(userJson),
             requestId,
             timestamp: new Date().toISOString(),
         });
@@ -281,7 +200,6 @@ export async function POST(request: NextRequest) {
                     ? dbError.message
                     : "Unknown database error",
             errorStack: dbError instanceof Error ? dbError.stack : undefined,
-            email: email,
         });
 
         return Response.json(
