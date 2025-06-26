@@ -26,7 +26,7 @@ export default function StudentApplicationNextPage() {
       </div>
 
       {/* Content Box */}
-      <div className="bg-white rounded-md shadow p-8 space-y-6">
+      <div className="bg-white rounded-md shadow p-8 space-y-6 text-black">
         {/* Academic Year and Admission */}
         <div className="flex justify-between space-x-4">
           <div className="flex flex-col flex-grow">

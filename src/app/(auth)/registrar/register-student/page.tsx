@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Eye, Trash } from 'lucide-react';
 import { getStudents } from '@/app/_actions/getStudents';
 import { sendMissingRequirementsNotification, getMissingRequirements } from '@/app/_actions/sendNotification';
+import { useRouter } from 'next/navigation';
 
 const RegisterCoursePage: React.FC = () => {
     const [studentID, setStudentID] = useState('');
@@ -27,6 +28,7 @@ const RegisterCoursePage: React.FC = () => {
         certificateOfGoodMoral: false,
     });
     const [isNotificationLoading, setIsNotificationLoading] = useState(false);
+    const router = useRouter();
 
     // Fetch students on component mount
     useEffect(() => {
@@ -154,10 +156,16 @@ const RegisterCoursePage: React.FC = () => {
                         <label className="block text-sm font-medium text-black px-3">
                             Quick Access Buttons
                         </label>
-                        <button className="bg-red-800 text-white py-2 rounded text-sm hover:bg-red-900">
+                        <button
+                            className="bg-red-800 text-white py-2 rounded text-sm hover:bg-red-900"
+                            onClick={() => router.push('/registrar/register-student/Form-students')}
+                        >
                             Student Application Form
                         </button>
-                        <button className="bg-red-800 text-white py-2 rounded text-sm hover:bg-red-900">
+                        <button
+                            className="bg-red-800 text-white py-2 rounded text-sm hover:bg-red-900"
+                            onClick={() => router.push('/registrar/register-student/Form-registration')}
+                        >
                             Registration Form
                         </button>
                     </div>

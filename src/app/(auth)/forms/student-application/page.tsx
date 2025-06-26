@@ -64,7 +64,7 @@ export default function StudentApplicationForm() {
           }`}
           onClick={() => {
             // Navigate to the new page
-            router.push('/auth/forms/student-application/personal-info');
+            router.push('/forms/student-application/personal-info');
           }}
         >
           Continue
