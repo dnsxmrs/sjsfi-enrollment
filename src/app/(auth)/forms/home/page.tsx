@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import { toast } from 'react-hot-toast';
+//import { toast } from 'react-hot-toast';
 
 const HomePage: React.FC = () => {
   const router = useRouter();
@@ -13,15 +13,15 @@ const HomePage: React.FC = () => {
 
   const handleStudentApplicationClick = () => {
     // toast.info('This feature is under development. Please check back later.');
-    // router.push('/forms/student-application');
+    router.push('/forms/student-application');
     // toast("Hello World")
-    toast('Feature coming soon!', {
-      icon: '🚧',
-      style: {
-        background: '#800',
-        color: '#fff',
-      },
-    });
+    // toast('Feature coming soon!', {
+    //   icon: '🚧',
+    //   style: {
+    //     background: '#800',
+    //     color: '#fff',
+    //   },
+    // });
   };
 
   return (
