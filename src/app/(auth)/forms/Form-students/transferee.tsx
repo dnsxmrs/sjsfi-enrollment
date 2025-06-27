@@ -13,7 +13,7 @@ export default function StudentTransfereePage({ onBack, onNext }: StudentTransfe
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleInputChange = (field: keyof typeof transferee, value: any) => {
+  const handleInputChange = (field: keyof typeof transferee, value: string) => {
     updateFormData('transferee', {
       ...transferee,
       [field]: value

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useFormData } from "./page";
 
 interface StudentEducationalBackgroundPageProps {
@@ -37,7 +37,7 @@ export default function StudentEducationalBackgroundPage({ onBack, onNext }: Stu
   // Handler to remove a school
   const removeSchool = (index: number) => {
     if (educationalBackground.length > 1) {
-      const updatedSchools = educationalBackground.filter((_, i) => i !== index);
+      const updatedSchools = educationalBackground.filter((_, i: number) => i !== index);
       updateFormData('educationalBackground', updatedSchools);
     }
   };
@@ -69,7 +69,7 @@ export default function StudentEducationalBackgroundPage({ onBack, onNext }: Stu
         </div>
 
         {/* School Info Fields */}
-        {educationalBackground.map((school, index) => (
+        {educationalBackground.map((school, index: number) => (
           <fieldset key={index} className="border border-gray-300 rounded p-4">
             <div className="flex justify-between items-center mb-4">
               <legend className="block text-sm font-medium mb-1 text-black px-2">{`School #${index + 1}`}</legend>
