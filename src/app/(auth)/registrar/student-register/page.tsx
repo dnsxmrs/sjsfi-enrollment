@@ -4,8 +4,9 @@ import React, { useState, useEffect } from 'react';
 import { Eye, Trash, Copy, Check, X, Mail } from 'lucide-react';
 import { getStudents } from '@/app/_actions/getStudents';
 import { sendMissingRequirementsNotification, getMissingRequirements } from '@/app/_actions/sendNotification';
-import { generateRegistrationCode, generateRegistrationCodeForRegistration } from '@/app/_actions/generateRegistrationCode';
+import { generateRegistrationCode, generateRegistrationCodeForRegistration } from '@/app/_actions/generateCode';
 import toast from 'react-hot-toast';
+import { approveRegistration } from '@/app/_actions/approveRegistration';
 
 const RegisterCoursePage: React.FC = () => {
     const [studentID, setStudentID] = useState('');
@@ -13,6 +14,20 @@ const RegisterCoursePage: React.FC = () => {
     const [gradeLevel, setGradeLevel] = useState('');
     const [email, setEmail] = useState('');
     const [status, setStatus] = useState(''); // This will hold the registration status
+    const [isLoading, setIsLoading] = useState(true);
+    const [isNotificationLoading, setIsNotificationLoading] = useState(false);
+    const [generatedCode, setGeneratedCode] = useState<string>('');
+    const [isCodeCopied, setIsCodeCopied] = useState(false);
+    const [isGeneratingCode, setIsGeneratingCode] = useState(false);
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const [showRejectModal, setShowRejectModal] = useState(false);
+    const [selectedRegistrationId, setSelectedRegistrationId] = useState<number | null>(null);
+    const [modalData, setModalData] = useState<{
+        fullName: string;
+        email: string;
+        missingReqs: string[];
+    }>({ fullName: '', email: '', missingReqs: [] });
+
     const [students, setStudents] = useState<Array<{
         id: string;
         registrationId: number;
@@ -22,7 +37,7 @@ const RegisterCoursePage: React.FC = () => {
         status: string;
         email: string;
     }>>([]);
-    const [isLoading, setIsLoading] = useState(true);
+
     const [requirements, setRequirements] = useState({
         birthCertificate: false,
         f137: false,
@@ -30,17 +45,7 @@ const RegisterCoursePage: React.FC = () => {
         goodMoral: false,
         privacyForm: false,
     });
-    const [isNotificationLoading, setIsNotificationLoading] = useState(false);
-    const [generatedCode, setGeneratedCode] = useState<string>('');
-    const [isCodeCopied, setIsCodeCopied] = useState(false);
-    const [isGeneratingCode, setIsGeneratingCode] = useState(false);
-    const [showConfirmModal, setShowConfirmModal] = useState(false);
-    const [modalData, setModalData] = useState<{
-        fullName: string;
-        email: string;
-        missingReqs: string[];
-    }>({ fullName: '', email: '', missingReqs: [] });
-    const [selectedRegistrationId, setSelectedRegistrationId] = useState<number | null>(null);
+
 
     // Fetch students on component mount
     useEffect(() => {
@@ -62,40 +67,27 @@ const RegisterCoursePage: React.FC = () => {
         fetchStudents();
     }, []);
 
-    const handleRequirementChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setRequirements({
-            ...requirements,
-            [e.target.name]: e.target.checked,
-        });
-    };
-
     const handleRegister = async () => {
         if (!selectedRegistrationId) {
             toast.error('No registration selected.');
             return;
         }
         try {
-            const result = await generateRegistrationCodeForRegistration(selectedRegistrationId);
+            const result = await approveRegistration(selectedRegistrationId);
+// generateApplicationCode
+
             if (result.success && result.code) {
+                setGeneratedCode(result.code);
                 toast.success(`Registration Code Generated: ${result.code}`, {
                     duration: 5000,
                 });
-                setGeneratedCode(result.code);
-                // Refresh students list and update selected status
-                const refreshed = await getStudents();
-                if (refreshed.success) {
-                    setStudents(refreshed.students);
-                    // Find the updated student and update status in form
-                    const updated = refreshed.students.find(s => s.registrationId === selectedRegistrationId);
-                    if (updated) {
-                        setStatus(updated.status);
-                    }
-                }
+                setStatus('APPROVED'); // Update status to APPROVED
+
             } else {
                 toast.error(`Failed to generate registration code: ${result.error || 'Unknown error occurred'}`);
             }
-        } catch (error) {
-            console.error('Error generating registration code:', error);
+
+        } catch {
             toast.error('An error occurred while generating the registration code. Please try again.');
         }
     };
@@ -168,6 +160,64 @@ const RegisterCoursePage: React.FC = () => {
             missingReqs
         });
         setShowConfirmModal(true);
+    };
+
+    const handleRejectRegistration = async () => {
+        if (!selectedRegistrationId) {
+            toast.error('No registration selected.');
+            return;
+        }
+        try {
+            const result = await rejectRegistration(selectedRegistrationId);
+            // generateApplicationCode
+            if (result.success) {
+                toast.success(`Registration rejected for ${fullName}`);
+            } else {
+                toast.error(`Failed to reject registration: ${result.error || 'Unknown error occurred'}`);
+            }
+        } catch (error) {
+            console.error('Error rejecting registration:', error);
+            toast.error('An error occurred while rejecting the registration. Please try again.');
+        }
+
+        // Show rejection modal
+        setShowRejectModal(true);
+    };
+
+    const handleConfirmReject = async () => {
+        setShowRejectModal(false);
+
+        try {
+            // You'll need to create this action function
+            // const result = await rejectRegistration(selectedRegistrationId);
+
+            // For now, just show a success message
+            toast.success(`Registration rejected for ${fullName}`);
+
+            // Clear the form after rejection
+            setStudentID('');
+            setFullName('');
+            setGradeLevel('');
+            setEmail('');
+            setStatus('');
+            setSelectedRegistrationId(null);
+            setRequirements({
+                birthCertificate: false,
+                f137: false,
+                f138: false,
+                goodMoral: false,
+                privacyForm: false,
+            });
+
+            // Refresh the students list
+            const result = await getStudents();
+            if (result.success) {
+                setStudents(result.students);
+            }
+        } catch (error) {
+            console.error('Error rejecting registration:', error);
+            toast.error('Failed to reject registration. Please try again.');
+        }
     };
 
     const handleConfirmSend = async () => {
@@ -302,6 +352,82 @@ const RegisterCoursePage: React.FC = () => {
         );
     };
 
+    // Rejection Modal Component
+    const RejectionModal: React.FC = () => {
+        if (!showRejectModal) return null;
+
+        return (
+            <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50 p-4">
+                <div className="bg-white rounded-lg max-w-md w-full">
+                    <div className="p-6">
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className="text-lg font-semibold text-gray-800 flex items-center">
+                                <X className="w-5 h-5 mr-2 text-red-600" />
+                                Reject Registration
+                            </h3>
+                            <button
+                                onClick={() => setShowRejectModal(false)}
+                                className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+                            >
+                                <X className="w-5 h-5 text-gray-500" />
+                            </button>
+                        </div>
+
+                        <div className="mb-6">
+                            <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+                                <div className="flex items-start">
+                                    <div className="flex-shrink-0">
+                                        <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                        </svg>
+                                    </div>
+                                    <div className="ml-3">
+                                        <h4 className="text-sm font-medium text-red-800">Warning</h4>
+                                        <p className="text-sm text-red-700 mt-1">
+                                            This action cannot be undone. The registration will be permanently rejected.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <p className="text-gray-700 mb-4">
+                                Are you sure you want to reject the registration for <strong>{fullName}</strong>?
+                            </p>
+
+                            <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
+                                <p className="text-sm text-gray-700">
+                                    <strong>Registration ID:</strong> {studentID}
+                                </p>
+                                <p className="text-sm text-gray-700">
+                                    <strong>Grade Level:</strong> {gradeLevel}
+                                </p>
+                                <p className="text-sm text-gray-700">
+                                    <strong>Email:</strong> {email}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="flex justify-end space-x-3">
+                            <button
+                                onClick={() => setShowRejectModal(false)}
+                                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleConfirmReject}
+                                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center space-x-2"
+                            >
+                                <X className="w-4 h-4" />
+                                <span>Reject Registration</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
     return (
         <div className="min-h-screen bg-gray-100 p-6">
             <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-6 md:gap-8">
@@ -310,12 +436,6 @@ const RegisterCoursePage: React.FC = () => {
                         <label className="block text-sm font-medium text-black px-3">
                             Quick Access Buttons
                         </label>
-                        {/* <button
-                            className="bg-red-800 text-white py-2 rounded text-sm hover:bg-red-900"
-                            onClick={() => handleGenerateApplication(student)}
-                        >
-                            Student Application Form
-                        </button> */}
                         <button
                             className="bg-red-800 text-white py-2 rounded text-sm hover:bg-red-900 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
                             onClick={() => handleGenerateRegistration()}
@@ -375,9 +495,9 @@ const RegisterCoursePage: React.FC = () => {
                         ) : (
                             <table className="w-full text-left text-sm"><thead>
                                 <tr className="border-b border-gray-300 text-black">
-                                    <th className="py-2 font-semibold">Application ID</th>
-                                    <th className="py-2 font-semibold">First Name</th>
-                                    <th className="py-2 font-semibold">Last Name</th>
+                                    <th className="py-2 font-semibold">Registration ID</th>
+                                    <th className="py-2 font-semibold">Full Name</th>
+                                    {/* <th className="py-2 font-semibold">Last Name</th> */}
                                     <th className="py-2 font-semibold">Grade Level</th>
                                     <th className="py-2 font-semibold">Actions</th>
                                 </tr>
@@ -393,8 +513,8 @@ const RegisterCoursePage: React.FC = () => {
                                         students.map((student) => (
                                             <tr key={student.id} className="border-b border-gray-200 text-black hover:bg-gray-50">
                                                 <td className="py-2">{student.id}</td>
-                                                <td className="py-2">{student.firstName}</td>
-                                                <td className="py-2">{student.familyName}</td>
+                                                <td className="py-2">{student.firstName} {student.familyName}</td>
+                                                {/* <td className="py-2">{student.familyName}</td> */}
                                                 <td className="py-2">
                                                     <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
                                                         {student.gradeLevel}
@@ -408,13 +528,13 @@ const RegisterCoursePage: React.FC = () => {
                                                     >
                                                         <Eye className="h-5 w-5" />
                                                     </button>
-                                                    <button
+                                                    {/* <button
                                                         title="Delete"
                                                         className="text-red-600 hover:text-red-800"
                                                         onClick={() => toast(`Delete student ${student.id}`)}
                                                     >
                                                         <Trash className="h-5 w-5" />
-                                                    </button>
+                                                    </button> */}
                                                 </td>
                                             </tr>
                                         ))
@@ -426,17 +546,17 @@ const RegisterCoursePage: React.FC = () => {
                     {/* Add/Edit Student Form */}
                     <div className="bg-white p-6 rounded-lg shadow">
                         <h2 className="text-lg font-semibold mb-4 text-black">
-                            Student Details
+                            Registration Details
                         </h2>
                         <div className="grid grid-cols-2 gap-4 mb-4">
                             <div>
                                 <label className="block text-sm font-medium mb-1 text-black" htmlFor="studentID">
-                                    Student ID
+                                    Registration ID
                                 </label>
                                 <input
                                     id="studentID"
                                     type="text"
-                                    placeholder="Enter student ID"
+                                    placeholder="Enter registration ID"
                                     value={studentID}
                                     onChange={(e) => setStudentID(e.target.value)}
                                     readOnly
@@ -490,7 +610,7 @@ const RegisterCoursePage: React.FC = () => {
                                 className="w-full text-black border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-100 cursor-not-allowed"
                             />
                         </div>
-                        <div className="mb-4">
+                        {/* <div className="mb-4">
                             <span className="block text-sm font-medium mb-2 text-black">Requirements</span>
                             <div className="flex flex-col space-y-1">
                                 <label className="inline-flex items-center">
@@ -544,7 +664,7 @@ const RegisterCoursePage: React.FC = () => {
                                     <span className="ml-2 text-sm text-black">Privacy Form</span>
                                 </label>
                             </div>
-                        </div>
+                        </div> */}
                         <div className="flex space-x-4">
                             <button
                                 onClick={handleRegister}
@@ -562,7 +682,7 @@ const RegisterCoursePage: React.FC = () => {
                                 </svg>
                                 <span>Approve Registration</span>
                             </button>
-                            <button
+                            {/* <button
                                 onClick={handleNotify}
                                 disabled={isNotificationLoading}
                                 className="bg-yellow-400 text-black px-4 py-2 rounded text-sm flex items-center space-x-2 hover:bg-yellow-500 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -587,22 +707,14 @@ const RegisterCoursePage: React.FC = () => {
                                         <span>Notify Missing Requirements</span>
                                     </>
                                 )}
-                            </button>
-                            {/* <button
-                                onClick={handleClearForm}
-                                className="bg-gray-500 text-white px-4 py-2 rounded text-sm flex items-center space-x-2 hover:bg-gray-600"
-                            >
-                                <svg
-                                    className="w-4 h-4"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    viewBox="0 0 24 24"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                >
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12"></path>
-                                </svg>                                <span>Clear Form</span>
                             </button> */}
+                            <button
+                                onClick={handleRejectRegistration}
+                                className="bg-gray-600 text-white px-4 py-2 rounded text-sm flex items-center space-x-2 hover:bg-gray-700"
+                            >
+                                <X className="w-4 h-4" />
+                                <span>Reject Registration</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -610,6 +722,9 @@ const RegisterCoursePage: React.FC = () => {
 
             {/* Confirmation Modal */}
             <ConfirmationModal />
+            
+            {/* Rejection Modal */}
+            <RejectionModal />
         </div>
     );
 };

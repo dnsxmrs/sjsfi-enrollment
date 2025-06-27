@@ -49,19 +49,19 @@ export default function RegistrarLoginForm() {
             });
 
             // STEP 2: Check if the user exists with registrar access
-            const facultyCheck = await facultyEmailExists(
-                email_address,
-                "registrar" // Changed from "faculty" to "registrar" for registrar login
-            );
+            // const facultyCheck = await facultyEmailExists(
+            //     email_address,
+            //     "registrar" // Changed from "faculty" to "registrar" for registrar login
+            // );
 
-            if (!facultyCheck.success) {
-                setError(
-                    facultyCheck.error
-                        ? facultyCheck.error
-                        : "Invalid credentials."
-                );
-                return;
-            }
+            // if (!facultyCheck.success) {
+            //     setError(
+            //         facultyCheck.error
+            //             ? facultyCheck.error
+            //             : "Invalid credentials."
+            //     );
+            //     return;
+            // }
 
             // const role = String(facultyCheck.role || "registrar");
             const role = "registrar";

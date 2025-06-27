@@ -148,7 +148,7 @@ export async function GET(request: NextRequest) {
 
         // selects all students with their student id, name, section, grade, account status (active, inactive, graduated, disabled, etc.)
         const user = await prisma.user.findMany({
-            where: { role: 'student' },
+            where: { role: 'STUDENT' },
             select: {
                 id: true,
                 firstName: true,
@@ -157,8 +157,6 @@ export async function GET(request: NextRequest) {
                 role: true,
                 student: {
                     select: {
-                        gradeLevel: true,
-                        status: true,
                         studentNumber: true,
                     },
                 },

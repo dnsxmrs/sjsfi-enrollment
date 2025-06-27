@@ -8,7 +8,7 @@ export async function getStudentsByGradeLevel() {
 
         // Get count of students grouped by grade level
         const studentsGrouped = await prisma.student.groupBy({
-            by: ['gradeLevel'],
+            by: ['yearLevel'],
             where: {
                 deletedAt: null, // Only non-deleted students
                 status: 'active', // Only active students

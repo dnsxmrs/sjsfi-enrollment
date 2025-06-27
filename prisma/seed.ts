@@ -1,481 +1,432 @@
 import { prisma } from '@/lib/prisma'
 
+// Helper functions for generating random data
+function getRandomElement<T>(array: T[]): T {
+    return array[Math.floor(Math.random() * array.length)];
+}
+
+function generateRandomDate(start: Date, end: Date): Date {
+    return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+}
+
+function generateRandomPhone(): string {
+    return `09${Math.floor(Math.random() * 900000000) + 100000000}`;
+}
+
+function generateRandomEmail(firstName: string, lastName: string): string {
+    const domains = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'example.com'];
+    return `${firstName.toLowerCase()}.${lastName.toLowerCase()}@${getRandomElement(domains)}`;
+}
+
 async function main() {
     console.log('🌱 Starting database seeding...');
 
     // Clear existing data (in reverse order of dependencies)
     console.log('🧹 Cleaning existing data...');
-    await prisma.payment.deleteMany();
-    await prisma.reportCard.deleteMany();
-    await prisma.attendance.deleteMany();
-    await prisma.evaluation.deleteMany();
-    await prisma.grade.deleteMany();
-    await prisma.subject.deleteMany();
-    await prisma.enrollment.deleteMany();
-    await prisma.section.deleteMany();
+    await prisma.registrationCode.deleteMany();
+    await prisma.familyBackground.deleteMany();
+    await prisma.healthHistory.deleteMany();
+    await prisma.contactNumber.deleteMany();
+    await prisma.guardian.deleteMany();
+    await prisma.requirements.deleteMany();
+    await prisma.studentApplication.deleteMany();
+    await prisma.registration.deleteMany();
+    await prisma.generalPolicy.deleteMany();
+    await prisma.academicTerm.deleteMany();
+    await prisma.yearLevel.deleteMany();
+    await prisma.feedback.deleteMany();
     await prisma.student.deleteMany();
-    await prisma.teacher.deleteMany();
-    await prisma.parent.deleteMany();
     await prisma.user.deleteMany();
 
-    // 1. Create Parent Users
-    console.log('👨‍👩‍👧‍👦 Creating parents...');
-    const parentUsers = await Promise.all([
-        prisma.user.create({
-            data: {
-                email: 'maria.juarez@example.com',
-                firstName: 'Maria',
-                familyName: 'Juarez',
-                role: 'parent',
-                parent: {
-                    create: {
-                        contactNumber: '09171234567'
-                    }
-                }
-            },
-            include: { parent: true }
-        }),
-        prisma.user.create({
-            data: {
-                email: 'carlos.santos@example.com',
-                firstName: 'Carlos',
-                familyName: 'Santos',
-                role: 'parent',
-                parent: {
-                    create: {
-                        contactNumber: '09188765432'
-                    }
-                }
-            },
-            include: { parent: true }
-        }),
-        prisma.user.create({
-            data: {
-                email: 'ana.dela.cruz@example.com',
-                firstName: 'Ana',
-                middleName: 'Dela',
-                familyName: 'Cruz',
-                role: 'parent',
-                parent: {
-                    create: {
-                        contactNumber: '09199876543'
-                    }
-                }
-            },
-            include: { parent: true }
-        })
+    // 1. Create Year Levels (at least 3)
+    console.log('📚 Creating year levels...');
+    const yearLevels = await Promise.all([
+        prisma.yearLevel.create({ data: { name: 'Kinder 1' } }),
+        prisma.yearLevel.create({ data: { name: 'Kinder 2' } }),
+        prisma.yearLevel.create({ data: { name: 'Grade 1' } }),
+        prisma.yearLevel.create({ data: { name: 'Grade 2' } }),
+        prisma.yearLevel.create({ data: { name: 'Grade 3' } }),
+        prisma.yearLevel.create({ data: { name: 'Grade 4' } }),
+        prisma.yearLevel.create({ data: { name: 'Grade 5' } }),
+        prisma.yearLevel.create({ data: { name: 'Grade 6' } }),
+        prisma.yearLevel.create({ data: { name: 'Grade 7' } }),
+        prisma.yearLevel.create({ data: { name: 'Grade 8' } }),
+        prisma.yearLevel.create({ data: { name: 'Grade 9' } }),
+        prisma.yearLevel.create({ data: { name: 'Grade 10' } }),
+
     ]);
 
-    // 2. Create Teacher Users
-    console.log('👨‍🏫 Creating teachers...');
-    const teacherUsers = await Promise.all([
-        prisma.user.create({
+    // 2. Create Academic Terms (at least 3)
+    console.log('🗓️ Creating academic terms...');
+    const academicTerms = await Promise.all([
+        prisma.academicTerm.create({
             data: {
-                email: 'prof.rivera@sjsfi.edu.ph',
-                firstName: 'Carmen',
-                familyName: 'Rivera',
-                role: 'teacher',
-                teacher: {
-                    create: {
-                        employeeNumber: 'EMP2025001',
-                        specialization: 'Mathematics',
-                        contactNumber: '09161234567',
-                        assignedSections: 'Grade 10-A, Grade 10-B'
-                    }
-                }
-            },
-            include: { teacher: true }
+                year: '2023-2024',
+                startDate: new Date('2023-08-15'),
+                endDate: new Date('2024-06-15'),
+                status: 'INACTIVE'
+            }
         }),
-        prisma.user.create({
+        prisma.academicTerm.create({
             data: {
-                email: 'prof.garcia@sjsfi.edu.ph',
-                firstName: 'Roberto',
-                familyName: 'Garcia',
-                role: 'teacher',
-                teacher: {
-                    create: {
-                        employeeNumber: 'EMP2025002',
-                        specialization: 'Science',
-                        contactNumber: '09162345678',
-                        assignedSections: 'Grade 9-A, Grade 11-A'
-                    }
-                }
-            },
-            include: { teacher: true }
+                year: '2024-2025',
+                startDate: new Date('2024-08-15'),
+                endDate: new Date('2025-06-15'),
+                status: 'ACTIVE'
+            }
         }),
-        prisma.user.create({
+        prisma.academicTerm.create({
             data: {
-                email: 'prof.mendoza@sjsfi.edu.ph',
-                firstName: 'Elena',
-                familyName: 'Mendoza',
-                role: 'teacher',
-                teacher: {
-                    create: {
-                        employeeNumber: 'EMP2025003',
-                        specialization: 'English',
-                        contactNumber: '09163456789',
-                        assignedSections: 'Grade 9-A, Grade 10-A, Grade 11-A'
-                    }
-                }
-            },
-            include: { teacher: true }
+                year: '2025-2026',
+                startDate: new Date('2025-08-15'),
+                endDate: new Date('2026-06-15'),
+                status: 'INACTIVE'
+            }
         }),
-        prisma.user.create({
-            data: {
-                email: 'prof.torres@sjsfi.edu.ph',
-                firstName: 'Michael',
-                familyName: 'Torres',
-                role: 'teacher',
-                teacher: {
-                    create: {
-                        employeeNumber: 'EMP2025004',
-                        specialization: 'Filipino',
-                        contactNumber: '09164567890',
-                        assignedSections: 'Grade 9-A, Grade 10-A, Grade 11-A'
-                    }
-                }
-            },
-            include: { teacher: true }
-        })
     ]);
 
-    // 3. Create Sections
-    console.log('🏫 Creating sections...');
-    const sections = await Promise.all([
-        prisma.section.create({
+    // 3. Create General Policies (at least 3)
+    console.log('📋 Creating general policies...');
+    await Promise.all([
+        prisma.generalPolicy.create({
             data: {
-                teacherId: teacherUsers[0].teacher!.id,
-                name: 'Grade 9-A',
-                gradeLevel: 'Grade 9'
-            }
-        }),
-        prisma.section.create({
-            data: {
-                teacherId: teacherUsers[0].teacher!.id,
-                name: 'Grade 10-A',
-                gradeLevel: 'Grade 10'
-            }
-        }),
-        prisma.section.create({
-            data: {
-                teacherId: teacherUsers[1].teacher!.id,
-                name: 'Grade 11-A',
-                gradeLevel: 'Grade 11'
+                title: 'General Policy and Guidelines',
+                content: '<h3>Registration Requirements</h3><p>Students must submit all required documents for enrollment.</p>'
             }
         })
     ]);
 
-    // 4. Create Student Users
-    console.log('👨‍🎓 Creating students...');
-    const studentUsers = await Promise.all([
-        prisma.user.create({
-            data: {
-                email: 'ericemarial@gmail.com',
-                firstName: 'Erice',
-                middleName: 'Dionisio',
-                familyName: 'Marial',
-                role: 'student',
-                student: {
-                    create: {
-                        parentId: parentUsers[0].parent!.id,
-                        studentNumber: '2025-0001',
-                        dateOfBirth: new Date('2012-12-12'),
-                        gender: 'Male',
-                        guardianName: 'Maria Juarez',
-                        guardianContact: '09171234567',
-                        address: '123 Mabini Street, Quezon City',
-                        gradeLevel: 'Grade 10',
-                        status: 'active'
-                    }
-                }
-            },
-            include: { student: true }
-        }),
-        prisma.user.create({
-            data: {
-                email: 'student@student.com',
-                firstName: 'Angelica',
-                familyName: 'Tan',
-                role: 'student',
-                student: {
-                    create: {
-                        parentId: parentUsers[0].parent!.id,
-                        studentNumber: 'STU2025002',
-                        dateOfBirth: new Date('2008-06-21'),
-                        gender: 'Female',
-                        guardianName: 'Maria Juarez',
-                        guardianContact: '09171234567',
-                        address: '45 Mahogany Avenue, Pasig City',
-                        gradeLevel: 'Grade 9',
-                        status: 'active'
-                    }
-                }
-            },
-            include: { student: true }
-        }),
-        prisma.user.create({
-            data: {
-                email: 'daniel.santos@student.sjsfi.edu.ph',
-                firstName: 'Daniel',
-                familyName: 'Santos',
-                role: 'student',
-                student: {
-                    create: {
-                        parentId: parentUsers[1].parent!.id,
-                        studentNumber: 'STU2025003',
-                        dateOfBirth: new Date('2006-12-03'),
-                        gender: 'Male',
-                        guardianName: 'Carlos Santos',
-                        guardianContact: '09188765432',
-                        address: '89 Jacinto Road, Manila',
-                        gradeLevel: 'Grade 11',
-                        status: 'active'
-                    }
-                }
-            },
-            include: { student: true }
-        }),
-        prisma.user.create({
-            data: {
-                email: 'sophia.cruz@student.sjsfi.edu.ph',
-                firstName: 'Sophia',
-                familyName: 'Cruz',
-                role: 'student',
-                student: {
-                    create: {
-                        parentId: parentUsers[2].parent!.id,
-                        studentNumber: 'STU2025004',
-                        dateOfBirth: new Date('2008-09-12'),
-                        gender: 'Female',
-                        guardianName: 'Ana Dela Cruz',
-                        guardianContact: '09199876543',
-                        address: '56 Rizal Avenue, Makati City',
-                        gradeLevel: 'Grade 9',
-                        status: 'active'
-                    }
-                }
-            },
-            include: { student: true }
-        }),
-        prisma.user.create({
-            data: {
-                email: 'marco.perez@student.sjsfi.edu.ph',
-                firstName: 'Marco',
-                familyName: 'Perez',
-                role: 'student',
-                student: {
-                    create: {
-                        parentId: parentUsers[1].parent!.id,
-                        studentNumber: 'STU2025005',
-                        dateOfBirth: new Date('2007-11-08'),
-                        gender: 'Male',
-                        guardianName: 'Carlos Santos',
-                        guardianContact: '09188765432',
-                        address: '78 Luna Street, Taguig City',
-                        gradeLevel: 'Grade 10',
-                        status: 'active'
-                    }
-                }
-            },
-            include: { student: true }
-        })
-    ]);
+    // 4. Create Users (Students and Admin) - at least 3 students
+    console.log('👥 Creating users...');
+    const users = [];
 
-    // 5. Create Enrollments
-    console.log('📚 Creating enrollments...');
-    const enrollments = await Promise.all([
-        // Grade 9 students
-        prisma.enrollment.create({
-            data: {
-                studentId: studentUsers[1].student!.id, // Angelica (Grade 9)
-                sectionId: sections[0].id, // Grade 9-A
-                schoolYear: '2024-2025',
-                status: 'enrolled'
-            }
-        }),
-        prisma.enrollment.create({
-            data: {
-                studentId: studentUsers[3].student!.id, // Sophia (Grade 9)
-                sectionId: sections[0].id, // Grade 9-A
-                schoolYear: '2024-2025',
-                status: 'enrolled'
-            }
-        }),
-        // Grade 10 students
-        prisma.enrollment.create({
-            data: {
-                studentId: studentUsers[0].student!.id, // Jose (Grade 10)
-                sectionId: sections[1].id, // Grade 10-A
-                schoolYear: '2024-2025',
-                status: 'enrolled'
-            }
-        }),
-        prisma.enrollment.create({
-            data: {
-                studentId: studentUsers[4].student!.id, // Marco (Grade 10)
-                sectionId: sections[1].id, // Grade 10-A
-                schoolYear: '2024-2025',
-                status: 'enrolled'
-            }
-        }),
-        // Grade 11 students
-        prisma.enrollment.create({
-            data: {
-                studentId: studentUsers[2].student!.id, // Daniel (Grade 11)
-                sectionId: sections[2].id, // Grade 11-A
-                schoolYear: '2024-2025',
-                status: 'enrolled'
-            }
-        })
-    ]);
-
-    // 6. Create Subjects
-    console.log('📖 Creating subjects...');
-    const subjects = [];
-    const subjectNames = [
-        { name: 'Mathematics', teacher: 0, description: 'Basic and Advanced Mathematics' },
-        { name: 'Science', teacher: 1, description: 'General Science and Biology' },
-        { name: 'English', teacher: 2, description: 'English Language and Literature' },
-        { name: 'Filipino', teacher: 3, description: 'Filipino Language and Literature' }
+    // Filipino first names and family names for realistic data
+    const firstNames = [
+        'Maria', 'Jose', 'Juan', 'Ana', 'Antonio', 'Carmen', 'Francisco', 'Rosa', 'Pedro', 'Teresa',
+        'Manuel', 'Luz', 'Ricardo', 'Elena', 'Carlos', 'Cristina', 'Roberto', 'Patricia', 'Fernando', 'Isabel',
+        'Erice', 'Angelica', 'Sophia', 'Marco', 'Daniel', 'Isabella', 'Gabriel', 'Samantha'
     ];
 
-    for (const enrollment of enrollments) {
-        for (const subject of subjectNames) {
-            const createdSubject = await prisma.subject.create({
-                data: {
-                    enrollmentId: enrollment.id,
-                    teacherId: teacherUsers[subject.teacher].teacher!.id,
-                    name: subject.name,
-                    description: subject.description,
-                    gradeLevel: enrollment.schoolYear
+    const familyNames = [
+        'Garcia', 'Cruz', 'Gonzalez', 'Reyes', 'Santos', 'Flores', 'Mendoza', 'Rivera', 'Torres', 'Rodriguez',
+        'Ramos', 'Villanueva', 'Bautista', 'Francisco', 'Morales', 'Dela Cruz', 'Hernandez', 'Castro',
+        'Marial', 'Tan', 'Lim', 'Sy', 'Wong', 'Go'
+    ];
+
+    // Create the specific student you requested first
+    const specificStudent = await prisma.user.create({
+        data: {
+            email: 'student@student.com',
+            firstName: 'John',
+            middleName: 'Doe',
+            familyName: 'Smith',
+            role: 'STUDENT',
+            student: {
+                create: {
+                    studentNumber: 'STU2025001'
                 }
-            });
-            subjects.push(createdSubject);
-        }
-    }
+            }
+        },
+        include: { student: true }
+    });
+    users.push(specificStudent);
 
-    // 7. Create Grades
-    console.log('📊 Creating grades...');
-    const grades = [];
+    // Create 5 more student users with variations
+    for (let i = 0; i < 5; i++) {
+        const firstName = getRandomElement(firstNames);
+        const middleName = getRandomElement(firstNames);
+        const familyName = getRandomElement(familyNames);
 
-    for (const subject of subjects) {
-        const enrollment = enrollments.find(e => e.id === subject.enrollmentId);
-        if (enrollment) {
-            const firstGrading = Math.floor(Math.random() * 30) + 70; // Random grade between 70-100
-            const secondGrading = Math.floor(Math.random() * 30) + 70;
-            const thirdGrading = Math.floor(Math.random() * 30) + 70;
-            const fourthGrading = Math.floor(Math.random() * 30) + 70;
-            const finalGrade = (firstGrading + secondGrading + thirdGrading + fourthGrading) / 4;
-
-            const grade = await prisma.grade.create({
-                data: {
-                    subjectId: subject.id,
-                    studentId: enrollment.studentId,
-                    firstGrading: firstGrading,
-                    secondGrading: secondGrading,
-                    thirdGrading: thirdGrading,
-                    fourthGrading: fourthGrading,
-                    finalGrade: Math.round(finalGrade * 100) / 100,
-                    remarks: finalGrade >= 75 ? 'Passed' : 'Failed'
-                }
-            });
-            grades.push(grade);
-        }
-    }
-
-    // 8. Create Attendance Records
-    console.log('📅 Creating attendance records...');
-    const attendanceStatuses = ['Present', 'Absent', 'Late', 'Excused'];
-    const startDate = new Date('2024-09-01');
-    const endDate = new Date('2025-06-30');
-
-    for (const studentUser of studentUsers) {
-        // Create attendance for random days
-        for (let i = 0; i < 50; i++) {
-            const randomDate = new Date(startDate.getTime() + Math.random() * (endDate.getTime() - startDate.getTime()));
-            await prisma.attendance.create({
-                data: {
-                    studentId: studentUser.student!.id,
-                    date: randomDate,
-                    status: attendanceStatuses[Math.floor(Math.random() * attendanceStatuses.length)],
-                    remarks: Math.random() > 0.8 ? 'Medical appointment' : null
-                }
-            });
-        }
-    }
-
-    // 9. Create Evaluations
-    console.log('⭐ Creating evaluations...');
-    for (const subject of subjects) {
-        const enrollment = enrollments.find(e => e.id === subject.enrollmentId);
-        if (enrollment) {
-            await prisma.evaluation.create({
-                data: {
-                    studentId: enrollment.studentId,
-                    subjectId: subject.id,
-                    teacherId: subject.teacherId,
-                    rating: Math.floor(Math.random() * 3) + 3, // Rating between 3-5
-                    comments: Math.random() > 0.5 ? 'Good teaching methods' : null
-                }
-            });
-        }
-    }
-
-    // 10. Create Report Cards
-    console.log('📋 Creating report cards...');
-    for (const studentUser of studentUsers) {
-        const studentGrades = grades.filter(g => g.studentId === studentUser.student!.id);
-        const averageGrade = studentGrades.length > 0
-            ? studentGrades.reduce((sum, g) => sum + g.finalGrade, 0) / studentGrades.length
-            : 85;
-
-        await prisma.reportCard.create({
+        const user = await prisma.user.create({
             data: {
-                studentId: studentUser.student!.id,
-                schoolYear: '2024-2025',
-                averageGrade: Math.round(averageGrade * 100) / 100,
-                rank: Math.floor(Math.random() * 50) + 1, // Random rank 1-50
-                remarks: averageGrade >= 90 ? 'With Honors' : averageGrade >= 85 ? 'Good Performance' : 'Satisfactory'
+                email: generateRandomEmail(firstName, familyName),
+                firstName,
+                middleName: Math.random() > 0.3 ? middleName : undefined,
+                familyName,
+                role: 'STUDENT',
+                student: {
+                    create: {
+                        studentNumber: `2025-${String(i + 2).padStart(4, '0')}`
+                    }
+                }
+            },
+            include: { student: true }
+        });
+        users.push(user);
+    }
+
+    // Create admin users (at least 3)
+    const adminUsers = await Promise.all([
+        prisma.user.create({
+            data: {
+                email: 'admin@sjsfi.edu.ph',
+                firstName: 'Administrator',
+                familyName: 'System',
+                role: 'ADMIN'
+            }
+        }),
+        prisma.user.create({
+            data: {
+                email: 'staff@sjsfi.edu.ph',
+                firstName: 'Staff',
+                familyName: 'Office',
+                role: 'STAFF'
+            }
+        }),
+        prisma.user.create({
+            data: {
+                email: 'teacher@sjsfi.edu.ph',
+                firstName: 'Teacher',
+                familyName: 'Member',
+                role: 'TEACHER'
+            }
+        })
+    ]);
+
+    // 5. Create Student Applications (at least 3)
+    console.log('📝 Creating student applications...');
+    const studentApplications = [];
+
+    for (let i = 0; i < 4; i++) {
+        const user = users[i];
+        const academicTerm = getRandomElement(academicTerms);
+
+        const application = await prisma.studentApplication.create({
+            data: {
+                academicYear: academicTerm.year,
+                admissionToGrade: getRandomElement(['Grade 9', 'Grade 10', 'Grade 8', 'Grade 7']),
+                familyName: user.familyName,
+                firstName: user.firstName,
+                middleName: user.middleName || '',
+                nickName: Math.random() > 0.5 ? user.firstName.substring(0, 3) + 'y' : undefined,
+                birthdate: new Date('2000-11-11'), // Use fixed date since Student model doesn't have dateOfBirth
+                placeOfBirth: getRandomElement(['Manila', 'Quezon City', 'Makati', 'Pasig']),
+                age: new Date().getFullYear() - new Date('2000-11-11').getFullYear(),
+                birthOrder: Math.floor(Math.random() * 3) + 1,
+                numberOfSiblings: Math.floor(Math.random() * 4),
+                gender: getRandomElement(['MALE', 'FEMALE']), // Use Gender enum
+                languagesSpokenAtHome: getRandomElement(['Filipino', 'English', 'Filipino and English']),
+                childStatus: getRandomElement(['LEGITIMATE', 'ILLEGITIMATE', 'ADOPTED']),
+                landLine: Math.random() > 0.7 ? `02${Math.floor(Math.random() * 90000000) + 10000000}` : undefined,
+                mobileNumber: generateRandomPhone(),
+                emailAddress: user.email,
+                homeAddress: `${Math.floor(Math.random() * 999) + 1} Sample Street, Manila`,
+                city: getRandomElement(['Manila', 'Quezon City', 'Makati']),
+                stateProvince: 'Metro Manila',
+                postalCode: String(Math.floor(Math.random() * 9000) + 1000),
+                specialSkills: getRandomElement(['Drawing', 'Singing', 'Dancing', 'Sports']),
+                hobbiesInterests: getRandomElement(['Reading', 'Sports', 'Music', 'Art']),
+                createdBy: adminUsers[0].id,
+                status: getRandomElement(['PENDING', 'APPROVED', 'REJECTED'])
+            }
+        });
+        studentApplications.push(application);
+    }
+
+    // 6. Create Registrations (at least 3)
+    console.log('🎓 Creating registrations...');
+    const registrations = [];
+
+    for (let i = 0; i < 4; i++) {
+        const user = users[i];
+        const yearLevel = getRandomElement(yearLevels);
+        const academicTerm = getRandomElement(academicTerms);
+        const application = Math.random() > 0.5 ? getRandomElement(studentApplications) : undefined;
+
+        const registration = await prisma.registration.create({
+            data: {
+                studentApplicationId: application?.id,
+                schoolYearRef: academicTerm.id,
+                registrationType: getRandomElement(['NEW', 'OLD', 'TRANSFER']),
+                yearLevelRef: yearLevel.id,
+                studentNo: user.student!.studentNumber,
+                familyName: user.familyName,
+                firstName: user.firstName,
+                middleName: user.middleName || '',
+                birthdate: new Date('2000-11-11'), // Use fixed date
+                placeOfBirth: getRandomElement(['Manila', 'Quezon City', 'Makati']),
+                age: new Date().getFullYear() - new Date('2000-11-11').getFullYear(),
+                gender: getRandomElement(['MALE', 'FEMALE']),
+                streetAddress: `${Math.floor(Math.random() * 999) + 1} Sample Street`,
+                city: getRandomElement(['Manila', 'Quezon City', 'Makati']),
+                stateProvince: 'Metro Manila',
+                postalCode: String(Math.floor(Math.random() * 9000) + 1000),
+                modeOfPayment: getRandomElement(['Cash', 'Installment', 'Full Payment']),
+                amountPayable: Math.floor(Math.random() * 30000) + 15000,
+                emailAddress: user.email,
+                status: getRandomElement(['PENDING', 'APPROVED', 'REJECTED'])
+            }
+        });
+        registrations.push(registration);
+    }
+
+    // 7. Create Guardians for Registrations (at least 3 per registration)
+    console.log('👨‍👩‍👧‍👦 Creating guardians...');
+    for (const registration of registrations) {
+        for (let i = 0; i < 2; i++) { // 2 guardians per registration
+            await prisma.guardian.create({
+                data: {
+                    registrationId: registration.id,
+                    familyName: getRandomElement(familyNames),
+                    firstName: getRandomElement(firstNames),
+                    middleName: getRandomElement(firstNames),
+                    occupation: getRandomElement(['Teacher', 'Engineer', 'Doctor', 'Nurse', 'Businessman']),
+                    relationToStudent: i === 0 ? getRandomElement(['Mother', 'Father']) : getRandomElement(['Aunt', 'Uncle', 'Grandmother'])
+                }
+            });
+        }
+    }
+
+    // 8. Create Contact Numbers for Registrations (at least 3 per registration)
+    console.log('📞 Creating contact numbers...');
+    for (const registration of registrations) {
+        for (let i = 0; i < 2; i++) { // 2 contact numbers per registration
+            await prisma.contactNumber.create({
+                data: {
+                    registrationId: registration.id,
+                    number: generateRandomPhone()
+                }
+            });
+        }
+    }
+
+    // 9. Create Requirements (at least 3)
+    console.log('📄 Creating requirements...');
+    const requirementTypes = [
+        'Birth Certificate',
+        'Form 137',
+        'Form 138',
+        'Good Moral Certificate',
+        'Medical Certificate',
+        'ID Picture'
+    ];
+
+    for (let i = 0; i < 8; i++) {
+        await prisma.requirements.create({
+            data: {
+                requirementType: getRandomElement(requirementTypes),
+                status: getRandomElement(['PENDING', 'SUBMITTED', 'APPROVED', 'REJECTED']),
+                fileUrl: Math.random() > 0.5 ? `https://example.com/files/doc_${i}.pdf` : undefined,
             }
         });
     }
 
-    // 11. Create Payments
-    console.log('💳 Creating payments...');
-    const paymentTypes = ['Tuition Fee', 'Miscellaneous Fee', 'Laboratory Fee', 'Library Fee'];
-    const paymentMethods = ['Cash', 'Credit Card', 'Bank Transfer', 'GCash'];
-    const paymentStatuses = ['Paid', 'Pending', 'Overdue'];
+    // 10. Create Health History for applications (at least 3)
+    console.log('🏥 Creating health history...');
+    for (let i = 0; i < Math.min(3, studentApplications.length); i++) {
+        const application = studentApplications[i];
+        await prisma.healthHistory.create({
+            data: {
+                studentFormId: application.id,
+                childhoodDiseases: getRandomElement(['Measles', 'Chickenpox', 'None']),
+                allergies: getRandomElement(['Food allergies', 'Drug allergies', 'None']),
+                otherMedicalConditions: getRandomElement(['Asthma', 'None']),
+                immunizations: 'Complete immunizations',
+                specificHandicaps: 'None',
+                createdBy: adminUsers[0].id
+            }
+        });
+    }
 
-    for (const enrollment of enrollments) {
-        for (let i = 0; i < 3; i++) {
-            await prisma.payment.create({
+    // 11. Create Family Background for applications (at least 3)
+    console.log('👪 Creating family background...');
+    for (let i = 0; i < Math.min(3, studentApplications.length); i++) {
+        const application = studentApplications[i];
+        const guardianTypes = ['FATHER', 'MOTHER']; // Use proper enum values
+
+        for (const guardianType of guardianTypes) {
+            await prisma.familyBackground.create({
                 data: {
-                    studentId: enrollment.studentId,
-                    enrollmentId: enrollment.id,
-                    amount: Math.floor(Math.random() * 5000) + 1000, // Random amount between 1000-6000
-                    paymentType: paymentTypes[Math.floor(Math.random() * paymentTypes.length)],
-                    paymentMethod: paymentMethods[Math.floor(Math.random() * paymentMethods.length)],
-                    referenceNumber: `REF${Date.now()}${Math.floor(Math.random() * 1000)}`,
-                    status: paymentStatuses[Math.floor(Math.random() * paymentStatuses.length)],
-                    paymentDate: new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000) // Random date within last year
+                    studentFormId: application.id,
+                    guardianType: guardianType as 'FATHER' | 'MOTHER',
+                    familyName: getRandomElement(familyNames),
+                    firstName: getRandomElement(firstNames),
+                    middleName: getRandomElement(firstNames),
+                    birthdate: generateRandomDate(new Date('1970-01-01'), new Date('1990-12-31')),
+                    placeOfBirth: getRandomElement(['Manila', 'Quezon City']),
+                    age: Math.floor(Math.random() * 20) + 35,
+                    nationality: 'Filipino',
+                    religion: getRandomElement(['Catholic', 'Protestant', 'Other']),
+                    landLine: Math.random() > 0.7 ? `02${Math.floor(Math.random() * 90000000) + 10000000}` : undefined,
+                    mobileNo: generateRandomPhone(),
+                    emailAddress: generateRandomEmail(getRandomElement(firstNames), getRandomElement(familyNames)),
+                    homeAddress: `${Math.floor(Math.random() * 999) + 1} Sample Street`,
+                    city: getRandomElement(['Manila', 'Quezon City']),
+                    stateProvince: 'Metro Manila',
+                    postalCode: String(Math.floor(Math.random() * 9000) + 1000),
+                    educationalAttainment: getRandomElement(['High School', 'College Graduate']),
+                    occupation: getRandomElement(['Teacher', 'Engineer', 'Businessman']),
+                    employer: getRandomElement(['Government', 'Private Company']),
+                    companyAddress: 'Business District, Manila',
+                    companyCity: 'Manila',
+                    businessNo: generateRandomPhone(),
+                    annualIncome: Math.floor(Math.random() * 500000) + 200000,
+                    parentStatus: getRandomElement(['MARRIED', 'SEPARATED', 'SINGLE']),
+                    createdBy: adminUsers[0].id
                 }
             });
         }
     }
 
+    // 12. Create Registration Codes (at least 3)
+    console.log('🔢 Creating registration codes...');
+    for (let i = 0; i < 6; i++) {
+        const registration = Math.random() > 0.5 ? getRandomElement(registrations) : undefined;
+        const application = Math.random() > 0.5 ? getRandomElement(studentApplications) : undefined;
+
+        await prisma.registrationCode.create({
+            data: {
+                registrationCode: `REG${Date.now()}${Math.floor(Math.random() * 1000)}`.substring(0, 20),
+                status: getRandomElement(['ACTIVE', 'INACTIVE', 'EXPIRED']),
+                expirationDate: Math.random() > 0.3 ? generateRandomDate(new Date(), new Date('2025-12-31')) : undefined,
+                registrationId: registration?.id,
+                applicationId: application?.id
+            }
+        });
+    }
+
+    // 13. Create Feedback (at least 3)
+    console.log('💬 Creating feedback...');
+    for (let i = 0; i < 5; i++) {
+        await prisma.feedback.create({
+            data: {
+                type: getRandomElement(['SUGGESTION', 'COMPLAINT', 'COMPLIMENT']),
+                message: getRandomElement([
+                    'The registration process was smooth and easy to follow.',
+                    'I had trouble uploading my documents. Please help.',
+                    'When will I receive confirmation of my registration?',
+                    'The website is very user-friendly. Thank you!',
+                    'I need assistance with the payment process.'
+                ]),
+                suggestion: Math.random() > 0.5 ? getRandomElement([
+                    'Please add more payment options.',
+                    'The website could use better mobile support.',
+                    'Add email notifications for status updates.'
+                ]) : undefined
+            }
+        });
+    }
+
     console.log('✅ Database seeding completed successfully!');
     console.log(`📊 Summary:
-    - Parents: ${parentUsers.length}
-    - Teachers: ${teacherUsers.length}
-    - Students: ${studentUsers.length}
-    - Sections: ${sections.length}
-    - Enrollments: ${enrollments.length}
-    - Subjects: ${subjects.length}
-    - Grades: ${grades.length}
-    - Attendance Records: ${studentUsers.length * 50}
-    - Evaluations: ${subjects.length}
-    - Report Cards: ${studentUsers.length}
-    - Payments: ${enrollments.length * 3}
+    - Year Levels: ${yearLevels.length}
+    - Academic Terms: ${academicTerms.length}
+    - Users: ${users.length + adminUsers.length}
+    - Student Applications: ${studentApplications.length}
+    - Registrations: ${registrations.length}
+    - Guardians: ${registrations.length * 2}
+    - Contact Numbers: ${registrations.length * 2}
+    - Requirements: 8
+    - Health History: ${Math.min(3, studentApplications.length)}
+    - Family Background: ${Math.min(3, studentApplications.length) * 2}
+    - Registration Codes: 6
+    - Feedback: 5
+    - General Policies: 3
+    
+    📝 Special Student Created:
+    - Email: student@student.com
+    - Birthday: November 11, 2000
+    - Name: John Doe Smith
     `);
 }
 

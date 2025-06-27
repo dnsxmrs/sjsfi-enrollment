@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { validateRegistrationCode } from '@/app/_actions/generateRegistrationCode';
+import { validateRegistrationCode } from '@/app/_actions/generateCode';
 //import { toast } from 'react-hot-toast';
 
 export default function HomePage() {

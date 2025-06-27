@@ -13,7 +13,8 @@ import {
     Newspaper,
     Scale,
     Shield,
-    // FileUser
+    FileUser,
+    ScrollText
 } from "lucide-react";
 import Image from "next/image";
 import { UserButton } from "@clerk/nextjs";
@@ -25,15 +26,15 @@ const NAVIGATION_ITEMS = [
         icon: SquareStack,
     },
     {
-        href: "/registrar/register-student",
+        href: "/registrar/student-register",
         label: "Student Registration",
         icon: PencilLine,
     },
-   // {
-    //    href: "/registrar/student-application",
-    //    label: "Student Application",
- //       icon: FileUser,
-  //  },
+    {
+        href: "/registrar/student-application",
+        label: "Student Application",
+        icon: FileUser,
+    },
     {
         href: "/registrar/student-information",
         label: "Student Information",
@@ -44,11 +45,11 @@ const NAVIGATION_ITEMS = [
         label: "Generate Reports",
         icon: Newspaper,
     },
-    // {
-    //     href: "/registrar/withdraw-student",
-    //     label: "Withdraw Student",
-    //     icon: ScrollText,
-    // },
+    {
+        href: "/registrar/withdraw-student",
+        label: "Withdraw Student",
+        icon: ScrollText,
+    },
     {
         href: "/registrar/policies",
         label: "Policies",
@@ -143,8 +144,8 @@ export default function RegistrarLayout({
                                         key={item.href}
                                         href={item.href}
                                         className={`flex items-center space-x-5 py-2 rounded hover:bg-red-700 ${pathname === item.href
-                                                ? "text-yellow-400"
-                                                : ""
+                                            ? "text-yellow-400"
+                                            : ""
                                             }`}
                                     >
                                         <IconComponent className="w-8 h-8" />

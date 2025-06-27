@@ -78,7 +78,7 @@ export async function addRegistration(data: RegistrationFormData): Promise<Regis
             }
         }
 
-        if (registrationCodeRecord.status !== 'active') {
+        if (registrationCodeRecord.status !== 'ACTIVE') {
             return {
                 success: false,
                 error: 'Registration code has already been used or is no longer valid.'
@@ -94,10 +94,10 @@ export async function addRegistration(data: RegistrationFormData): Promise<Regis
         }
 
         // 2. Find the school year and year level by name/year
-        const schoolYearRecord = await prisma.schoolYear.findFirst({
+        const schoolYearRecord = await prisma.academicTerm.findFirst({
             where: {
                 year: data.schoolYear,
-                status: 'active'
+                status: 'ACTIVE'
             }
         })
 
@@ -163,7 +163,7 @@ export async function addRegistration(data: RegistrationFormData): Promise<Regis
                     postalCode: data.zipCode,
                     modeOfPayment: data.modeOfPayment,
                     amountPayable: amountPayableNumber,
-                    status: 'pending', // Default status
+                    status: 'PENDING', // Default status
                     emailAddress: data.emailAddress,
 
                     createdAt: phTime,
@@ -209,7 +209,7 @@ export async function addRegistration(data: RegistrationFormData): Promise<Regis
                     id: registrationCodeRecord.id
                 },
                 data: {
-                    status: 'used',
+                    status: 'INACTIVE',
                     updatedAt: phTime
                 }
             })

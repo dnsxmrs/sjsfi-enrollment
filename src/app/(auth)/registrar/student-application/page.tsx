@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Eye, Trash, Copy, Check, X, Mail } from 'lucide-react';
 import { getStudents } from '@/app/_actions/getStudents';
 import { sendMissingRequirementsNotification, getMissingRequirements } from '@/app/_actions/sendNotification';
-import { generateRegistrationCode } from '@/app/_actions/generateRegistrationCode';
+import { generateRegistrationCode } from '@/app/_actions/generateCode';
 import toast from 'react-hot-toast';
 
 const RegisterCoursePage: React.FC = () => {

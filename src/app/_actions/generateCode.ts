@@ -61,7 +61,7 @@ export async function generateRegistrationCode(): Promise<{
         await prisma.registrationCode.create({
             data: {
                 registrationCode: code,
-                status: 'active',
+                status: 'ACTIVE',
                 expirationDate: expirationDate,
                 createdAt: phTime
             }
@@ -102,14 +102,14 @@ export async function validateRegistrationCode(code: string): Promise<{
             select: {
                 id: true,
                 status: true,
-                expirationDate:true,
+                expirationDate: true,
                 createdAt: true
             }
         });
 
         // check if code is active, not expired
         if (
-            registration?.status !== 'active' ||
+            registration?.status !== 'ACTIVE' ||
             !registration?.expirationDate ||
             registration.expirationDate < new Date()
         ) {
@@ -133,14 +133,47 @@ export async function validateRegistrationCode(code: string): Promise<{
     }
 }
 
-export async function generateRegistrationCodeForRegistration(registrationId: number): Promise<{
+export async function generateUniqueApplicationCode(): Promise<string> {
+    const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Excluded: 0, O, I, 1
+    const codeLength = 8;
+    let attempts = 0;
+    const maxAttempts = 10;
+
+    while (attempts < maxAttempts) {
+        let code = 'APP-';
+
+        // Generate random 8-character suffix
+        for (let i = 0; i < codeLength; i++) {
+            code += characters.charAt(Math.floor(Math.random() * characters.length));
+        }
+
+        // Check if code already exists in database
+        const existingCode = await prisma.registrationCode.findUnique({
+            where: { registrationCode: code },
+            select: { id: true }
+        });
+
+        if (!existingCode) {
+            return code;
+        }
+
+        attempts++;
+    }
+
+    const now = new Date();
+    const timestamp = new Date(now.getTime() + 8 * 60 * 60 * 1000);
+    const randomSuffix = Math.random().toString(36).substring(2, 6).toUpperCase();
+    return `APP-${timestamp}${randomSuffix}`;
+}
+
+export async function generateApplicationCode(RegistrationId: string): Promise<{
     success: boolean;
     code?: string;
     registrationCodeId?: number;
     error?: string;
 }> {
     try {
-        const code = await generateUniqueCode();
+        const code = await generateUniqueApplicationCode();
 
         // Convert to UTC+8 (Philippine local time)
         const now = new Date();
@@ -149,36 +182,27 @@ export async function generateRegistrationCodeForRegistration(registrationId: nu
         // 1 hour expiration from PH time
         const expirationDate = new Date(phTime.getTime() + 60 * 60 * 1000);
 
-        console.log(`Generated registration code: ${code} at ${phTime.toISOString()} for registrationId: ${registrationId}`);
+        console.log(`Generated application code: ${code} at ${phTime.toISOString()}`);
 
-        // Use a transaction to ensure both code creation and status update
-        const result = await prisma.$transaction(async (tx) => {
-            const created = await tx.registrationCode.create({
-                data: {
-                    registrationCode: code,
-                    status: 'active',
-                    expirationDate: expirationDate,
-                    createdAt: phTime,
-                    registrationId: registrationId
-                }
-            });
-            await tx.registration.update({
-                where: { id: registrationId },
-                data: { status: 'approved', updatedAt: phTime }
-            });
-            return created;
+        await prisma.registrationCode.create({
+            data: {
+                registrationCode: code,
+                status: 'ACTIVE',
+                expirationDate: expirationDate,
+                applicationId: parseInt(RegistrationId, 10), // Ensure this is a number
+                createdAt: phTime
+            }
         });
 
         return {
             success: true,
-            code: code,
-            registrationCodeId: result.id
+            code: code
         };
     } catch (error) {
-        console.error('Error generating registration code for registration:', error);
+        console.error('Error generating application code for application:', error);
         return {
             success: false,
-            error: 'Failed to generate registration code for registration'
+            error: 'Failed to generate application code for application'
         };
     }
 }

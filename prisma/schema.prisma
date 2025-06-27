@@ -17,7 +17,7 @@ model User {
   status     GeneralStatus @default(ACTIVE)
   createdAt  DateTime      @default(now())
   deletedAt  DateTime?
-  updatedAt  DateTime
+  updatedAt  DateTime      @updatedAt
   firstName  String        @db.VarChar(255)
   middleName String?       @db.VarChar(255)
   familyName String        @db.VarChar(255)
@@ -30,7 +30,7 @@ model Student {
   userId        Int       @unique
   studentNumber String    @unique @db.VarChar(100)
   createdAt     DateTime  @default(now())
-  updatedAt     DateTime
+  updatedAt     DateTime  @updatedAt
   deletedAt     DateTime?
   birthdate     DateTime  @default(now()) @db.Date
   user          User      @relation(fields: [userId], references: [id])
@@ -43,13 +43,25 @@ model Feedback {
   suggestion String?
   status     GeneralStatus @default(ACTIVE)
   createdAt  DateTime      @default(now())
-  updatedAt  DateTime
+  updatedAt  DateTime      @updatedAt
   deletedAt  DateTime?
 }
 
 model YearLevel {
   id            Int            @id @default(autoincrement())
   name          String         @unique @db.VarChar(50)
+  status        GeneralStatus  @default(ACTIVE)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  deletedAt     DateTime?
+  registrations Registration[]
+}
+
+model AcademicTerm {
+  id            Int            @id @default(autoincrement())
+  year          String         @unique @db.VarChar(20)
+  startDate     DateTime       @db.Date
+  endDate       DateTime       @db.Date
   status        GeneralStatus  @default(ACTIVE)
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
@@ -161,7 +173,7 @@ model StudentApplication {
   familyBackgrounds     FamilyBackground[]
   healthHistory         HealthHistory?
   registrations         Registration[]
-  RegistrationCode      RegistrationCode[]
+  registrationCodes     RegistrationCode[]
 }
 
 model HealthHistory {
@@ -214,17 +226,17 @@ model FamilyBackground {
 }
 
 model RegistrationCode {
-  id                 Int                 @id @default(autoincrement())
-  registrationCode   String              @unique @db.VarChar(20)
-  status             CodeStatus          @default(ACTIVE)
-  expirationDate     DateTime?
-  createdAt          DateTime            @default(now())
-  updatedAt          DateTime            @updatedAt
-  deletedAt          DateTime?
-  registrationId     Int?
-  applicationId      Int?
-  StudentApplication StudentApplication? @relation(fields: [applicationId], references: [id])
-  registration       Registration?       @relation(fields: [registrationId], references: [id])
+  id               Int                 @id @default(autoincrement())
+  registrationCode String              @unique @db.VarChar(20)
+  status           CodeStatus          @default(ACTIVE)
+  expirationDate   DateTime?
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+  deletedAt        DateTime?
+  registrationId   Int?
+  applicationId    Int?
+  application      StudentApplication? @relation(fields: [applicationId], references: [id])
+  registration     Registration?       @relation(fields: [registrationId], references: [id])
 }
 
 model GeneralPolicy {
@@ -237,16 +249,26 @@ model GeneralPolicy {
   deletedAt DateTime?
 }
 
-model AcademicTerm {
-  id            Int            @id @default(autoincrement())
-  year          String         @unique @db.VarChar(20)
-  startDate     DateTime       @db.Date
-  endDate       DateTime       @db.Date
-  status        GeneralStatus  @default(ACTIVE)
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime
-  deletedAt     DateTime?
-  registrations Registration[]
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+  PREFER_NOT_TO_SAY
+}
+
+enum UserRole {
+  STUDENT
+  ADMIN
+  TEACHER
+  PARENT
+  STAFF
+}
+
+enum GeneralStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  ARCHIVED
 }
 
 enum RegistrationType {
@@ -256,32 +278,26 @@ enum RegistrationType {
   RETURNING
 }
 
-enum Gender {
-  MALE
-  FEMALE
-  OTHER
-  PREFER_NOT_TO_SAY
-}
-
-enum ApplicationStatus {
+enum RegistrationStatus {
   PENDING
-  UNDER_REVIEW
   APPROVED
   REJECTED
-  WAITLISTED
-}
-
-enum ChildStatus {
-  LEGITIMATE
-  ILLEGITIMATE
-  ADOPTED
-  STEPCHILD
+  CANCELLED
+  EXPIRED
 }
 
 enum CodeStatus {
   ACTIVE
   INACTIVE
   EXPIRED
+}
+
+enum RequirementStatus {
+  PENDING
+  SUBMITTED
+  APPROVED
+  REJECTED
+  INCOMPLETE
 }
 
 enum FeedbackType {
@@ -292,11 +308,12 @@ enum FeedbackType {
   FEATURE_REQUEST
 }
 
-enum GeneralStatus {
-  ACTIVE
-  INACTIVE
-  SUSPENDED
-  ARCHIVED
+enum ApplicationStatus {
+  PENDING
+  UNDER_REVIEW
+  APPROVED
+  REJECTED
+  WAITLISTED
 }
 
 enum GuardianType {
@@ -311,6 +328,13 @@ enum GuardianType {
   OTHER
 }
 
+enum ChildStatus {
+  LEGITIMATE
+  ILLEGITIMATE
+  ADOPTED
+  STEPCHILD
+}
+
 enum ParentStatus {
   MARRIED
   SEPARATED
@@ -318,28 +342,4 @@ enum ParentStatus {
   WIDOWED
   SINGLE
   DECEASED
-}
-
-enum RegistrationStatus {
-  PENDING
-  APPROVED
-  REJECTED
-  CANCELLED
-  EXPIRED
-}
-
-enum RequirementStatus {
-  PENDING
-  SUBMITTED
-  APPROVED
-  REJECTED
-  INCOMPLETE
-}
-
-enum UserRole {
-  STUDENT
-  ADMIN
-  TEACHER
-  PARENT
-  STAFF
 }
