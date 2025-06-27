@@ -2,9 +2,14 @@
 
 import { Plus, Edit, Trash2 } from "lucide-react";
 import AddAcademicTermModal from '@/components/admin/AddAcademicTermModal';
-import EditPolicyModal from '@/components/admin/EditPolicyModal';
 import AddYearLevelModal from '@/components/admin/AddYearLevelModal';
 import EditYearLevelModal from '@/components/admin/EditYearLevelModal';
+import dynamic from 'next/dynamic';
+
+const EditPolicyModal = dynamic(() => import('@/components/admin/EditPolicyModal'), {
+  ssr: false,
+  loading: () => <div>Loading...</div>
+});
 import { useState, useEffect } from "react";
 import { getSchoolAllYears } from '@/app/_actions/getSchoolYears';
 import { getYearLevels } from '@/app/_actions/getYearLevels';
