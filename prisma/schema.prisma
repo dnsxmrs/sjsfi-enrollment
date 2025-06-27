@@ -49,7 +49,7 @@ model Feedback {
 
 model YearLevel {
   id            Int            @id @default(autoincrement())
-  name          String         @unique @db.VarChar(50)
+  name          String         @db.VarChar(50)
   status        GeneralStatus  @default(ACTIVE)
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt

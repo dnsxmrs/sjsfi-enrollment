@@ -12,7 +12,7 @@ const RegisterCoursePage: React.FC = () => {
     const [fullName, setFullName] = useState('');
     const [gradeLevel, setGradeLevel] = useState('');
     const [email, setEmail] = useState('');
-    const [status, setStatus] = useState(''); // This will hold the registration status
+    const [status, setStatus] = useState(''); // This will hold the application status
     const [students, setStudents] = useState<Array<{
         id: string;
         firstName: string;
@@ -337,7 +337,7 @@ const RegisterCoursePage: React.FC = () => {
                 <div className="flex-1 space-y-6 order-2 md:order-1">
                     {/* All Students Table */}
                     <div className="bg-white p-6 rounded-lg shadow">
-                        <h2 className="text-lg font-semibold mb-4 text-black">Pending Registration</h2>
+                        <h2 className="text-lg font-semibold mb-4 text-black">Pending Applications</h2>
                         {isLoading ? (
                             <div className="flex justify-center items-center py-8">
                                 <div className="text-gray-500">Loading students...</div>
@@ -346,8 +346,7 @@ const RegisterCoursePage: React.FC = () => {
                             <table className="w-full text-left text-sm"><thead>
                                 <tr className="border-b border-gray-300 text-black">
                                     <th className="py-2 font-semibold">Application ID</th>
-                                    <th className="py-2 font-semibold">First Name</th>
-                                    <th className="py-2 font-semibold">Last Name</th>
+                                    <th className="py-2 font-semibold">Full Name</th>
                                     <th className="py-2 font-semibold">Grade Level</th>
                                     <th className="py-2 font-semibold">Actions</th>
                                 </tr>
@@ -363,8 +362,7 @@ const RegisterCoursePage: React.FC = () => {
                                         students.map((student) => (
                                             <tr key={student.id} className="border-b border-gray-200 text-black hover:bg-gray-50">
                                                 <td className="py-2">{student.id}</td>
-                                                <td className="py-2">{student.firstName}</td>
-                                                <td className="py-2">{student.familyName}</td>
+                                                <td className="py-2">{student.firstName} {student.middleName} {student.familyName}</td>
                                                 <td className="py-2">
                                                     <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
                                                         {student.gradeLevel}
