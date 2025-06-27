@@ -1,12 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { Eye, Trash, Copy, Check, X, Mail } from 'lucide-react';
-import { getStudents } from '@/app/_actions/getStudents';
-import { sendMissingRequirementsNotification, getMissingRequirements } from '@/app/_actions/sendNotification';
-import { generateRegistrationCode, generateRegistrationCodeForRegistration } from '@/app/_actions/generateCode';
 import toast from 'react-hot-toast';
+import React, { useState, useEffect } from 'react';
+import { Eye, Copy, Check, X } from 'lucide-react';
+import { getStudents } from '@/app/_actions/getStudents';
+import { rejectRegistration } from '@/app/_actions/rejectRegistration';
 import { approveRegistration } from '@/app/_actions/approveRegistration';
+import { generateRegistrationCode } from '@/app/_actions/generateCode';
 
 const RegisterCoursePage: React.FC = () => {
     const [studentID, setStudentID] = useState('');
@@ -15,18 +15,11 @@ const RegisterCoursePage: React.FC = () => {
     const [email, setEmail] = useState('');
     const [status, setStatus] = useState(''); // This will hold the registration status
     const [isLoading, setIsLoading] = useState(true);
-    const [isNotificationLoading, setIsNotificationLoading] = useState(false);
     const [generatedCode, setGeneratedCode] = useState<string>('');
     const [isCodeCopied, setIsCodeCopied] = useState(false);
     const [isGeneratingCode, setIsGeneratingCode] = useState(false);
-    const [showConfirmModal, setShowConfirmModal] = useState(false);
     const [showRejectModal, setShowRejectModal] = useState(false);
     const [selectedRegistrationId, setSelectedRegistrationId] = useState<number | null>(null);
-    const [modalData, setModalData] = useState<{
-        fullName: string;
-        email: string;
-        missingReqs: string[];
-    }>({ fullName: '', email: '', missingReqs: [] });
 
     const [students, setStudents] = useState<Array<{
         id: string;
@@ -37,15 +30,6 @@ const RegisterCoursePage: React.FC = () => {
         status: string;
         email: string;
     }>>([]);
-
-    const [requirements, setRequirements] = useState({
-        birthCertificate: false,
-        f137: false,
-        f138: false,
-        goodMoral: false,
-        privacyForm: false,
-    });
-
 
     // Fetch students on component mount
     useEffect(() => {
@@ -139,29 +123,6 @@ const RegisterCoursePage: React.FC = () => {
         }
     };
 
-    const handleNotify = async () => {
-        // Check if a student is selected
-        if (!studentID || !fullName || !email) {
-            toast.error('Please select a student first by clicking the View button in the table');
-            return;
-        }
-
-        // Check if there are missing requirements
-        const missingReqs = await getMissingRequirements(requirements);
-        if (missingReqs.length === 0) {
-            toast('This student has submitted all requirements. No notification needed.');
-            return;
-        }
-
-        // down -- make this a modal
-        setModalData({
-            fullName,
-            email,
-            missingReqs
-        });
-        setShowConfirmModal(true);
-    };
-
     const handleRejectRegistration = async () => {
         if (!selectedRegistrationId) {
             toast.error('No registration selected.');
@@ -201,13 +162,6 @@ const RegisterCoursePage: React.FC = () => {
             setEmail('');
             setStatus('');
             setSelectedRegistrationId(null);
-            setRequirements({
-                birthCertificate: false,
-                f137: false,
-                f138: false,
-                goodMoral: false,
-                privacyForm: false,
-            });
 
             // Refresh the students list
             const result = await getStudents();
@@ -218,32 +172,6 @@ const RegisterCoursePage: React.FC = () => {
             console.error('Error rejecting registration:', error);
             toast.error('Failed to reject registration. Please try again.');
         }
-    };
-
-    const handleConfirmSend = async () => {
-        setShowConfirmModal(false);
-        setIsNotificationLoading(true);
-
-        try {
-            const result = await sendMissingRequirementsNotification({
-                studentId: studentID,
-                studentName: modalData.fullName,
-                email: modalData.email,
-                missingRequirements: modalData.missingReqs,
-                notificationMethod: 'email' // For now, we'll just send email
-            });
-
-            if (result.success) {
-                toast.success(`Email notification sent successfully to ${modalData.email}!\n\n${result.message}`);
-            } else {
-                toast.error(`Failed to send notification:\n${result.error || result.message}\n\nPlease check your email configuration.`);
-            }
-        } catch {
-            toast.error('An error occurred while sending the notification. Please try again or check the console for details.');
-        } finally {
-            setIsNotificationLoading(false);
-        }
-        // up --
     };
 
     const handleViewStudent = (student: {
@@ -262,94 +190,6 @@ const RegisterCoursePage: React.FC = () => {
         setEmail(student.email);
         setStatus(student.status);
         setSelectedRegistrationId(student.registrationId);
-
-        // For requirements, we'll set them to false as default since we don't have this data
-        // You can modify this logic based on your actual data structure
-        setRequirements({
-            birthCertificate: false,
-            f137: false,
-            f138: true,
-            goodMoral: false,
-            privacyForm: false
-        });
-    };
-
-    // Confirmation Modal Component
-    const ConfirmationModal: React.FC = () => {
-        if (!showConfirmModal) return null;
-
-        return (
-            <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50 p-4">
-                <div className="bg-white rounded-lg max-w-md w-full">
-                    <div className="p-6">
-                        <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-lg font-semibold text-gray-800 flex items-center">
-                                <Mail className="w-5 h-5 mr-2 text-blue-600" />
-                                Confirm Email Notification
-                            </h3>
-                            <button
-                                onClick={() => setShowConfirmModal(false)}
-                                className="p-1 hover:bg-gray-100 rounded-full transition-colors"
-                                disabled={isNotificationLoading}
-                            >
-                                <X className="w-5 h-5 text-gray-500" />
-                            </button>
-                        </div>
-
-                        <div className="mb-6">
-                            <p className="text-gray-700 mb-4">
-                                Send missing requirements notification to <strong>{modalData.fullName}</strong>?
-                            </p>
-
-                            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4">
-                                <h4 className="font-medium text-yellow-800 mb-2">Missing Requirements:</h4>
-                                <ul className="text-sm text-yellow-700 space-y-1">
-                                    {modalData.missingReqs.map((req, index) => (
-                                        <li key={index} className="flex items-center">
-                                            <span className="w-2 h-2 bg-yellow-400 rounded-full mr-2"></span>
-                                            {req}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-
-                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                                <p className="text-sm text-blue-700">
-                                    <strong>Email will be sent to:</strong> {modalData.email}
-                                </p>
-                            </div>
-                        </div>
-
-                        <div className="flex justify-end space-x-3">
-                            <button
-                                onClick={() => setShowConfirmModal(false)}
-                                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
-                                disabled={isNotificationLoading}
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                onClick={handleConfirmSend}
-                                disabled={isNotificationLoading}
-                                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
-                            >
-                                {isNotificationLoading ? (
-                                    <>
-                                        <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></div>
-                                        <span>Sending...</span>
-                                    </>
-                                ) : (
-                                    <>
-                                        <Mail className="w-4 h-4" />
-                                        <span>Send Email</span>
-                                    </>
-                                )}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
     };
 
     // Rejection Modal Component
@@ -719,10 +559,6 @@ const RegisterCoursePage: React.FC = () => {
                     </div>
                 </div>
             </div>
-
-            {/* Confirmation Modal */}
-            <ConfirmationModal />
-            
             {/* Rejection Modal */}
             <RejectionModal />
         </div>
