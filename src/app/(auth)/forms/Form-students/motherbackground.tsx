@@ -262,12 +262,12 @@ export default function MotherBackgroundPage({ onBack, onNext }: MotherBackgroun
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-medium mb-1 text-black">City:</label>
+            <label className="block text-sm font-medium mb-1 text-black">Company City:</label>
             <input 
               type="text" 
               placeholder="Answer Here..." 
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
-              value={motherBackground.city}
+              value={motherBackground.city}//palitan toh
               onChange={(e) => handleInputChange('city', e.target.value)}
             />
           </div>

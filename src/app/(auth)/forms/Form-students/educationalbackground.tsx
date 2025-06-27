@@ -156,18 +156,38 @@ export default function StudentEducationalBackgroundPage({ onBack, onNext }: Stu
 
           {/* Column Right */}
           <div className="flex flex-col gap-4">
-            <fieldset className="border border-gray-300 rounded p-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
               <div>
-                <label className="block text-sm font-medium mb-1 text-black">Allergies:</label>
-                <input 
-                  type="text" 
-                  placeholder="Answer Here..." 
-                  className="border border-gray-300 rounded px-2 py-1 w-full text-black"
-                  value={educationalBackground[0]?.honorsAwardsReceived || ""}
-                  onChange={(e) => updateSchool(0, 'honorsAwardsReceived', e.target.value)}
-                />
-              </div>
-            </fieldset>
+                <fieldset className="border border-gray-300 rounded p-4">
+                  <div className="flex items-center space-x-4 text-black">
+                    <label className="text-sm font-medium whitespace-nowrap md:col-span-1">Attended Summer Classes A.Y.</label>
+                    <input 
+                      type="text" 
+                      placeholder="Answer Here..." 
+                      className="border border-gray-300 rounded px-2 py-1 w-32 text-black"
+                      value={educationalBackground[0]?.honorsAwardsReceived || ""}
+                      onChange={(e) => updateSchool(0, 'honorsAwardsReceived', e.target.value)}
+                    />
+                    <label className="inline-flex items-center space-x-1">
+                      <input 
+                        type="radio" 
+                        name="choice" 
+                        value="yes"
+                      />
+                      <span className="font-semibold">Yes</span>
+                    </label>
+                    <label className="inline-flex items-center space-x-1">
+                      <input 
+                        type="radio" 
+                        name="choice" 
+                        value="no"
+                      />
+                      <span className="font-semibold">No</span>
+                    </label>
+                  </div>
+                </fieldset>
+            </div>
+            </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-4">
               <div>
