@@ -11,366 +11,181 @@ datasource db {
 }
 
 model User {
-  id         Int       @id @default(autoincrement())
-  email      String    @unique @db.VarChar(255)
-  role       String    @default("student") @db.VarChar(50)
-  createdAt  DateTime  @default(now())
+  id         Int           @id @default(autoincrement())
+  email      String        @unique @db.VarChar(255)
+  role       UserRole      @default(STUDENT)
+  status     GeneralStatus @default(ACTIVE)
+  createdAt  DateTime      @default(now())
   deletedAt  DateTime?
-  updatedAt  DateTime  @default(now())
-  firstName  String    @db.VarChar(255)
-  familyName String    @db.VarChar(255)
-  middleName String?   @db.VarChar(255)
-  suffix     String?   @db.VarChar(50)
-  parent     Parent?
+  updatedAt  DateTime
+  firstName  String        @db.VarChar(255)
+  middleName String?       @db.VarChar(255)
+  familyName String        @db.VarChar(255)
+  suffix     String?       @db.VarChar(50)
   student    Student?
-  teacher    Teacher?
-}
-
-model Parent {
-  id            Int       @id @default(autoincrement())
-  userId        Int       @unique
-  contactNumber String    @db.VarChar(50)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @default(now())
-  deletedAt     DateTime?
-  user          User      @relation(fields: [userId], references: [id])
-  students      Student[]
 }
 
 model Student {
-  id              Int          @id @default(autoincrement())
-  userId          Int          @unique
-  parentId        Int
-  studentNumber   String       @db.VarChar(100)
-  dateOfBirth     DateTime     @db.Date
-  gender          String       @db.VarChar(10)
-  guardianName    String       @db.VarChar(100)
-  guardianContact String       @db.VarChar(100)
-  address         String       @db.VarChar(255)
-  gradeLevel      String       @db.VarChar(50)
-  status          String       @default("active") @db.VarChar(50)
-  createdAt       DateTime     @default(now())
-  updatedAt       DateTime     @default(now())
-  deletedAt       DateTime?
-  attendances     Attendance[]
-  enrollments     Enrollment[]
-  evaluations     Evaluation[]
-  grades          Grade[]
-  payments        Payment[]
-  reportCards     ReportCard[]
-  parent          Parent       @relation(fields: [parentId], references: [id])
-  user            User         @relation(fields: [userId], references: [id])
-}
-
-model Teacher {
-  id               Int          @id @default(autoincrement())
-  userId           Int          @unique
-  employeeNumber   String       @db.VarChar(100)
-  specialization   String       @db.VarChar(100)
-  contactNumber    String       @db.VarChar(50)
-  assignedSections String?      @db.VarChar(255)
-  createdAt        DateTime     @default(now())
-  updatedAt        DateTime     @default(now())
-  deletedAt        DateTime?
-  evaluations      Evaluation[]
-  sections         Section[]
-  subjects         Subject[]
-  user             User         @relation(fields: [userId], references: [id])
-}
-
-model Enrollment {
-  id         Int       @id @default(autoincrement())
-  studentId  Int
-  sectionId  Int
-  schoolYear String    @db.VarChar(20)
-  status     String    @default("enrolled") @db.VarChar(50)
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @default(now())
-  deletedAt  DateTime?
-  section    Section   @relation(fields: [sectionId], references: [id])
-  student    Student   @relation(fields: [studentId], references: [id])
-  payments   Payment[]
-  subjects   Subject[]
-}
-
-model Section {
-  id          Int          @id @default(autoincrement())
-  teacherId   Int
-  name        String       @db.VarChar(100)
-  gradeLevel  String       @db.VarChar(50)
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @default(now())
-  deletedAt   DateTime?
-  enrollments Enrollment[]
-  teacher     Teacher      @relation(fields: [teacherId], references: [id])
-}
-
-model Subject {
-  id           Int          @id @default(autoincrement())
-  enrollmentId Int
-  teacherId    Int
-  name         String       @db.VarChar(100)
-  description  String?      @db.VarChar(255)
-  gradeLevel   String       @db.VarChar(50)
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @default(now())
-  deletedAt    DateTime?
-  evaluations  Evaluation[]
-  grades       Grade[]
-  enrollment   Enrollment   @relation(fields: [enrollmentId], references: [id])
-  teacher      Teacher      @relation(fields: [teacherId], references: [id])
-}
-
-model Grade {
   id            Int       @id @default(autoincrement())
-  subjectId     Int
-  studentId     Int
-  remarks       String?   @db.VarChar(255)
+  userId        Int       @unique
+  studentNumber String    @unique @db.VarChar(100)
   createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @default(now())
+  updatedAt     DateTime
   deletedAt     DateTime?
-  finalGrade    Float
-  firstGrading  Float
-  fourthGrading Float
-  secondGrading Float
-  thirdGrading  Float
-  student       Student   @relation(fields: [studentId], references: [id])
-  subject       Subject   @relation(fields: [subjectId], references: [id])
-}
-
-model Evaluation {
-  id        Int       @id @default(autoincrement())
-  studentId Int
-  subjectId Int
-  teacherId Int
-  rating    Int
-  comments  String?   @db.VarChar(255)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @default(now())
-  deletedAt DateTime?
-  student   Student   @relation(fields: [studentId], references: [id])
-  subject   Subject   @relation(fields: [subjectId], references: [id])
-  teacher   Teacher   @relation(fields: [teacherId], references: [id])
-}
-
-model Attendance {
-  id        Int       @id @default(autoincrement())
-  studentId Int
-  date      DateTime
-  status    String    @db.VarChar(50)
-  remarks   String?   @db.VarChar(255)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @default(now())
-  deletedAt DateTime?
-  student   Student   @relation(fields: [studentId], references: [id])
-}
-
-model ReportCard {
-  id           Int       @id @default(autoincrement())
-  studentId    Int
-  schoolYear   String    @db.VarChar(20)
-  averageGrade Float
-  rank         Int
-  remarks      String?   @db.VarChar(255)
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @default(now())
-  deletedAt    DateTime?
-  student      Student   @relation(fields: [studentId], references: [id])
-}
-
-model Payment {
-  id              Int        @id @default(autoincrement())
-  studentId       Int
-  enrollmentId    Int
-  amount          Float
-  paymentType     String     @db.VarChar(50)
-  paymentMethod   String     @db.VarChar(50)
-  referenceNumber String     @db.VarChar(100)
-  status          String     @db.VarChar(50)
-  paymentDate     DateTime
-  createdAt       DateTime   @default(now())
-  updatedAt       DateTime   @default(now())
-  deletedAt       DateTime?
-  enrollment      Enrollment @relation(fields: [enrollmentId], references: [id])
-  student         Student    @relation(fields: [studentId], references: [id])
+  birthdate     DateTime  @default(now()) @db.Date
+  user          User      @relation(fields: [userId], references: [id])
 }
 
 model Feedback {
-  id         Int       @id @default(autoincrement())
-  type       String    @db.VarChar(50)
+  id         Int           @id @default(autoincrement())
+  type       FeedbackType
   message    String
   suggestion String?
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @default(now())
+  status     GeneralStatus @default(ACTIVE)
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime
   deletedAt  DateTime?
-}
-
-enum RegistrationType {
-  NEW
-  OLD
-  TRANSFER
 }
 
 model YearLevel {
   id            Int            @id @default(autoincrement())
-  name          String         @unique @db.VarChar(50) // e.g., "Grade 1", "Grade 2"
+  name          String         @unique @db.VarChar(50)
+  status        GeneralStatus  @default(ACTIVE)
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   deletedAt     DateTime?
   registrations Registration[]
-}
-
-model SchoolYear {
-  id            Int            @id @default(autoincrement())
-  year          String         @unique @db.VarChar(20) // e.g., "2023-2024"
-  startDate     DateTime       @db.Date
-  endDate       DateTime       @db.Date
-  status        String         @default("active") @db.VarChar(50) // active, inactive
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  deletedAt     DateTime?
-  registrations Registration[]
-}
-
-enum Gender {
-  MALE
-  FEMALE
 }
 
 model Registration {
-  id                   Int              @id @default(autoincrement())
-  studentApplicationId Int? // Optional until approved
+  id                   Int                 @id @default(autoincrement())
+  studentApplicationId Int?
   schoolYearRef        Int
-  registrationType     RegistrationType @default(NEW)
+  registrationType     RegistrationType    @default(NEW)
   yearLevelRef         Int
-  studentNo            String           @db.VarChar(100)
-  familyName           String           @db.VarChar(255)
-  firstName            String           @db.VarChar(255)
-  middleName           String           @db.VarChar(255)
-  birthdate            DateTime         @db.Date
-  placeOfBirth         String           @db.VarChar(255)
+  studentNo            String              @unique @db.VarChar(100)
+  familyName           String              @db.VarChar(255)
+  firstName            String              @db.VarChar(255)
+  middleName           String?             @db.VarChar(255)
+  birthdate            DateTime            @db.Date
+  placeOfBirth         String              @db.VarChar(255)
   age                  Int
   gender               Gender
-  streetAddress        String           @db.VarChar(255)
-  city                 String           @db.VarChar(100)
-  stateProvince        String           @db.VarChar(100)
-  postalCode           String           @db.VarChar(20)
-  modeOfPayment        String           @db.VarChar(50)
-  amountPayable        Int
-
-  status       String @default("pending") @db.VarChar(50) // pending, approved, rejected
-  emailAddress String @default("") @db.VarChar(255)
-
-  contactNumbers ContactNumber[]
-  guardians      Guardian[]
-  studentForm    StudentApplication? @relation(fields: [studentApplicationId], references: [id])
-  yearLevel      YearLevel           @relation(fields: [yearLevelRef], references: [id])
-  schoolYear     SchoolYear          @relation(fields: [schoolYearRef], references: [id])
-  createdAt      DateTime            @default(now())
-  updatedAt      DateTime            @updatedAt
-  deletedAt      DateTime?
-  registrationcode RegistrationCode[]
+  streetAddress        String              @db.VarChar(255)
+  city                 String              @db.VarChar(100)
+  stateProvince        String              @db.VarChar(100)
+  postalCode           String              @db.VarChar(20)
+  modeOfPayment        String              @db.VarChar(50)
+  amountPayable        Decimal             @db.Decimal(10, 2)
+  emailAddress         String              @db.VarChar(255)
+  status               RegistrationStatus  @default(PENDING)
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+  deletedAt            DateTime?
+  contactNumbers       ContactNumber[]
+  guardians            Guardian[]
+  schoolYear           AcademicTerm        @relation(fields: [schoolYearRef], references: [id])
+  studentForm          StudentApplication? @relation(fields: [studentApplicationId], references: [id])
+  yearLevel            YearLevel           @relation(fields: [yearLevelRef], references: [id])
+  registrationcode     RegistrationCode[]
 }
 
 model Guardian {
-  id                Int    @id @default(autoincrement())
+  id                Int           @id @default(autoincrement())
   registrationId    Int
-  familyName        String @db.VarChar(255)
-  firstName         String @db.VarChar(255)
-  middleName        String @db.VarChar(255)
-  occupation        String @db.VarChar(100)
-  relationToStudent String @db.VarChar(100)
-
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
-
-  registration Registration @relation(fields: [registrationId], references: [id])
+  familyName        String        @db.VarChar(255)
+  firstName         String        @db.VarChar(255)
+  middleName        String?       @db.VarChar(255)
+  occupation        String        @db.VarChar(100)
+  relationToStudent String        @db.VarChar(100)
+  status            GeneralStatus @default(ACTIVE)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  deletedAt         DateTime?
+  registration      Registration  @relation(fields: [registrationId], references: [id])
 }
 
 model ContactNumber {
-  id             Int       @id @default(autoincrement())
+  id             Int           @id @default(autoincrement())
   registrationId Int
-  number         String    @db.VarChar(50)
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  number         String        @db.VarChar(50)
+  type           String?       @db.VarChar(20)
+  status         GeneralStatus @default(ACTIVE)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
   deletedAt      DateTime?
-
-  registration Registration @relation(fields: [registrationId], references: [id])
+  registration   Registration  @relation(fields: [registrationId], references: [id])
 }
 
 model Requirements {
-  id                   Int                @id @default(autoincrement())
-  studentApplicationId Int
-  studentApplication   StudentApplication @relation(fields: [studentApplicationId], references: [id])
-
-  requirementType String  @db.VarChar(100) // e.g., "Birth Certificate"
-  status          String  @default("pending") @db.VarChar(50)
-  fileUrl         String? @db.VarChar(255)
-
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+  id              Int               @id @default(autoincrement())
+  requirementType String            @db.VarChar(100)
+  status          RequirementStatus @default(PENDING)
+  fileUrl         String?           @db.VarChar(255)
+  description     String?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  deletedAt       DateTime?
 }
 
 model StudentApplication {
-  id Int @id @default(autoincrement())
-
-  academicYear          String   @db.VarChar(20)
-  admissionToGrade      String   @db.VarChar(50)
-  familyName            String   @db.VarChar(255)
-  firstName             String   @db.VarChar(255)
-  middleName            String   @db.VarChar(255)
-  nickName              String?  @db.VarChar(100)
-  birthdate             DateTime @db.Date
-  placeOfBirth          String   @db.VarChar(255)
+  id                    Int                @id @default(autoincrement())
+  academicYear          String             @db.VarChar(20)
+  admissionToGrade      String             @db.VarChar(50)
+  familyName            String             @db.VarChar(255)
+  firstName             String             @db.VarChar(255)
+  middleName            String?            @db.VarChar(255)
+  nickName              String?            @db.VarChar(100)
+  birthdate             DateTime           @db.Date
+  placeOfBirth          String             @db.VarChar(255)
   age                   Int
   birthOrder            Int
   numberOfSiblings      Int
-  gender                Boolean // false = female, true = male
-  languagesSpokenAtHome String   @db.VarChar(255)
-  childStatus           Int? // 0=legitimate, 1=biological, 2=adopted
-  landLine              String?  @db.VarChar(50)
-  mobileNumber          String   @db.VarChar(50)
-  emailAddress          String   @db.VarChar(255)
-  homeAddress           String   @db.VarChar(255)
-  city                  String   @db.VarChar(100)
-  stateProvince         String   @db.VarChar(100)
-  postalCode            String   @db.VarChar(20)
-  specialSkills         String   @db.Text
-  hobbiesInterests      String   @db.Text
-
-  status            String             @default("pending") @db.VarChar(50) // pending, approved, rejected
-  createdBy         Int // clerkID
-  createdAt         DateTime           @default(now())
-  updatedAt         DateTime           @updatedAt
-  registrations     Registration[]
-  requirements      Requirements[]
-  healthHistory     HealthHistory?
-  familyBackgrounds FamilyBackground[]
+  gender                Gender
+  languagesSpokenAtHome String             @db.VarChar(255)
+  childStatus           ChildStatus?
+  landLine              String?            @db.VarChar(50)
+  mobileNumber          String             @db.VarChar(50)
+  emailAddress          String             @db.VarChar(255)
+  homeAddress           String             @db.VarChar(255)
+  city                  String             @db.VarChar(100)
+  stateProvince         String             @db.VarChar(100)
+  postalCode            String             @db.VarChar(20)
+  specialSkills         String?
+  hobbiesInterests      String?
+  status                ApplicationStatus  @default(PENDING)
+  createdBy             Int
+  createdAt             DateTime           @default(now())
+  updatedAt             DateTime           @updatedAt
+  deletedAt             DateTime?
+  familyBackgrounds     FamilyBackground[]
+  healthHistory         HealthHistory?
+  registrations         Registration[]
+  RegistrationCode      RegistrationCode[]
 }
 
 model HealthHistory {
   id                     Int                @id @default(autoincrement())
   studentFormId          Int                @unique
-  childhoodDiseases      String             @db.Text
-  allergies              String             @db.Text
-  otherMedicalConditions String             @db.Text
-  immunizations          String             @db.Text
-  specificHandicaps      String             @db.Text
-  createdBy              Int // clerkID
+  childhoodDiseases      String?
+  allergies              String?
+  otherMedicalConditions String?
+  immunizations          String?
+  specificHandicaps      String?
+  createdBy              Int
   createdAt              DateTime           @default(now())
   updatedAt              DateTime           @updatedAt
+  deletedAt              DateTime?
   studentForm            StudentApplication @relation(fields: [studentFormId], references: [id])
 }
 
 model FamilyBackground {
   id                    Int                @id @default(autoincrement())
   studentFormId         Int
-  guardianType          Int // 0=mother, 1=father, 2=other
+  guardianType          GuardianType
   familyName            String             @db.VarChar(255)
   firstName             String             @db.VarChar(255)
-  middleName            String             @db.VarChar(255)
+  middleName            String?            @db.VarChar(255)
   birthdate             DateTime           @db.Date
   placeOfBirth          String             @db.VarChar(255)
   age                   Int
@@ -385,37 +200,146 @@ model FamilyBackground {
   postalCode            String             @db.VarChar(20)
   educationalAttainment String             @db.VarChar(255)
   occupation            String             @db.VarChar(100)
-  employer              String             @db.VarChar(255)
-  companyAddress        String             @db.VarChar(255)
-  companyCity           String             @db.VarChar(100)
-  businessNo            String             @db.VarChar(50)
-  annualIncome          Int // based on radio choice
-  parentStatus          Int // based on radio choice
-  createdBy             Int // clerkID
+  employer              String?            @db.VarChar(255)
+  companyAddress        String?            @db.VarChar(255)
+  companyCity           String?            @db.VarChar(100)
+  businessNo            String?            @db.VarChar(50)
+  annualIncome          Decimal?           @db.Decimal(12, 2)
+  parentStatus          ParentStatus
+  createdBy             Int
   createdAt             DateTime           @default(now())
   updatedAt             DateTime           @updatedAt
+  deletedAt             DateTime?
   studentForm           StudentApplication @relation(fields: [studentFormId], references: [id])
 }
 
 model RegistrationCode {
-  id               Int       @id @default(autoincrement())
-  registrationCode String    @unique @db.VarChar(20) // Unique registration code
-  status           String    @default("active") @db.VarChar(50) // active, used, expired
-  expirationDate   DateTime? // Optional expiration date for the code
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
-  deletedAt        DateTime?
-  registrationId   Int?
-  registration     Registration? @relation(fields: [registrationId], references: [id])
+  id                 Int                 @id @default(autoincrement())
+  registrationCode   String              @unique @db.VarChar(20)
+  status             CodeStatus          @default(ACTIVE)
+  expirationDate     DateTime?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  deletedAt          DateTime?
+  registrationId     Int?
+  applicationId      Int?
+  StudentApplication StudentApplication? @relation(fields: [applicationId], references: [id])
+  registration       Registration?       @relation(fields: [registrationId], references: [id])
 }
 
 model GeneralPolicy {
-  id        Int       @id @default(autoincrement())
-  title     String    @db.VarChar(255)
-  content   String    @db.Text
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id        Int           @id @default(autoincrement())
+  title     String        @db.VarChar(255)
+  content   String
+  status    GeneralStatus @default(ACTIVE)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
   deletedAt DateTime?
 }
 
-// @db.Date
+model AcademicTerm {
+  id            Int            @id @default(autoincrement())
+  year          String         @unique @db.VarChar(20)
+  startDate     DateTime       @db.Date
+  endDate       DateTime       @db.Date
+  status        GeneralStatus  @default(ACTIVE)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime
+  deletedAt     DateTime?
+  registrations Registration[]
+}
+
+enum RegistrationType {
+  NEW
+  OLD
+  TRANSFER
+  RETURNING
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+  PREFER_NOT_TO_SAY
+}
+
+enum ApplicationStatus {
+  PENDING
+  UNDER_REVIEW
+  APPROVED
+  REJECTED
+  WAITLISTED
+}
+
+enum ChildStatus {
+  LEGITIMATE
+  ILLEGITIMATE
+  ADOPTED
+  STEPCHILD
+}
+
+enum CodeStatus {
+  ACTIVE
+  INACTIVE
+  EXPIRED
+}
+
+enum FeedbackType {
+  COMPLAINT
+  SUGGESTION
+  COMPLIMENT
+  BUG_REPORT
+  FEATURE_REQUEST
+}
+
+enum GeneralStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  ARCHIVED
+}
+
+enum GuardianType {
+  FATHER
+  MOTHER
+  GUARDIAN
+  GRANDFATHER
+  GRANDMOTHER
+  UNCLE
+  AUNT
+  SIBLING
+  OTHER
+}
+
+enum ParentStatus {
+  MARRIED
+  SEPARATED
+  DIVORCED
+  WIDOWED
+  SINGLE
+  DECEASED
+}
+
+enum RegistrationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+  EXPIRED
+}
+
+enum RequirementStatus {
+  PENDING
+  SUBMITTED
+  APPROVED
+  REJECTED
+  INCOMPLETE
+}
+
+enum UserRole {
+  STUDENT
+  ADMIN
+  TEACHER
+  PARENT
+  STAFF
+}

@@ -7,8 +7,7 @@ interface StudentPersonalDataPageProps {
 
 export default function StudentPersonalDataPage({ onBack, onNext }: StudentPersonalDataPageProps) {
   return (
-    <div className="bg-gray-100 p-6 flex flex-col">
-    <div className="w-full flex flex-col items-center py-8">
+    <div className="w-full min-h-screen flex flex-col items-center py-8">
       {/* Header */}
       <div className="w-full flex flex-col items-center mb-6">
         <div className="w-full flex items-center gap-4 mt-2">
@@ -26,80 +25,72 @@ export default function StudentPersonalDataPage({ onBack, onNext }: StudentPerso
         </div>
       </div>
 
-      {/* Content Box */}
-      <div className="bg-white rounded-md shadow p-8 space-y-6 text-black">
-        {/* Personal Data Header */}
-        <div className="font-bold text-lg tracking-wide py-2 text-white bg-[#a10000] rounded w-full text-center">
-          PERSONAL DATA
-        </div>
+      {/* Card */}
+      <div className="w-full bg-white rounded-lg shadow p-8 border border-gray-200 flex flex-col gap-6">
         
-        {/* Academic Year and Admission */}
-        <div className="flex justify-between space-x-4">
-          <div className="flex flex-col flex-grow">
-            <label className="text-xs font-semibold mb-1">Academic Year:</label>
-            <input
-              type="text"
-              placeholder="Answer Here..."
-              className="border border-gray-300 rounded px-2 py-1"
-            />
+        {/* Section Title */}
+        <div className="w-full flex justify-center">
+          <div className="font-bold text-lg tracking-wide py-2 text-white bg-[#a10000] rounded w-full text-center">PERSONAL DATA</div>
+        </div>
+        {/* Academic Year and Grade */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium mb-1 text-black">Academic Year:</label>
+            <input type="text" placeholder="Answer Here.." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
           </div>
-          <div className="flex flex-col flex-grow">
-            <label className="text-xs font-semibold mb-1">Admission to Grade / Year:</label>
-            <input
-              type="text"
-              placeholder="Answer Here..."
-              className="border border-gray-300 rounded px-2 py-1"
-            />
+          <div>
+            <label className="block text-sm font-medium mb-1 text-black">Admission to Grade/ Year:</label>
+            <input type="text" placeholder="Answer Here.." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
           </div>
         </div>
 
-        {/* Personal Data Fields */}
-        <div className="grid grid-cols-4 gap-4">
-          <div className="flex flex-col">
-            <label className="text-xs font-semibold mb-1">Family Name:</label>
-            <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1" />
+        
+
+        {/* Name Fields */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div>
+            <label className="block text-sm font-medium mb-1 text-black">Family Name:</label>
+            <input type="text" placeholder="Answer Here.." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
           </div>
-          <div className="flex flex-col">
-            <label className="text-xs font-semibold mb-1">First Name:</label>
-            <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1" />
+          <div>
+            <label className="block text-sm font-medium mb-1 text-black">First Name:</label>
+            <input type="text" placeholder="Answer Here.." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
           </div>
-          <div className="flex flex-col">
-            <label className="text-xs font-semibold mb-1">Middle Name:</label>
-            <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1" />
+          <div>
+            <label className="block text-sm font-medium mb-1 text-black">Middle Name:</label>
+            <input type="text" placeholder="Answer Here.." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
           </div>
-          <div className="flex flex-col">
-            <label className="text-xs font-semibold mb-1">Nickname:</label>
-            <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1" />
+          <div>
+            <label className="block text-sm font-medium mb-1 text-black">Nickname:</label>
+            <input type="text" placeholder="Answer Here.." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
           </div>
         </div>
 
-        {/* Birth Date and Place */}
-        <div className="grid grid-cols-7 gap-4 items-center">
-          <div className="flex flex-col col-span-1">
-            <label className="text-xs font-semibold mb-1">Birth Date:</label>
-            <input type="date" className="border border-gray-300 rounded px-2 py-1" />
+        {/* Birth, Age, Order, Siblings, Gender */}
+        <div className="grid grid-cols-1 md:grid-cols-7 gap-4 items-end">
+          <div className="md:col-span-1">
+            <label className="block text-sm font-medium mb-1 text-black">Birth Date:</label>
+            <input type="date" className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
           </div>
-          <div className="flex flex-col col-span-2">
-            <label className="text-xs font-semibold mb-1">Place of Birth:</label>
-            <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1" />
+          <div className="md:col-span-2">
+            <label className="block text-sm font-medium mb-1 text-black">Place of Birth:</label>
+            <input type="text" placeholder="Answer Here.." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
           </div>
-          <div className="flex flex-col col-span-1">
-            <label className="text-xs font-semibold mb-1">Age:</label>
-            <input type="number" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1" />
+          <div className="md:col-span-1">
+            <label className="block text-sm font-medium mb-1 text-black">Age:</label>
+            <input type="text" placeholder="Answer Here.." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
           </div>
-          <div className="flex flex-col col-span-1">
-            <label className="text-xs font-semibold mb-1">Birth Order:</label>
-            <input type="number" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1" />
+          <div className="md:col-span-1">
+            <label className="block text-sm font-medium mb-1 text-black">Birth Order:</label>
+            <input type="text" placeholder="Answer Here.." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
           </div>
-          <div className="flex flex-col col-span-1">
-            <label className="text-xs font-semibold mb-1">Number of Siblings:</label>
-            <input type="number" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1" />
+          <div className="md:col-span-1">
+            <label className="block text-sm font-medium mb-1 text-black">Number of Siblings:</label>
+            <input type="text" placeholder="Answer Here.." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
           </div>
-
-          {/* Gender Radio Buttons */}
           <fieldset className="border border-gray-300 rounded p-2">
-            <legend className="text-sm font-medium px-2">Sex:</legend>
-            <div className="flex space-x-3 items-center">
+            <legend className="block text-sm font-medium mb-1 text-black px-2">Sex:</legend>
+            <div className="flex flex-col md:flex-row gap-4 mt-2 text-black">
               <label className="inline-flex items-center space-x-2">
                 <input type="radio" name="gender" value="female" />
                 <span>Female</span>
@@ -112,148 +103,124 @@ export default function StudentPersonalDataPage({ onBack, onNext }: StudentPerso
           </fieldset>
         </div>
 
-        
-
         {/* Nationality, Religion, Height, Weight, Blood Type */}
-        <div className="grid grid-cols-7 gap-4">
-          <div className="flex flex-col col-span-2">
-            <label className="text-xs font-semibold mb-1">Nationality:</label>
-            <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1" />
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+          <div>
+            <label className="block text-sm font-medium mb-1 text-black">Nationality:</label>
+            <input type="text" placeholder="Answer Here.." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
           </div>
-          <div className="flex flex-col col-span-2">
-            <label className="text-xs font-semibold mb-1">Religion:</label>
-            <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1" />
+          <div>
+            <label className="block text-sm font-medium mb-1 text-black">Religion:</label>
+            <input type="text" placeholder="Answer Here.." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
           </div>
-          <div className="flex flex-col col-span-1">
-            <label className="text-xs font-semibold mb-1">Height:</label>
-            <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1" />
+          <div>
+            <label className="block text-sm font-medium mb-1 text-black">Height:</label>
+            <input type="text" placeholder="Answer Here.." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
           </div>
-          <div className="flex flex-col col-span-1">
-            <label className="text-xs font-semibold mb-1">Weight:</label>
-            <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1" />
+          <div>
+            <label className="block text-sm font-medium mb-1 text-black">Weight:</label>
+            <input type="text" placeholder="Answer Here.." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
           </div>
-          <div className="flex flex-col col-span-1">
-            <label className="text-xs font-semibold mb-1">Blood Type:</label>
-            <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1" />
+          <div>
+            <label className="block text-sm font-medium mb-1 text-black">Blood Type:</label>
+            <input type="text" placeholder="Answer Here.." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
           </div>
         </div>
 
-        {/* Languages / Dialect */}
-        <div className="grid grid-cols-3 gap-4">
-          <div className="flex flex-col col-span-2">
-            <label className="text-xs font-semibold mb-1">Languages/ Dialect spoken at home:</label>
-            <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1" />
+        {/* Languages, Status */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
+          <div>
+            <label className="block text-sm font-medium mb-1 text-black">Languages/ Dialect spoken at home:</label>
+            <input type="text" placeholder="Answer Here.." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
           </div>
-
-          {/* Gender Radio Buttons */}
-          <fieldset className="border border-gray-300 rounded p-2">
-            <legend className="text-sm font-medium px-2">Status:</legend>
-            <div className="flex space-x-8 items-center">
-              <label className="inline-flex items-center space-x-2">
-                <input type="radio" name="status" value="legitimate" />
-                <span>Legitimate</span>
-              </label>
-              <label className="inline-flex items-center space-x-2">
-                <input type="radio" name="status" value="biological" />
-                <span>Biological</span>
-              </label>
-              <label className="inline-flex items-center space-x-2">
-                <input type="radio" name="status" value="adopted" />
-                <span>Adopted</span>
-              </label>
+          
+          <div className="flex items-center gap-6 mt-6 md:mt-0">
+            <fieldset className="border border-gray-300 rounded p-2">
+            <div className="flex flex-col md:flex-row gap-4 mt-2 text-black">
+              <input type="radio" name="status" className="radio radio-sm text-black bg-gray-100 border border-gray-300" />
+              <label className="text-sm font-medium text-black">Legitimate</label>
+              <input type="radio" name="status" className="radio radio-sm text-black bg-gray-100 border border-gray-300" />
+              <label className="text-sm font-medium text-black">Biological</label>
+              <input type="radio" name="status" className="radio radio-sm text-black bg-gray-100 border border-gray-300" />
+              <label className="text-sm font-medium text-black">Adopted</label>
             </div>
-          </fieldset>
+            </fieldset>
+          </div>
         </div>
 
         {/* Landline, Mobile, Email */}
-        <div className="grid grid-cols-3 gap-4">
-          <div className="flex flex-col">
-            <label className="text-xs font-semibold mb-1">Landline Number:</label>
-            <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label className="block text-sm font-medium mb-1 text-black">Landline Number:</label>
+            <input type="text" placeholder="Answer Here.." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
           </div>
-          <div className="flex flex-col">
-            <label className="text-xs font-semibold mb-1">Mobile Number:</label>
-            <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1" />
+          <div>
+            <label className="block text-sm font-medium mb-1 text-black">Mobile Number:</label>
+            <input type="text" placeholder="Answer Here.." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
           </div>
-          <div className="flex flex-col">
-            <label className="text-xs font-semibold mb-1">E-mail Address:</label>
-            <input type="email" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1" />
+          <div>
+            <label className="block text-sm font-medium mb-1 text-black">E-mail Address:</label>
+            <input type="text" placeholder="Answer Here.." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
           </div>
         </div>
 
         {/* Home Address */}
-        <div className="grid grid-cols-6 gap-4">
-          <div className="flex flex-col col-span-3">
-            <label className="text-xs font-semibold mb-1">Home Address:</label>
-            <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1" />
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+          <div className="md:col-span-2">
+            <label className="block text-sm font-medium mb-1 text-black">Home Address:</label>
+            <input type="text" placeholder="Answer Here.." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
           </div>
-          <div className="flex flex-col col-span-1">
-            <label className="text-xs font-semibold mb-1">City:</label>
-            <select className="border border-gray-300 rounded px-2 py-1">
-              <option>Answer Here...</option>
-            </select>
+          <div>
+            <label className="block text-sm font-medium mb-1 text-black">City:</label>
+            <input type="text" placeholder="Answer Here.." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
           </div>
-          <div className="flex flex-col col-span-1">
-            <label className="text-xs font-semibold mb-1">State/ Province:</label>
-            <select className="border border-gray-300 rounded px-2 py-1">
-              <option>Answer Here...</option>
-            </select>
+          <div>
+            <label className="block text-sm font-medium mb-1 text-black">State/ Province:</label>
+            <input type="text" placeholder="Answer Here.." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
           </div>
-          <div className="flex flex-col col-span-1">
-            <label className="text-xs font-semibold mb-1">Zip/ Postal Code:</label>
-            <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1" />
+          <div>
+            <label className="block text-sm font-medium mb-1 text-black">Zip/ Postal Code:</label>
+            <input type="text" placeholder="Answer Here.." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
           </div>
         </div>
 
         {/* Provincial Address */}
-        <div className="grid grid-cols-6 gap-4">
-          <div className="flex flex-col col-span-3">
-            <label className="text-xs font-semibold mb-1">Provincial Address:</label>
-            <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1" />
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+          <div className="md:col-span-2">
+            <label className="block text-sm font-medium mb-1 text-black">Provincial Address:</label>
+            <input type="text" placeholder="Answer Here.." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
           </div>
-          <div className="flex flex-col col-span-1">
-            <label className="text-xs font-semibold mb-1">City:</label>
-            <select className="border border-gray-300 rounded px-2 py-1">
-              <option>Answer Here...</option>
-            </select>
+          <div>
+            <label className="block text-sm font-medium mb-1 text-black">City:</label>
+            <input type="text" placeholder="Answer Here.." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
           </div>
-          <div className="flex flex-col col-span-1">
-            <label className="text-xs font-semibold mb-1">State/ Province:</label>
-            <select className="border border-gray-300 rounded px-2 py-1">
-              <option>Answer Here...</option>
-            </select>
+          <div>
+            <label className="block text-sm font-medium mb-1 text-black">State/ Province:</label>
+            <input type="text" placeholder="Answer Here.." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
           </div>
-          <div className="flex flex-col col-span-1">
-            <label className="text-xs font-semibold mb-1">Zip/ Postal Code:</label>
-            <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1" />
+          <div>
+            <label className="block text-sm font-medium mb-1 text-black">Zip/ Postal Code:</label>
+            <input type="text" placeholder="Answer Here.." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
           </div>
         </div>
 
-        {/* Talents/ Special Skills and Hobbies */}
-        <div className="grid grid-cols-2 gap-4">
-          <div className="flex flex-col">
-            <label className="text-xs font-semibold mb-1">Talents/ Special Skills:</label>
-            <input
-              type="text"
-              placeholder="Answer Here..."
-              maxLength={150}
-              className="border border-gray-300 rounded px-2 py-1"
-            />
+        {/* Talents/Skills and Hobbies */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
+          <div className="flex items-center gap-2">
+            <label className="block text-sm font-medium mb-1 text-black">Talents/ Special Skills:</label>
+            <input type="text" placeholder="Answer Here.." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+            <span className="text-gray-400 ml-2">150</span>
           </div>
-          <div className="flex flex-col">
-            <label className="text-xs font-semibold mb-1">Hobbies and Interests:</label>
-            <input
-              type="text"
-              placeholder="Answer Here..."
-              maxLength={150}
-              className="border border-gray-300 rounded px-2 py-1"
-            />
+          <div className="flex items-center gap-2">
+            <label className="block text-sm font-medium mb-1 text-black">Hobbies and Interests:</label>
+            <input type="text" placeholder="Answer Here.." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+            <span className="text-gray-400 ml-2">150</span>
           </div>
         </div>
       </div>
 
       {/* Next Page Button */}
-      <div className="w-full max-w-6xl flex justify-end mt-8">
+      <div className="w-full flex justify-end mt-8">
         <button
           className="bg-red-800 text-white px-6 py-2 rounded-md shadow hover:bg-[#7a0000] transition"
           onClick={onNext}
@@ -261,7 +228,6 @@ export default function StudentPersonalDataPage({ onBack, onNext }: StudentPerso
           Next Page
         </button>
       </div>
-    </div>
     </div>
   );
 }

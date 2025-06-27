@@ -34,7 +34,7 @@ export default function StudentApplicationPagedForm() {
   return (
     <div className="w-full min-h-screen bg-[#f7f7f7] flex flex-col items-center py-8">
       {/* Header */}
-      <div className="w-full max-w-6xl flex flex-col items-center mb-6">
+      <div className="w-full flex flex-col items-center mb-6">
         <div className="w-full flex items-center gap-4 mt-2">
           <button className="bg-[#a10000] text-white px-8 py-2 rounded-md font-semibold text-md shadow hover:bg-[#7a0000] transition">Cancel</button>
           <div className="flex-1 flex justify-center">
@@ -46,7 +46,7 @@ export default function StudentApplicationPagedForm() {
       </div>
 
       {/* Card */}
-      <div className="w-full max-w-6xl bg-white rounded-lg shadow p-10 border border-gray-200 flex flex-col gap-8">
+      <div className="w-full bg-white rounded-lg shadow p-10 border border-gray-200 flex flex-col gap-8">
         <div>
           <p className="font-semibold text-lg md:text-xl mb-6 text-black">
             Before continuing with the student application, please ensure you have the following:
@@ -72,7 +72,7 @@ export default function StudentApplicationPagedForm() {
       </div>
 
       {/* Continue Button */}
-      <div className="w-full max-w-6xl flex justify-end mt-8">
+      <div className="w-full flex justify-end mt-8">
         <button
           type="button"
           disabled={!confirmed}
