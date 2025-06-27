@@ -10,11 +10,11 @@ import {
     SquareStack,
     PencilLine,
     BookMarked,
-    Newspaper,
+    // Newspaper,
     Scale,
     Shield,
     FileUser,
-    ScrollText
+    // ScrollText
 } from "lucide-react";
 import Image from "next/image";
 import { UserButton } from "@clerk/nextjs";
@@ -40,16 +40,16 @@ const NAVIGATION_ITEMS = [
         label: "Student Information",
         icon: BookMarked,
     },
-    {
-        href: "/registrar/generate-reports",
-        label: "Generate Reports",
-        icon: Newspaper,
-    },
-    {
-        href: "/registrar/withdraw-student",
-        label: "Withdraw Student",
-        icon: ScrollText,
-    },
+    // {
+    //     href: "/registrar/generate-reports",
+    //     label: "Generate Reports",
+    //     icon: Newspaper,
+    // },
+    // {
+    //     href: "/registrar/withdraw-student",
+    //     label: "Withdraw Student",
+    //     icon: ScrollText,
+    // },
     {
         href: "/registrar/policies",
         label: "Policies",

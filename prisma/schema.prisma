@@ -343,3 +343,67 @@ enum ParentStatus {
   SINGLE
   DECEASED
 }
+
+model SystemLog {
+  id        String   @id @default(cuid())
+  logNumber String   @unique
+  timestamp DateTime @default(now())
+
+  // User context
+  userId    Int?
+  userName  String?
+  userRole  String?
+  sessionId String?
+
+  // Action details
+  actionCategory    String // "AUTH", "REGISTRATION", "ACADEMIC"
+  actionType        String // "CREATE", "UPDATE", "DELETE"
+  actionSubType     String? // "APPROVE", "REJECT", "STATUS_CHANGE"
+  actionDescription String
+
+  // Target information
+  targetType String // "ACADEMIC_TERM", "REGISTRATION", "USER"
+  targetId   String
+  targetName String?
+
+  // Change tracking
+  oldValues     Json?
+  newValues     Json?
+  changedFields String[]
+
+  // System context
+  ipAddress     String?
+  userAgent     String?
+  requestMethod String?
+  requestUrl    String?
+
+  // Status and results
+  status        LogStatus
+  errorCode     String?
+  errorMessage  String?
+  severityLevel SeverityLevel
+
+  // Performance
+  executionTimeMs Int?
+  metadata        Json?
+
+  // Flags
+  isSensitiveData Boolean @default(false)
+
+  // Timestamps
+  createdAt  DateTime  @default(now())
+  archivedAt DateTime?
+}
+
+enum LogStatus {
+  SUCCESS
+  FAILED
+  WARNING
+}
+
+enum SeverityLevel {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}

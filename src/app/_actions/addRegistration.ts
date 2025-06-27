@@ -1,6 +1,7 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
+import { logRegistrationEvent, logSecurityEvent } from '@/lib/systemLoggerHelpers'
 
 // Define enums locally since they might not be exported
 enum RegistrationType {
@@ -63,6 +64,9 @@ export interface RegistrationResult {
 }
 
 export async function addRegistration(data: RegistrationFormData): Promise<RegistrationResult> {
+    const startTime = Date.now();
+    const studentName = `${data.firstName} ${data.middleName || ''} ${data.familyName}`.trim();
+
     try {
         // 1. Validate the registration code and check if it's still active
         const registrationCodeRecord = await prisma.registrationCode.findUnique({
@@ -72,6 +76,19 @@ export async function addRegistration(data: RegistrationFormData): Promise<Regis
         })
 
         if (!registrationCodeRecord) {
+            // Log failed registration attempt due to invalid code
+            await logSecurityEvent({
+                actionType: 'SUSPICIOUS_ACTIVITY',
+                description: `Failed registration attempt with invalid code: ${data.registrationCode}`,
+                targetType: 'REGISTRATION',
+                targetId: data.registrationCode,
+                metadata: {
+                    studentName,
+                    email: data.emailAddress,
+                    reason: 'Invalid registration code'
+                }
+            });
+
             return {
                 success: false,
                 error: 'Invalid registration code.'
@@ -79,6 +96,17 @@ export async function addRegistration(data: RegistrationFormData): Promise<Regis
         }
 
         if (registrationCodeRecord.status !== 'ACTIVE') {
+            // Log failed registration attempt due to inactive code
+            await logRegistrationEvent({
+                actionType: 'CREATE',
+                registrationId: data.registrationCode,
+                studentName,
+                success: false,
+                errorMessage: 'Registration code already used or invalid',
+                userName: 'System',
+                userRole: 'SYSTEM'
+            });
+
             return {
                 success: false,
                 error: 'Registration code has already been used or is no longer valid.'
@@ -87,6 +115,17 @@ export async function addRegistration(data: RegistrationFormData): Promise<Regis
 
         // Check if the code has expired (if expiration date is set)
         if (registrationCodeRecord.expirationDate && new Date() > registrationCodeRecord.expirationDate) {
+            // Log failed registration attempt due to expired code
+            await logRegistrationEvent({
+                actionType: 'CREATE',
+                registrationId: data.registrationCode,
+                studentName,
+                success: false,
+                errorMessage: 'Registration code expired',
+                userName: 'System',
+                userRole: 'SYSTEM'
+            });
+
             return {
                 success: false,
                 error: 'Registration code has expired.'
@@ -217,6 +256,24 @@ export async function addRegistration(data: RegistrationFormData): Promise<Regis
             return registration
         })
 
+        // Log successful registration creation
+        await logRegistrationEvent({
+            actionType: 'CREATE',
+            registrationId: result.id.toString(),
+            studentName,
+            newValues: {
+                studentNo: result.studentNo,
+                studentName,
+                yearLevel: yearLevelRecord.name,
+                schoolYear: schoolYearRecord.year,
+                status: 'PENDING',
+                registrationCode: data.registrationCode
+            },
+            success: true,
+            userName: 'System',
+            userRole: 'SYSTEM'
+        });
+
         return {
             success: true,
             registration: {
@@ -231,10 +288,38 @@ export async function addRegistration(data: RegistrationFormData): Promise<Regis
     } catch (error) {
         console.error('Error adding registration:', error)
 
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        const executionTime = Date.now() - startTime;
+
+        // Log the failed registration attempt
+        await logRegistrationEvent({
+            actionType: 'CREATE',
+            registrationId: data.registrationCode,
+            studentName,
+            success: false,
+            errorMessage,
+            userName: 'System',
+            userRole: 'SYSTEM'
+        });
+
         // Handle specific error cases
         if (error instanceof Error) {
             // Check for unique constraint violations or other specific errors
             if (error.message.includes('Unique constraint')) {
+                // Log duplicate registration attempt as security event
+                await logSecurityEvent({
+                    actionType: 'SUSPICIOUS_ACTIVITY',
+                    description: `Duplicate registration attempt for student: ${studentName}`,
+                    targetType: 'REGISTRATION',
+                    targetId: data.registrationCode,
+                    metadata: {
+                        studentName,
+                        email: data.emailAddress,
+                        executionTime,
+                        error: 'Unique constraint violation'
+                    }
+                });
+
                 return {
                     success: false,
                     error: 'A registration with this information already exists.'

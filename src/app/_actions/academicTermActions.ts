@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { logAcademicTermEvent } from "@/lib/systemLoggerHelpers";
 
 export async function addAcademicTerm(data: {
     year: string;
@@ -87,6 +88,20 @@ export async function addAcademicTerm(data: {
             }
         });
 
+        // Log the successful creation
+        await logAcademicTermEvent({
+            actionType: 'CREATE',
+            termId: newTerm.id.toString(),
+            termName: newTerm.year,
+            newValues: {
+                year: newTerm.year,
+                startDate: newTerm.startDate,
+                endDate: newTerm.endDate,
+                status: newTerm.status
+            },
+            success: true
+        });
+
         return {
             success: true,
             academicTerm: newTerm,
@@ -94,6 +109,22 @@ export async function addAcademicTerm(data: {
         };
     } catch (error) {
         console.error('Error adding academic term:', error);
+        
+        // Log the failed creation
+        await logAcademicTermEvent({
+            actionType: 'CREATE',
+            termId: 'unknown',
+            termName: data.year,
+            newValues: {
+                year: data.year,
+                startDate: data.startDate,
+                endDate: data.endDate,
+                status: data.status || 'ACTIVE'
+            },
+            success: false,
+            errorMessage: error instanceof Error ? error.message : 'Failed to add academic term'
+        });
+
         return {
             success: false,
             error: error instanceof Error ? error.message : 'Failed to add academic term'
@@ -146,6 +177,27 @@ export async function updateAcademicTerm(id: number, data: {
             }
         });
 
+        // Log the successful update
+        await logAcademicTermEvent({
+            actionType: 'UPDATE',
+            actionSubType: 'DETAILS_UPDATE',
+            termId: id.toString(),
+            termName: updatedTerm.year,
+            oldValues: {
+                year: existingTerm.year,
+                startDate: existingTerm.startDate,
+                endDate: existingTerm.endDate,
+                status: existingTerm.status
+            },
+            newValues: {
+                year: updatedTerm.year,
+                startDate: updatedTerm.startDate,
+                endDate: updatedTerm.endDate,
+                status: updatedTerm.status
+            },
+            success: true
+        });
+
         return {
             success: true,
             academicTerm: updatedTerm,
@@ -153,6 +205,17 @@ export async function updateAcademicTerm(id: number, data: {
         };
     } catch (error) {
         console.error('Error updating academic term:', error);
+        
+        // Log the failed update
+        await logAcademicTermEvent({
+            actionType: 'UPDATE',
+            actionSubType: 'DETAILS_UPDATE',
+            termId: id.toString(),
+            termName: `Academic Term ${id}`,
+            success: false,
+            errorMessage: error instanceof Error ? error.message : 'Failed to update academic term'
+        });
+
         return {
             success: false,
             error: error instanceof Error ? error.message : 'Failed to update academic term'
@@ -201,12 +264,36 @@ export async function deleteAcademicTerm(id: number) {
             }
         });
 
+        // Log the successful deletion
+        await logAcademicTermEvent({
+            actionType: 'DELETE',
+            termId: id.toString(),
+            termName: existingTerm.year,
+            oldValues: {
+                year: existingTerm.year,
+                startDate: existingTerm.startDate,
+                endDate: existingTerm.endDate,
+                status: existingTerm.status
+            },
+            success: true
+        });
+
         return {
             success: true,
             message: 'Academic term deleted successfully'
         };
     } catch (error) {
         console.error('Error deleting academic term:', error);
+        
+        // Log the failed deletion
+        await logAcademicTermEvent({
+            actionType: 'DELETE',
+            termId: id.toString(),
+            termName: `Academic Term ${id}`,
+            success: false,
+            errorMessage: error instanceof Error ? error.message : 'Failed to delete academic term'
+        });
+
         return {
             success: false,
             error: error instanceof Error ? error.message : 'Failed to delete academic term'

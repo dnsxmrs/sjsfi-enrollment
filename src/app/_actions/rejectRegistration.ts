@@ -1,6 +1,7 @@
 'use server'
 
 import { prisma } from '@/lib/prisma';
+import { logRegistrationEvent } from '@/lib/systemLoggerHelpers';
 
 export async function rejectRegistration(registrationId: number): Promise<{
     success: boolean;
@@ -9,6 +10,16 @@ export async function rejectRegistration(registrationId: number): Promise<{
 }> {
     try {
         if (!registrationId || isNaN(registrationId)) {
+            await logRegistrationEvent({
+                actionType: 'UPDATE',
+                actionSubType: 'REJECT',
+                registrationId: registrationId?.toString() || 'invalid',
+                success: false,
+                errorMessage: 'Invalid registration ID',
+                userName: 'System', // TODO: Get actual user
+                userRole: 'REGISTRAR'
+            });
+
             return { success: false, error: 'Invalid registration ID' };
         }
 
@@ -48,7 +59,20 @@ export async function rejectRegistration(registrationId: number): Promise<{
             });
         });
 
-        console.log(`Registration ${registrationId} for ${registration.firstName} ${registration.familyName}`);
+        console.log(`Registration ${registrationId} for ${registration.firstName} ${registration.familyName} rejected`);
+
+        // Log successful rejection
+        await logRegistrationEvent({
+            actionType: 'UPDATE',
+            actionSubType: 'REJECT',
+            registrationId: registrationId.toString(),
+            studentName: `${registration.firstName} ${registration.familyName}`,
+            oldValues: { status: registration.status },
+            newValues: { status: 'REJECTED' },
+            success: true,
+            userName: 'System', // TODO: Get actual user
+            userRole: 'REGISTRAR'
+        });
 
         return {
             success: true,
