@@ -152,7 +152,7 @@ export async function GET(request: NextRequest) {
             select: {
                 id: true,
                 firstName: true,
-                lastName: true,
+                familyName: true,
                 email: true,
                 role: true,
                 student: {

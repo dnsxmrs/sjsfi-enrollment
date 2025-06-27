@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 
 export default function StudentApplicationNextPage() {
   const router = useRouter();
@@ -233,7 +234,7 @@ export default function StudentApplicationNextPage() {
           onClick={() => {
             // TODO: Implement navigation to the next page
             // For now, just alert
-            alert('Next Page clicked');
+            toast('Next Page clicked');
           }}
         >
           Next Page

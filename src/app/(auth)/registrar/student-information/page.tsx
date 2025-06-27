@@ -7,9 +7,9 @@ import { getStudents } from '@/app/_actions/getStudents';
 interface Student {
     id: string;
     firstName: string;
-    lastName: string;
+    middleName?: string;
+    familyName: string;
     gradeLevel: string;
-    strand: string;
     status: string;
     email: string;
     studentNumber?: string;
@@ -57,7 +57,7 @@ export default function StudentInformationPage() {
     // Filter students based on search term
     const filteredStudents = students.filter(student =>
         student.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        student.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        student.familyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         student.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (student.studentNumber && student.studentNumber.toLowerCase().includes(searchTerm.toLowerCase()))
     );
@@ -87,7 +87,7 @@ export default function StudentInformationPage() {
                                 Full Name
                             </label>
                             <div className="p-3 bg-gray-50 border border-gray-200 rounded-md">
-                                <p className="text-gray-900">{selectedStudent.firstName} {selectedStudent.lastName}</p>
+                                <p className="text-gray-900">{selectedStudent.firstName} {selectedStudent.familyName}</p>
                             </div>
                         </div>
 
@@ -125,7 +125,7 @@ export default function StudentInformationPage() {
                                 Email Address
                             </label>
                             <div className="p-3 bg-gray-50 border border-gray-200 rounded-md">
-                                <p className="text-gray-900">{selectedStudent.email}</p>
+                                <p className="text-gray-900">{selectedStudent.email || 'Not specified'}</p>
                             </div>
                         </div>
 
@@ -359,7 +359,7 @@ export default function StudentInformationPage() {
             // ========================= FATHER =========================
             <div className="p-6 space-y-6">
             <h3 className="text-center font-bold mb-4 text-black border border-gray-300 rounded-md py-1">
-                FATHER'S BACKGROUND
+                FATHER&apos;S BACKGROUND
             </h3>
             <div className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -647,7 +647,7 @@ export default function StudentInformationPage() {
              {/* ===================== MOTHER ===================== */}
                 <div className="p-6 space-y-6 my-5">
                 <h3 className="text-center font-bold mb-4 text-black border border-gray-300 rounded-md py-1">
-                    MOTHER'S BACKGROUND
+                    MOTHER&apos;S BACKGROUND
                 </h3>
                 <div className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -938,7 +938,7 @@ export default function StudentInformationPage() {
             {/* ===================== GUARDIAN ===================== */}
             <div className="p-6 space-y-6 my-2">
                 <h3 className="text-center font-bold mb-4 text-black border border-gray-300 rounded-md py-1">
-                    GUARDIAN'S BACKGROUND
+                    GUARDIAN&apos;S BACKGROUND
                 </h3>
                 <div className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -1293,9 +1293,9 @@ export default function StudentInformationPage() {
 
                     {/* Students Section */}
                     <div className="flex-1 overflow-hidden">
-                        <h2 className="px-4 py-3 text-sm font-medium text-red-800 border-b border-gray-200">
+                        {/* <h2 className="px-4 py-3 text-sm font-medium text-red-800 border-b border-gray-200">
                             Students
-                        </h2>
+                        </h2> */}
 
                         {/* Students List */}
                         <div className="flex-1 overflow-y-auto">
@@ -1309,11 +1309,11 @@ export default function StudentInformationPage() {
                                         <div
                                             key={student.id}
                                             onClick={() => handleStudentSelect(student)}
-                                            className={`p-4 cursor-pointer hover:bg-gray-50 transition-colors ${selectedStudent?.id === student.id ? 'bg-blue-50 border-r-2 border-blue-500' : ''
+                                            className={`p-4 cursor-pointer hover:bg-gray-50 transition-colors ${selectedStudent?.id === student.id ? 'bg-blue-50' : ''
                                                 }`}
                                         >
                                             <div className="text-sm font-medium text-gray-900">
-                                                {student.firstName} {student.lastName}
+                                                {student.firstName} {student.familyName}
                                             </div>
                                             <div className="text-xs text-gray-500 mt-1">
                                                 {student.gradeLevel} • {student.studentNumber || student.id}

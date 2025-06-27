@@ -11,9 +11,9 @@ import {
     PencilLine,
     BookMarked,
     Newspaper,
-    ScrollText,
     Scale,
-    Shield
+    Shield,
+    FileUser
 } from "lucide-react";
 import Image from "next/image";
 import { UserButton } from "@clerk/nextjs";
@@ -30,6 +30,11 @@ const NAVIGATION_ITEMS = [
         icon: PencilLine,
     },
     {
+        href: "/registrar/student-application",
+        label: "Student Application",
+        icon: FileUser,
+    },
+    {
         href: "/registrar/student-information",
         label: "Student Information",
         icon: BookMarked,
@@ -39,11 +44,11 @@ const NAVIGATION_ITEMS = [
         label: "Generate Reports",
         icon: Newspaper,
     },
-    {
-        href: "/registrar/withdraw-requests",
-        label: "Withdraw Requests",
-        icon: ScrollText,
-    },
+    // {
+    //     href: "/registrar/withdraw-student",
+    //     label: "Withdraw Student",
+    //     icon: ScrollText,
+    // },
     {
         href: "/registrar/policies",
         label: "Policies",
@@ -81,10 +86,10 @@ export default function RegistrarLayout({
             year: "numeric",
         })
         .replace(",", "")} - ${currentDateTime.toLocaleTimeString("en-US", {
-        hour: "numeric",
-        minute: "2-digit",
-        hour12: true,
-    })}`;
+            hour: "numeric",
+            minute: "2-digit",
+            hour12: true,
+        })}`;
 
     const getPageTitle = (path: string) => {
         const navItem = NAVIGATION_ITEMS.find((item) => item.href === path);
@@ -115,9 +120,8 @@ export default function RegistrarLayout({
             </div>
             {/* Sidebar */}
             <aside
-                className={`fixed z-20 top-0 left-0 h-full w-64 bg-red-900 text-white transform ${
-                    sidebarOpen ? "translate-x-0" : "-translate-x-full"
-                } transition-transform duration-300 ease-in-out md:static md:translate-x-0 md:flex md:flex-col md:w-64 md:h-screen`}
+                className={`fixed z-20 top-0 left-0 h-full w-64 bg-red-900 text-white transform ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
+                    } transition-transform duration-300 ease-in-out md:static md:translate-x-0 md:flex md:flex-col md:w-64 md:h-screen`}
             >
                 <div className="flex flex-col h-full justify-between">
                     {/* Navigation */}
@@ -138,11 +142,10 @@ export default function RegistrarLayout({
                                     <Link
                                         key={item.href}
                                         href={item.href}
-                                        className={`flex items-center space-x-5 py-2 rounded hover:bg-red-700 ${
-                                            pathname === item.href
+                                        className={`flex items-center space-x-5 py-2 rounded hover:bg-red-700 ${pathname === item.href
                                                 ? "text-yellow-400"
                                                 : ""
-                                        }`}
+                                            }`}
                                     >
                                         <IconComponent className="w-8 h-8" />
                                         <span>{item.label}</span>
@@ -192,9 +195,9 @@ export default function RegistrarLayout({
                                             display: "none",
                                         },
                                         profileSectionPrimaryButton__emailAddresses:
-                                            {
-                                                display: "none",
-                                            },
+                                        {
+                                            display: "none",
+                                        },
                                         profileSection__danger: {
                                             display: "none",
                                         },

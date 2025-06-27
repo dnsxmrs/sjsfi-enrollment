@@ -241,7 +241,6 @@ export async function POST(request: NextRequest) {
         const transformedUser = {
             id: user.id,
             firstName: user.firstName,
-            lastName: user.firstName, // Assuming firstName is used for both
             email: user.email,
             role: user.role,
             // Student-specific fields (if user is a student)

@@ -430,8 +430,10 @@ export async function sendMissingRequirementsNotification(payload: NotificationP
 export async function getMissingRequirements(requirements: { [key: string]: boolean }): Promise<string[]> {
     const requirementLabels: { [key: string]: string } = {
         birthCertificate: 'Birth Certificate',
-        reportCard: 'Report Card',
-        certificateOfGoodMoral: 'Certificate of Good Moral'
+        f137: 'Form 137',
+        f138: 'Form 138',
+        goodMoral: 'Certificate of Good Moral Character',
+        privacyForm: 'Privacy Form',
     };
     return Object.entries(requirements)
         .filter(([, isSubmitted]) => !isSubmitted)

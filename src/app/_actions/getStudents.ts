@@ -7,37 +7,32 @@ export async function getStudents() {
         console.log("Fetching students from database...");
 
         // Fetch students with their user information, regardless of status but only non-deleted
-        const students = await prisma.student.findMany({
+        const registration = await prisma.registration.findMany({
             where: {
                 deletedAt: null, // Only non-deleted students
             },
             include: {
-                user: {
+                yearLevel: {
                     select: {
-                        firstName: true,
-                        lastName: true,
-                        email: true,
+                        name: true, // Include only the name of the year level
                     },
-                },
+                }
             },
             orderBy: {
                 createdAt: "desc", // Most recent first
             },
         });
 
-        console.log("Students fetched successfully:", students.length); // Transform the data to match the expected format
-        const formattedStudents = students.map((student) => ({
-            id: student.studentNumber,
-            firstName: student.user.firstName,
-            lastName: student.user.lastName,
-            gradeLevel: student.gradeLevel,
-            strand:
-                student.gradeLevel.includes("11") ||
-                student.gradeLevel.includes("12")
-                    ? "Senior High"
-                    : "Junior High",
-            status: student.status,
-            email: student.user.email,
+        // console.log("Students fetched successfully:", registration.length); // Transform the data to match the expected format
+        const formattedStudents = registration.map((regis) => ({
+            id: regis.studentNo,
+            firstName: regis.firstName,
+            middleName: regis.middleName,
+            familyName: regis.familyName,
+            gradeLevel: regis.yearLevel.name,
+
+            status: regis.status,
+            email: regis.emailAddress,
         }));
 
         return {

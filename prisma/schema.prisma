@@ -18,7 +18,7 @@ model User {
   deletedAt  DateTime?
   updatedAt  DateTime  @default(now())
   firstName  String    @db.VarChar(255)
-  lastName   String    @db.VarChar(255)
+  familyName String    @db.VarChar(255)
   middleName String?   @db.VarChar(255)
   suffix     String?   @db.VarChar(50)
   parent     Parent?
@@ -204,3 +204,215 @@ model Feedback {
   updatedAt  DateTime  @default(now())
   deletedAt  DateTime?
 }
+
+enum RegistrationType {
+  NEW
+  OLD
+  TRANSFER
+}
+
+model YearLevel {
+  id            Int            @id @default(autoincrement())
+  name          String         @unique @db.VarChar(50) // e.g., "Grade 1", "Grade 2"
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  deletedAt     DateTime?
+  registrations Registration[]
+}
+
+model SchoolYear {
+  id            Int            @id @default(autoincrement())
+  year          String         @unique @db.VarChar(20) // e.g., "2023-2024"
+  startDate     DateTime       @db.Date
+  endDate       DateTime       @db.Date
+  status        String         @default("active") @db.VarChar(50) // active, inactive
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  deletedAt     DateTime?
+  registrations Registration[]
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+model Registration {
+  id                   Int              @id @default(autoincrement())
+  studentApplicationId Int? // Optional until approved
+  schoolYearRef        Int
+  registrationType     RegistrationType @default(NEW)
+  yearLevelRef         Int
+  studentNo            String           @db.VarChar(100)
+  familyName           String           @db.VarChar(255)
+  firstName            String           @db.VarChar(255)
+  middleName           String           @db.VarChar(255)
+  birthdate            DateTime         @db.Date
+  placeOfBirth         String           @db.VarChar(255)
+  age                  Int
+  gender               Gender
+  streetAddress        String           @db.VarChar(255)
+  city                 String           @db.VarChar(100)
+  stateProvince        String           @db.VarChar(100)
+  postalCode           String           @db.VarChar(20)
+  modeOfPayment        String           @db.VarChar(50)
+  amountPayable        Int
+
+  status       String @default("pending") @db.VarChar(50) // pending, approved, rejected
+  emailAddress String @default("") @db.VarChar(255)
+
+  contactNumbers ContactNumber[]
+  guardians      Guardian[]
+  studentForm    StudentApplication? @relation(fields: [studentApplicationId], references: [id])
+  yearLevel      YearLevel           @relation(fields: [yearLevelRef], references: [id])
+  schoolYear     SchoolYear          @relation(fields: [schoolYearRef], references: [id])
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+  deletedAt      DateTime?
+}
+
+model Guardian {
+  id                Int    @id @default(autoincrement())
+  registrationId    Int
+  familyName        String @db.VarChar(255)
+  firstName         String @db.VarChar(255)
+  middleName        String @db.VarChar(255)
+  occupation        String @db.VarChar(100)
+  relationToStudent String @db.VarChar(100)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  registration Registration @relation(fields: [registrationId], references: [id])
+}
+
+model ContactNumber {
+  id             Int       @id @default(autoincrement())
+  registrationId Int
+  number         String    @db.VarChar(50)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
+
+  registration Registration @relation(fields: [registrationId], references: [id])
+}
+
+model Requirements {
+  id                   Int                @id @default(autoincrement())
+  studentApplicationId Int
+  studentApplication   StudentApplication @relation(fields: [studentApplicationId], references: [id])
+
+  requirementType String  @db.VarChar(100) // e.g., "Birth Certificate"
+  status          String  @default("pending") @db.VarChar(50)
+  fileUrl         String? @db.VarChar(255)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+}
+
+model StudentApplication {
+  id Int @id @default(autoincrement())
+
+  academicYear          String   @db.VarChar(20)
+  admissionToGrade      String   @db.VarChar(50)
+  familyName            String   @db.VarChar(255)
+  firstName             String   @db.VarChar(255)
+  middleName            String   @db.VarChar(255)
+  nickName              String?  @db.VarChar(100)
+  birthdate             DateTime @db.Date
+  placeOfBirth          String   @db.VarChar(255)
+  age                   Int
+  birthOrder            Int
+  numberOfSiblings      Int
+  gender                Boolean // false = female, true = male
+  languagesSpokenAtHome String   @db.VarChar(255)
+  childStatus           Int? // 0=legitimate, 1=biological, 2=adopted
+  landLine              String?  @db.VarChar(50)
+  mobileNumber          String   @db.VarChar(50)
+  emailAddress          String   @db.VarChar(255)
+  homeAddress           String   @db.VarChar(255)
+  city                  String   @db.VarChar(100)
+  stateProvince         String   @db.VarChar(100)
+  postalCode            String   @db.VarChar(20)
+  specialSkills         String   @db.Text
+  hobbiesInterests      String   @db.Text
+
+  status            String             @default("pending") @db.VarChar(50) // pending, approved, rejected
+  createdBy         Int // clerkID
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  registrations     Registration[]
+  requirements      Requirements[]
+  healthHistory     HealthHistory?
+  familyBackgrounds FamilyBackground[]
+}
+
+model HealthHistory {
+  id                     Int                @id @default(autoincrement())
+  studentFormId          Int                @unique
+  childhoodDiseases      String             @db.Text
+  allergies              String             @db.Text
+  otherMedicalConditions String             @db.Text
+  immunizations          String             @db.Text
+  specificHandicaps      String             @db.Text
+  createdBy              Int // clerkID
+  createdAt              DateTime           @default(now())
+  updatedAt              DateTime           @updatedAt
+  studentForm            StudentApplication @relation(fields: [studentFormId], references: [id])
+}
+
+model FamilyBackground {
+  id                    Int                @id @default(autoincrement())
+  studentFormId         Int
+  guardianType          Int // 0=mother, 1=father, 2=other
+  familyName            String             @db.VarChar(255)
+  firstName             String             @db.VarChar(255)
+  middleName            String             @db.VarChar(255)
+  birthdate             DateTime           @db.Date
+  placeOfBirth          String             @db.VarChar(255)
+  age                   Int
+  nationality           String             @db.VarChar(100)
+  religion              String             @db.VarChar(100)
+  landLine              String?            @db.VarChar(50)
+  mobileNo              String             @db.VarChar(50)
+  emailAddress          String             @db.VarChar(255)
+  homeAddress           String             @db.VarChar(255)
+  city                  String             @db.VarChar(100)
+  stateProvince         String             @db.VarChar(100)
+  postalCode            String             @db.VarChar(20)
+  educationalAttainment String             @db.VarChar(255)
+  occupation            String             @db.VarChar(100)
+  employer              String             @db.VarChar(255)
+  companyAddress        String             @db.VarChar(255)
+  companyCity           String             @db.VarChar(100)
+  businessNo            String             @db.VarChar(50)
+  annualIncome          Int // based on radio choice
+  parentStatus          Int // based on radio choice
+  createdBy             Int // clerkID
+  createdAt             DateTime           @default(now())
+  updatedAt             DateTime           @updatedAt
+  studentForm           StudentApplication @relation(fields: [studentFormId], references: [id])
+}
+
+model RegistrationCode {
+  id               Int       @id @default(autoincrement())
+  registrationCode String    @unique @db.VarChar(20) // Unique registration code
+  status           String    @default("active") @db.VarChar(50) // active, used, expired
+  expirationDate   DateTime? // Optional expiration date for the code
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  deletedAt        DateTime?
+}
+
+model GeneralPolicy {
+  id        Int       @id @default(autoincrement())
+  title     String    @db.VarChar(255)
+  content   String    @db.Text
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+}
+
+// @db.Date
