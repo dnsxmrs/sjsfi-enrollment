@@ -9,13 +9,23 @@ import GuardianBackgroundPage from "./guardianbackground";
 import StudentFamilyMembersPage from "./familymembers";
 import StudentEducationalBackgroundPage from "./educationalbackground";
 import StudentTransfereePage from "./transferee";
+import MedicalHistoryPage1 from "../Forms-medical/medicalhistoryP1";
+import MedicalHistoryPage2 from "../Forms-medical/medicalhistoryP2";
 
 export default function StudentApplicationPagedForm() {
   const [page, setPage] = useState(0);
   const [confirmed, setConfirmed] = useState(false);
 
+  if (page === 10) {
+    return <MedicalHistoryPage2 onBack={() => setPage(9)} />;
+  }
+
+  if (page === 9) {
+    return <MedicalHistoryPage1 onBack={() => setPage(8)} onNext={() => setPage(10)}/>;
+  }
+
   if (page === 8) {
-    return <StudentTransfereePage onBack={() => setPage(7)} />;
+    return <StudentTransfereePage onBack={() => setPage(7)} onNext={() => setPage(9)}/>;
   }
 
   if (page === 7) {
