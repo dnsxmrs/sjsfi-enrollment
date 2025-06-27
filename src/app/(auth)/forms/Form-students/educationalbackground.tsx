@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useFormData } from "./page";
 
 interface StudentEducationalBackgroundPageProps {
   onBack?: () => void;
@@ -6,12 +7,39 @@ interface StudentEducationalBackgroundPageProps {
 }
 
 export default function StudentEducationalBackgroundPage({ onBack, onNext }: StudentEducationalBackgroundPageProps) {
-  // State to hold school array, initially with one school
-  const [school, setSchool] = useState([{}]);
+  const { formData, updateFormData } = useFormData();
+  const { educationalBackground } = formData;
 
   // Handler to add a new school
   const addSchool = () => {
-    setSchool([...school, {}]);
+    const newSchool = {
+      gradeYearLevel: "",
+      schoolName: "",
+      schoolAddress: "",
+      inclusiveYears: "",
+      honorsAwardsReceived: "",
+      gradeYearLevelRepeated: "",
+      numberOfSubjectsFailed: "",
+    };
+    updateFormData('educationalBackground', [...educationalBackground, newSchool]);
+  };
+
+  // Handler to update a specific school
+  const updateSchool = (index: number, field: keyof typeof educationalBackground[0], value: string) => {
+    const updatedSchools = [...educationalBackground];
+    updatedSchools[index] = {
+      ...updatedSchools[index],
+      [field]: value
+    };
+    updateFormData('educationalBackground', updatedSchools);
+  };
+
+  // Handler to remove a school
+  const removeSchool = (index: number) => {
+    if (educationalBackground.length > 1) {
+      const updatedSchools = educationalBackground.filter((_, i) => i !== index);
+      updateFormData('educationalBackground', updatedSchools);
+    }
   };
 
   return (
@@ -40,26 +68,61 @@ export default function StudentEducationalBackgroundPage({ onBack, onNext }: Stu
           <div className="font-bold text-lg tracking-wide py-2 text-white bg-[#a10000] rounded w-full text-center">EDUCATIONAL BACKGROUND</div>
         </div>
 
-        {/* Sibling Info Fields */}
-        {school.map((_, index) => (
+        {/* School Info Fields */}
+        {educationalBackground.map((school, index) => (
           <fieldset key={index} className="border border-gray-300 rounded p-4">
-            <legend className="block text-sm font-medium mb-1 text-black px-2">{`School #${index + 1}`}</legend>
+            <div className="flex justify-between items-center mb-4">
+              <legend className="block text-sm font-medium mb-1 text-black px-2">{`School #${index + 1}`}</legend>
+              {educationalBackground.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => removeSchool(index)}
+                  className="text-red-600 hover:text-red-800 text-sm font-medium"
+                >
+                  Remove
+                </button>
+              )}
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pb-4">
               <div>
                 <label className="block text-sm font-medium mb-1 text-black">Gr./ Yr. Level:</label>
-                <input type="number" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+                <input 
+                  type="number" 
+                  placeholder="Answer Here..." 
+                  className="border border-gray-300 rounded px-2 py-1 w-full text-black"
+                  value={school.gradeYearLevel}
+                  onChange={(e) => updateSchool(index, 'gradeYearLevel', e.target.value)}
+                />
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1 text-black">Name of School:</label>
-                <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+                <input 
+                  type="text" 
+                  placeholder="Answer Here..." 
+                  className="border border-gray-300 rounded px-2 py-1 w-full text-black"
+                  value={school.schoolName}
+                  onChange={(e) => updateSchool(index, 'schoolName', e.target.value)}
+                />
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1 text-black">School Address:</label>
-                <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+                <input 
+                  type="text" 
+                  placeholder="Answer Here..." 
+                  className="border border-gray-300 rounded px-2 py-1 w-full text-black"
+                  value={school.schoolAddress}
+                  onChange={(e) => updateSchool(index, 'schoolAddress', e.target.value)}
+                />
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1 text-black">Inclusive Years:</label>
-                <input type="text" placeholder="YYYY-YYYY" className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+                <input 
+                  type="text" 
+                  placeholder="YYYY-YYYY" 
+                  className="border border-gray-300 rounded px-2 py-1 w-full text-black"
+                  value={school.inclusiveYears}
+                  onChange={(e) => updateSchool(index, 'inclusiveYears', e.target.value)}
+                />
               </div>
             </div>
           </fieldset>
@@ -79,7 +142,13 @@ export default function StudentEducationalBackgroundPage({ onBack, onNext }: Stu
           <div className="flex flex-col gap-4">
             <div>
               <label className="block text-sm font-medium mb-1 text-black">Honors/ Awards Recieved:</label>
-              <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+              <input 
+                type="text" 
+                placeholder="Answer Here..." 
+                className="border border-gray-300 rounded px-2 py-1 w-full text-black"
+                value={educationalBackground[0]?.honorsAwardsReceived || ""}
+                onChange={(e) => updateSchool(0, 'honorsAwardsReceived', e.target.value)}
+              />
             </div>
           </div>
 
@@ -90,18 +159,36 @@ export default function StudentEducationalBackgroundPage({ onBack, onNext }: Stu
             <fieldset className="border border-gray-300 rounded p-4">
               <div>
                 <label className="block text-sm font-medium mb-1 text-black">Allergies:</label>
-                <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+                <input 
+                  type="text" 
+                  placeholder="Answer Here..." 
+                  className="border border-gray-300 rounded px-2 py-1 w-full text-black"
+                  value={educationalBackground[0]?.honorsAwardsReceived || ""}
+                  onChange={(e) => updateSchool(0, 'honorsAwardsReceived', e.target.value)}
+                />
               </div>
             </fieldset>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-4">
               <div>
                 <label className="block text-sm font-medium mb-1 text-black">Gr./ Yr. Level Repeated:</label>
-                <input type="number" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+                <input 
+                  type="number" 
+                  placeholder="Answer Here..." 
+                  className="border border-gray-300 rounded px-2 py-1 w-full text-black"
+                  value={educationalBackground[0]?.gradeYearLevelRepeated || ""}
+                  onChange={(e) => updateSchool(0, 'gradeYearLevelRepeated', e.target.value)}
+                />
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1 text-black">No. of Subjects Failed:</label>
-                <input type="number" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+                <input 
+                  type="number" 
+                  placeholder="Answer Here..." 
+                  className="border border-gray-300 rounded px-2 py-1 w-full text-black"
+                  value={educationalBackground[0]?.numberOfSubjectsFailed || ""}
+                  onChange={(e) => updateSchool(0, 'numberOfSubjectsFailed', e.target.value)}
+                />
               </div>
             </div>
           </div>

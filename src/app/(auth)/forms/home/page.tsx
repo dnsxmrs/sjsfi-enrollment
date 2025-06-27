@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { validateRegistrationCode } from '@/app/_actions/generateCode';
+import { validateRegistrationCode, validateApplicationCode } from '@/app/_actions/generateCode';
 //import { toast } from 'react-hot-toast';
 
 export default function HomePage() {
@@ -24,24 +24,43 @@ export default function HomePage() {
 
     const upperCode = code.trim().toUpperCase();
 
-    // validate code
-    const result = await validateRegistrationCode(upperCode);
-
-    if (!result.success) {
-      setError(result.error || 'Failed to validate code');
+    if (upperCode.startsWith('REG-')) {
+      // validate registration code
+      const result = await validateRegistrationCode(upperCode);
+      if (!result.success) {
+        setError(result.error || 'Failed to validate code');
+        setIsLoading(false);
+        return;
+      }
+      if (!result.isValid) {
+        setError('Invalid registration code. Please check your code and try again.');
+        setIsLoading(false);
+        return;
+      }
+      router.push(`/forms/student-registration?code=${encodeURIComponent(upperCode)}`);
+      setIsLoading(false);
+      return;
+    } else if (upperCode.startsWith('APP-')) {
+      // validate application code
+      const result = await validateApplicationCode(upperCode);
+      if (!result.success) {
+        setError(result.error || 'Failed to validate code');
+        setIsLoading(false);
+        return;
+      }
+      if (!result.isValid) {
+        setError('Invalid application code. Please check your code and try again.');
+        setIsLoading(false);
+        return;
+      }
+      router.push(`/forms/Form-students?code=${encodeURIComponent(upperCode)}`);
+      setIsLoading(false);
+      return;
+    } else {
+      setError('Invalid code format. Please check your code and try again.');
       setIsLoading(false);
       return;
     }
-
-    if (!result.isValid) {
-      setError('Invalid code. Please check your code and try again.');
-      setIsLoading(false);
-      return;
-    }
-
-    // Pass the code as a query parameter to the registration page
-    router.push(`/forms/student-registration?code=${encodeURIComponent(upperCode)}`);
-    setIsLoading(false);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useFormData } from "./page";
 
 interface MotherBackgroundPageProps {
   onBack?: () => void;
@@ -6,8 +7,24 @@ interface MotherBackgroundPageProps {
 }
 
 export default function MotherBackgroundPage({ onBack, onNext }: MotherBackgroundPageProps) {
-  const [status, setStatus] = useState("");
+  const { formData, updateFormData } = useFormData();
+  const { motherBackground } = formData;
   const [otherStatus, setOtherStatus] = useState("");
+
+  const handleInputChange = (field: keyof typeof motherBackground, value: string) => {
+    updateFormData('motherBackground', {
+      ...motherBackground,
+      [field]: value
+    });
+  };
+
+  const handleStatusChange = (status: string) => {
+    if (status === "Others") {
+      handleInputChange('statusOfParent', `Others: ${otherStatus}`);
+    } else {
+      handleInputChange('statusOfParent', status);
+    }
+  };
 
   return (
     <div className="w-full min-h-screen bg-[#f7f7f7] flex flex-col items-center py-8">
@@ -39,109 +56,240 @@ export default function MotherBackgroundPage({ onBack, onNext }: MotherBackgroun
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Family Name:</label>
-            <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+            <input 
+              type="text" 
+              placeholder="Answer Here..." 
+              className="border border-gray-300 rounded px-2 py-1 w-full text-black"
+              value={motherBackground.familyName}
+              onChange={(e) => handleInputChange('familyName', e.target.value)}
+            />
           </div>
           <div>
             <label className="block text-sm font-medium mb-1 text-black">First Name:</label>
-            <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+            <input 
+              type="text" 
+              placeholder="Answer Here..." 
+              className="border border-gray-300 rounded px-2 py-1 w-full text-black"
+              value={motherBackground.firstName}
+              onChange={(e) => handleInputChange('firstName', e.target.value)}
+            />
           </div>
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Middle Name:</label>
-            <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+            <input 
+              type="text" 
+              placeholder="Answer Here..." 
+              className="border border-gray-300 rounded px-2 py-1 w-full text-black"
+              value={motherBackground.middleName}
+              onChange={(e) => handleInputChange('middleName', e.target.value)}
+            />
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Birth Date:</label>
-            <input type="date" className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+            <input 
+              type="date" 
+              className="border border-gray-300 rounded px-2 py-1 w-full text-black"
+              value={motherBackground.birthDate}
+              onChange={(e) => handleInputChange('birthDate', e.target.value)}
+            />
           </div>
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Place of Birth:</label>
-            <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+            <input 
+              type="text" 
+              placeholder="Answer Here..." 
+              className="border border-gray-300 rounded px-2 py-1 w-full text-black"
+              value={motherBackground.placeOfBirth}
+              onChange={(e) => handleInputChange('placeOfBirth', e.target.value)}
+            />
           </div>
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Age:</label>
-            <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+            <input 
+              type="text" 
+              placeholder="Answer Here..." 
+              className="border border-gray-300 rounded px-2 py-1 w-full text-black"
+              value={motherBackground.age}
+              onChange={(e) => handleInputChange('age', e.target.value)}
+            />
           </div>
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Nationality:</label>
-            <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+            <input 
+              type="text" 
+              placeholder="Answer Here..." 
+              className="border border-gray-300 rounded px-2 py-1 w-full text-black"
+              value={motherBackground.nationality}
+              onChange={(e) => handleInputChange('nationality', e.target.value)}
+            />
           </div>
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Religion:</label>
-            <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+            <input 
+              type="text" 
+              placeholder="Answer Here..." 
+              className="border border-gray-300 rounded px-2 py-1 w-full text-black"
+              value={motherBackground.religion}
+              onChange={(e) => handleInputChange('religion', e.target.value)}
+            />
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Landline Number:</label>
-            <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+            <input 
+              type="text" 
+              placeholder="Answer Here..." 
+              className="border border-gray-300 rounded px-2 py-1 w-full text-black"
+              value={motherBackground.landlineNumber}
+              onChange={(e) => handleInputChange('landlineNumber', e.target.value)}
+            />
           </div>
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Mobile Number:</label>
-            <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+            <input 
+              type="text" 
+              placeholder="Answer Here..." 
+              className="border border-gray-300 rounded px-2 py-1 w-full text-black"
+              value={motherBackground.mobileNumber}
+              onChange={(e) => handleInputChange('mobileNumber', e.target.value)}
+            />
           </div>
           <div>
             <label className="block text-sm font-medium mb-1 text-black">E-mail Address:</label>
-            <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+            <input 
+              type="text" 
+              placeholder="Answer Here..." 
+              className="border border-gray-300 rounded px-2 py-1 w-full text-black"
+              value={motherBackground.emailAddress}
+              onChange={(e) => handleInputChange('emailAddress', e.target.value)}
+            />
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="md:col-span-1">
             <label className="block text-sm font-medium mb-1 text-black">Home Address:</label>
-            <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+            <input 
+              type="text" 
+              placeholder="Answer Here..." 
+              className="border border-gray-300 rounded px-2 py-1 w-full text-black"
+              value={motherBackground.homeAddress}
+              onChange={(e) => handleInputChange('homeAddress', e.target.value)}
+            />
           </div>
           <div className="md:col-span-1">
             <label className="block text-sm font-medium mb-1 text-black">City:</label>
-            <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+            <input 
+              type="text" 
+              placeholder="Answer Here..." 
+              className="border border-gray-300 rounded px-2 py-1 w-full text-black"
+              value={motherBackground.city}
+              onChange={(e) => handleInputChange('city', e.target.value)}
+            />
           </div>
           <div className="md:col-span-1">
             <label className="block text-sm font-medium mb-1 text-black">State/ Province:</label>
-            <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+            <input 
+              type="text" 
+              placeholder="Answer Here..." 
+              className="border border-gray-300 rounded px-2 py-1 w-full text-black"
+              value={motherBackground.stateProvince}
+              onChange={(e) => handleInputChange('stateProvince', e.target.value)}
+            />
           </div>
           <div className="md:col-span-1">
             <label className="block text-sm font-medium mb-1 text-black">Zip/ Postal Code:</label>
-            <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+            <input 
+              type="text" 
+              placeholder="Answer Here..." 
+              className="border border-gray-300 rounded px-2 py-1 w-full text-black"
+              value={motherBackground.zipPostalCode}
+              onChange={(e) => handleInputChange('zipPostalCode', e.target.value)}
+            />
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Educational Attainment/ Course:</label>
-            <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+            <input 
+              type="text" 
+              placeholder="Answer Here..." 
+              className="border border-gray-300 rounded px-2 py-1 w-full text-black"
+              value={motherBackground.educationalAttainmentCourse}
+              onChange={(e) => handleInputChange('educationalAttainmentCourse', e.target.value)}
+            />
           </div>
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Occupational/ Position Held:</label>
-            <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+            <input 
+              type="text" 
+              placeholder="Answer Here..." 
+              className="border border-gray-300 rounded px-2 py-1 w-full text-black"
+              value={motherBackground.occupationalPositionHeld}
+              onChange={(e) => handleInputChange('occupationalPositionHeld', e.target.value)}
+            />
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Employer/ Company:</label>
-            <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+            <input 
+              type="text" 
+              placeholder="Answer Here..." 
+              className="border border-gray-300 rounded px-2 py-1 w-full text-black"
+              value={motherBackground.employerCompany}
+              onChange={(e) => handleInputChange('employerCompany', e.target.value)}
+            />
           </div>
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Company Address:</label>
-            <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+            <input 
+              type="text" 
+              placeholder="Answer Here..." 
+              className="border border-gray-300 rounded px-2 py-1 w-full text-black"
+              value={motherBackground.companyAddress}
+              onChange={(e) => handleInputChange('companyAddress', e.target.value)}
+            />
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <label className="block text-sm font-medium mb-1 text-black">City:</label>
-            <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+            <input 
+              type="text" 
+              placeholder="Answer Here..." 
+              className="border border-gray-300 rounded px-2 py-1 w-full text-black"
+              value={motherBackground.city}
+              onChange={(e) => handleInputChange('city', e.target.value)}
+            />
           </div>
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Business Telephone Number:</label>
-            <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+            <input 
+              type="text" 
+              placeholder="Answer Here..." 
+              className="border border-gray-300 rounded px-2 py-1 w-full text-black"
+              value={motherBackground.businessTelephoneNumber}
+              onChange={(e) => handleInputChange('businessTelephoneNumber', e.target.value)}
+            />
           </div>
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Annual Income:</label>
-            <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+            <input 
+              type="text" 
+              placeholder="Answer Here..." 
+              className="border border-gray-300 rounded px-2 py-1 w-full text-black"
+              value={motherBackground.annualIncome}
+              onChange={(e) => handleInputChange('annualIncome', e.target.value)}
+            />
           </div>
         </div>
 
@@ -155,8 +303,8 @@ export default function MotherBackgroundPage({ onBack, onNext }: MotherBackgroun
                   type="radio"
                   name="status"
                   className="radio radio-sm text-black bg-gray-100 border border-gray-300"
-                  checked={status === "Married"}
-                  onChange={() => setStatus("Married")}
+                  checked={motherBackground.statusOfParent === "Married"}
+                  onChange={() => handleStatusChange("Married")}
                 /> Married
               </label>
               <label className="flex items-center gap-2 text-black font-medium">
@@ -164,8 +312,8 @@ export default function MotherBackgroundPage({ onBack, onNext }: MotherBackgroun
                   type="radio"
                   name="status"
                   className="radio radio-sm text-black bg-gray-100 border border-gray-300"
-                  checked={status === "Single Parent"}
-                  onChange={() => setStatus("Single Parent")}
+                  checked={motherBackground.statusOfParent === "Single Parent"}
+                  onChange={() => handleStatusChange("Single Parent")}
                 /> Single Parent
               </label>
               <label className="flex items-center gap-2 text-black font-medium">
@@ -173,8 +321,8 @@ export default function MotherBackgroundPage({ onBack, onNext }: MotherBackgroun
                   type="radio"
                   name="status"
                   className="radio radio-sm text-black bg-gray-100 border border-gray-300"
-                  checked={status === "Separated"}
-                  onChange={() => setStatus("Separated")}
+                  checked={motherBackground.statusOfParent === "Separated"}
+                  onChange={() => handleStatusChange("Separated")}
                 /> Separated
               </label>
               <label className="flex items-center gap-2 text-black font-medium">
@@ -182,8 +330,8 @@ export default function MotherBackgroundPage({ onBack, onNext }: MotherBackgroun
                   type="radio"
                   name="status"
                   className="radio radio-sm text-black bg-gray-100 border border-gray-300"
-                  checked={status === "Widowed"}
-                  onChange={() => setStatus("Widowed")}
+                  checked={motherBackground.statusOfParent === "Widowed"}
+                  onChange={() => handleStatusChange("Widowed")}
                 /> Widowed
               </label>
               <label className="flex items-center gap-2 text-black font-medium">
@@ -191,8 +339,8 @@ export default function MotherBackgroundPage({ onBack, onNext }: MotherBackgroun
                   type="radio"
                   name="status"
                   className="radio radio-sm text-black bg-gray-100 border border-gray-300"
-                  checked={status === "Widowed, Remarried"}
-                  onChange={() => setStatus("Widowed, Remarried")}
+                  checked={motherBackground.statusOfParent === "Widowed, Remarried"}
+                  onChange={() => handleStatusChange("Widowed, Remarried")}
                 /> Widowed, Remarried
               </label>
               <label className="flex items-center gap-2 text-black font-medium">
@@ -200,16 +348,19 @@ export default function MotherBackgroundPage({ onBack, onNext }: MotherBackgroun
                   type="radio"
                   name="status"
                   className="radio radio-sm text-black bg-gray-100 border border-gray-300"
-                  checked={status === "Others"}
-                  onChange={() => setStatus("Others")}
+                  checked={motherBackground.statusOfParent?.startsWith("Others")}
+                  onChange={() => handleStatusChange("Others")}
                 /> Others:
-                {status === "Others" && (
+                {motherBackground.statusOfParent?.startsWith("Others") && (
                   <input
                     type="text"
                     className="input input-bordered text-black bg-gray-100 border border-gray-300 ml-2"
                     placeholder="Please specify"
                     value={otherStatus}
-                    onChange={e => setOtherStatus(e.target.value)}
+                    onChange={e => {
+                      setOtherStatus(e.target.value);
+                      handleInputChange('statusOfParent', `Others: ${e.target.value}`);
+                    }}
                     style={{ width: 120 }}
                   />
                 )}

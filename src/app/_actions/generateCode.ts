@@ -206,3 +206,55 @@ export async function generateApplicationCode(RegistrationId: string): Promise<{
         };
     }
 }
+
+export async function validateApplicationCode(code: string): Promise<{
+    success: boolean;
+    isValid?: boolean;
+    applicationId?: number;
+    error?: string;
+}> {
+    try {
+        if (!code || !code.startsWith('APP-')) {
+            return {
+                success: true,
+                isValid: false
+            };
+        }
+
+        const application = await prisma.registrationCode.findUnique({
+            where: { registrationCode: code },
+            select: {
+                id: true,
+                status: true,
+                expirationDate: true,
+                registrationId: true,
+                createdAt: true
+            }
+        });
+
+        // check if code is active, not expired, and has applicationId
+        if (
+            application?.status !== 'ACTIVE' ||
+            !application?.expirationDate ||
+            application.expirationDate < new Date() ||
+            !application?.registrationId
+        ) {
+            return {
+                success: true,
+                isValid: false
+            };
+        }
+
+        return {
+            success: true,
+            isValid: true,
+            applicationId: application.registrationId
+        };
+    } catch (error) {
+        console.error('Error validating application code:', error);
+        return {
+            success: false,
+            error: 'Failed to validate application code'
+        };
+    }
+}

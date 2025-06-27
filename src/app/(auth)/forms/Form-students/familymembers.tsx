@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useFormData } from "./page";
 
 interface StudentFamilyMembersPageProps {
   onBack?: () => void;
@@ -6,12 +7,39 @@ interface StudentFamilyMembersPageProps {
 }
 
 export default function StudentFamilyMembersPage({ onBack, onNext }: StudentFamilyMembersPageProps) {
-  // State to hold siblings array, initially with one sibling
-  const [siblings, setSiblings] = useState([{}]);
+  const { formData, updateFormData } = useFormData();
+  const { familyMembers } = formData;
 
   // Handler to add a new sibling
   const addSibling = () => {
-    setSiblings([...siblings, {}]);
+    const newSibling = {
+      familyName: "",
+      firstName: "",
+      middleName: "",
+      birthDate: "",
+      age: "",
+      gradeYearLevel: "",
+      schoolEmployer: "",
+    };
+    updateFormData('familyMembers', [...familyMembers, newSibling]);
+  };
+
+  // Handler to update a specific sibling
+  const updateSibling = (index: number, field: keyof typeof familyMembers[0], value: string) => {
+    const updatedSiblings = [...familyMembers];
+    updatedSiblings[index] = {
+      ...updatedSiblings[index],
+      [field]: value
+    };
+    updateFormData('familyMembers', updatedSiblings);
+  };
+
+  // Handler to remove a sibling
+  const removeSibling = (index: number) => {
+    if (familyMembers.length > 1) {
+      const updatedSiblings = familyMembers.filter((_, i) => i !== index);
+      updateFormData('familyMembers', updatedSiblings);
+    }
   };
 
   return (
@@ -41,40 +69,92 @@ export default function StudentFamilyMembersPage({ onBack, onNext }: StudentFami
         </div>
 
         {/* Sibling Info Fields */}
-        {siblings.map((_, index) => (
+        {familyMembers.map((sibling, index) => (
           <fieldset key={index} className="border border-gray-300 rounded p-4">
-            <legend className="block text-sm font-medium mb-1 text-black px-2">{`Sibling #${index + 1}`}</legend>
+            <div className="flex justify-between items-center mb-4">
+              <legend className="block text-sm font-medium mb-1 text-black px-2">{`Sibling #${index + 1}`}</legend>
+              {familyMembers.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => removeSibling(index)}
+                  className="text-red-600 hover:text-red-800 text-sm font-medium"
+                >
+                  Remove
+                </button>
+              )}
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pb-4">
               <div>
                 <label className="block text-sm font-medium mb-1 text-black">Family Name:</label>
-                <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+                <input 
+                  type="text" 
+                  placeholder="Answer Here..." 
+                  className="border border-gray-300 rounded px-2 py-1 w-full text-black"
+                  value={sibling.familyName}
+                  onChange={(e) => updateSibling(index, 'familyName', e.target.value)}
+                />
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1 text-black">First Name:</label>
-                <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+                <input 
+                  type="text" 
+                  placeholder="Answer Here..." 
+                  className="border border-gray-300 rounded px-2 py-1 w-full text-black"
+                  value={sibling.firstName}
+                  onChange={(e) => updateSibling(index, 'firstName', e.target.value)}
+                />
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1 text-black">Middle Name:</label>
-                <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+                <input 
+                  type="text" 
+                  placeholder="Answer Here..." 
+                  className="border border-gray-300 rounded px-2 py-1 w-full text-black"
+                  value={sibling.middleName}
+                  onChange={(e) => updateSibling(index, 'middleName', e.target.value)}
+                />
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div>
                 <label className="block text-sm font-medium mb-1 text-black">Birth Date:</label>
-                <input type="date" className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+                <input 
+                  type="date" 
+                  className="border border-gray-300 rounded px-2 py-1 w-full text-black"
+                  value={sibling.birthDate}
+                  onChange={(e) => updateSibling(index, 'birthDate', e.target.value)}
+                />
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1 text-black">Age:</label>
-                <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+                <input 
+                  type="text" 
+                  placeholder="Answer Here..." 
+                  className="border border-gray-300 rounded px-2 py-1 w-full text-black"
+                  value={sibling.age}
+                  onChange={(e) => updateSibling(index, 'age', e.target.value)}
+                />
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1 text-black">Gr./ Yr. Level:</label>
-                <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+                <input 
+                  type="text" 
+                  placeholder="Answer Here..." 
+                  className="border border-gray-300 rounded px-2 py-1 w-full text-black"
+                  value={sibling.gradeYearLevel}
+                  onChange={(e) => updateSibling(index, 'gradeYearLevel', e.target.value)}
+                />
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1 text-black">School Employer:</label>
-                <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+                <input 
+                  type="text" 
+                  placeholder="Answer Here..." 
+                  className="border border-gray-300 rounded px-2 py-1 w-full text-black"
+                  value={sibling.schoolEmployer}
+                  onChange={(e) => updateSibling(index, 'schoolEmployer', e.target.value)}
+                />
               </div>
             </div>
           </fieldset>
