@@ -21,7 +21,7 @@ const PrintPreview: React.FC<{ request: typeof sampleRequests[0], onClose: () =>
                 <h1 className="text-2xl font-bold">SJSFI-SIS Official Document</h1>
                 <p className="text-sm text-gray-600">Generated Report</p>
             </div>
-            <div className="mb-4">
+            <div className="mb-4 text-black">
                 <div className="mb-2"><span className="font-semibold">Student Name:</span> {request.studentName}</div>
                 <div className="mb-2"><span className="font-semibold">Requested Document:</span> {request.requestedDocument}</div>
                 <div className="mb-2"><span className="font-semibold">Reason of Request:</span> {request.reason}</div>
