@@ -148,11 +148,11 @@ export default function SystemLogsPage() {
       </div>
 
       {/* Pagination */}
-      <div className="flex justify-between items-center mt-4 text-sm text-gray-600">
+      {/* <div className="flex justify-between items-center mt-4 text-sm text-gray-600">
         <span>
           ← Previous <strong className="mx-2">1</strong> 2 3 ... 67 68 Next →
         </span>
-      </div>
+      </div> */}
 
       {/* PDF Modal */}
       <PDFmodal

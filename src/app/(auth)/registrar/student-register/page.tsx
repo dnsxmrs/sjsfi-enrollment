@@ -9,11 +9,9 @@ import { approveRegistration } from '@/app/_actions/approveRegistration';
 import { generateRegistrationCode } from '@/app/_actions/generateCode';
 
 const RegisterCoursePage: React.FC = () => {
-    const [studentID, setStudentID] = useState('');
-    const [fullName, setFullName] = useState('');
-    const [gradeLevel, setGradeLevel] = useState('');
-    const [email, setEmail] = useState('');
-    const [status, setStatus] = useState(''); // This will hold the registration status
+    // Selected registration details state
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const [selectedRegistration, setSelectedRegistration] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [generatedCode, setGeneratedCode] = useState<string>('');
     const [isCodeCopied, setIsCodeCopied] = useState(false);
@@ -21,15 +19,8 @@ const RegisterCoursePage: React.FC = () => {
     const [showRejectModal, setShowRejectModal] = useState(false);
     const [selectedRegistrationId, setSelectedRegistrationId] = useState<number | null>(null);
 
-    const [students, setStudents] = useState<Array<{
-        id: string;
-        registrationId: number;
-        firstName: string;
-        familyName: string;
-        gradeLevel: string;
-        status: string;
-        email: string;
-    }>>([]);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const [students, setStudents] = useState<any[]>([]);
 
     // Fetch students on component mount
     useEffect(() => {
@@ -58,14 +49,26 @@ const RegisterCoursePage: React.FC = () => {
         }
         try {
             const result = await approveRegistration(selectedRegistrationId);
-// generateApplicationCode
 
             if (result.success && result.code) {
                 setGeneratedCode(result.code);
                 toast.success(`Registration Code Generated: ${result.code}`, {
                     duration: 5000,
                 });
-                setStatus('APPROVED'); // Update status to APPROVED
+
+                // Update the selected registration status
+                if (selectedRegistration) {
+                    setSelectedRegistration({
+                        ...selectedRegistration,
+                        status: 'APPROVED'
+                    });
+                }
+
+                // Refresh the students list
+                const refreshResult = await getStudents();
+                if (refreshResult.success) {
+                    setStudents(refreshResult.students);
+                }
 
             } else {
                 toast.error(`Failed to generate registration code: ${result.error || 'Unknown error occurred'}`);
@@ -73,6 +76,8 @@ const RegisterCoursePage: React.FC = () => {
 
         } catch {
             toast.error('An error occurred while generating the registration code. Please try again.');
+        } finally {
+            setSelectedRegistration(null);
         }
     };
 
@@ -128,11 +133,33 @@ const RegisterCoursePage: React.FC = () => {
             toast.error('No registration selected.');
             return;
         }
+
+        // Just show the modal for confirmation
+        setShowRejectModal(true);
+    };
+
+    const handleConfirmReject = async () => {
+        if (!selectedRegistrationId) {
+            toast.error('No registration selected.');
+            return;
+        }
+
+        setShowRejectModal(false);
+
         try {
             const result = await rejectRegistration(selectedRegistrationId);
-            // generateApplicationCode
             if (result.success) {
-                toast.success(`Registration rejected for ${fullName}`);
+                toast.success(`Registration rejected for ${selectedRegistration?.firstName} ${selectedRegistration?.familyName}`);
+
+                // Refresh the students list
+                const refreshResult = await getStudents();
+                if (refreshResult.success) {
+                    setStudents(refreshResult.students);
+                }
+
+                // Clear selection
+                setSelectedRegistration(null);
+                setSelectedRegistrationId(null);
             } else {
                 toast.error(`Failed to reject registration: ${result.error || 'Unknown error occurred'}`);
             }
@@ -140,55 +167,12 @@ const RegisterCoursePage: React.FC = () => {
             console.error('Error rejecting registration:', error);
             toast.error('An error occurred while rejecting the registration. Please try again.');
         }
-
-        // Show rejection modal
-        setShowRejectModal(true);
     };
 
-    const handleConfirmReject = async () => {
-        setShowRejectModal(false);
-
-        try {
-            // You'll need to create this action function
-            // const result = await rejectRegistration(selectedRegistrationId);
-
-            // For now, just show a success message
-            toast.success(`Registration rejected for ${fullName}`);
-
-            // Clear the form after rejection
-            setStudentID('');
-            setFullName('');
-            setGradeLevel('');
-            setEmail('');
-            setStatus('');
-            setSelectedRegistrationId(null);
-
-            // Refresh the students list
-            const result = await getStudents();
-            if (result.success) {
-                setStudents(result.students);
-            }
-        } catch (error) {
-            console.error('Error rejecting registration:', error);
-            toast.error('Failed to reject registration. Please try again.');
-        }
-    };
-
-    const handleViewStudent = (student: {
-        id: string;
-        registrationId: number;
-        firstName: string;
-        familyName: string;
-        gradeLevel: string;
-        status: string;
-        email: string;
-    }) => {
-        // Populate form fields with student data
-        setStudentID(student.id);
-        setFullName(student.firstName + ' ' + student.familyName);
-        setGradeLevel(student.gradeLevel);
-        setEmail(student.email);
-        setStatus(student.status);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handleViewStudent = (student: any) => {
+        // Set the selected registration data
+        setSelectedRegistration(student);
         setSelectedRegistrationId(student.registrationId);
     };
 
@@ -202,7 +186,6 @@ const RegisterCoursePage: React.FC = () => {
                     <div className="p-6">
                         <div className="flex justify-between items-center mb-4">
                             <h3 className="text-lg font-semibold text-gray-800 flex items-center">
-                                <X className="w-5 h-5 mr-2 text-red-600" />
                                 Reject Registration
                             </h3>
                             <button
@@ -231,18 +214,18 @@ const RegisterCoursePage: React.FC = () => {
                             </div>
 
                             <p className="text-gray-700 mb-4">
-                                Are you sure you want to reject the registration for <strong>{fullName}</strong>?
+                                Are you sure you want to reject the registration for <strong>{selectedRegistration?.firstName} {selectedRegistration?.familyName}</strong>?
                             </p>
 
                             <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
                                 <p className="text-sm text-gray-700">
-                                    <strong>Registration ID:</strong> {studentID}
+                                    <strong>Registration ID:</strong> {selectedRegistration?.id}
                                 </p>
                                 <p className="text-sm text-gray-700">
-                                    <strong>Grade Level:</strong> {gradeLevel}
+                                    <strong>Grade Level:</strong> {selectedRegistration?.gradeLevel}
                                 </p>
                                 <p className="text-sm text-gray-700">
-                                    <strong>Email:</strong> {email}
+                                    <strong>Email:</strong> {selectedRegistration?.email}
                                 </p>
                             </div>
                         </div>
@@ -317,7 +300,7 @@ const RegisterCoursePage: React.FC = () => {
                                     </button>
                                 </div>
                                 <p className="text-xs text-green-700">
-                                    Provide this code to the student for registration access.
+                                    Provide this code to the student/parent for registration access.
                                 </p>
                             </div>
                         )}
@@ -337,7 +320,6 @@ const RegisterCoursePage: React.FC = () => {
                                 <tr className="border-b border-gray-300 text-black">
                                     <th className="py-2 font-semibold">Registration ID</th>
                                     <th className="py-2 font-semibold">Full Name</th>
-                                    {/* <th className="py-2 font-semibold">Last Name</th> */}
                                     <th className="py-2 font-semibold">Grade Level</th>
                                     <th className="py-2 font-semibold">Actions</th>
                                 </tr>
@@ -368,13 +350,6 @@ const RegisterCoursePage: React.FC = () => {
                                                     >
                                                         <Eye className="h-5 w-5" />
                                                     </button>
-                                                    {/* <button
-                                                        title="Delete"
-                                                        className="text-red-600 hover:text-red-800"
-                                                        onClick={() => toast(`Delete student ${student.id}`)}
-                                                    >
-                                                        <Trash className="h-5 w-5" />
-                                                    </button> */}
                                                 </td>
                                             </tr>
                                         ))
@@ -383,157 +358,248 @@ const RegisterCoursePage: React.FC = () => {
                             </table>
                         )}
                     </div>
-                    {/* Add/Edit Student Form */}
+                    {/* Registration Details */}
                     <div className="bg-white p-6 rounded-lg shadow">
                         <h2 className="text-lg font-semibold mb-4 text-black">
                             Registration Details
                         </h2>
-                        <div className="grid grid-cols-2 gap-4 mb-4">
-                            <div>
-                                <label className="block text-sm font-medium mb-1 text-black" htmlFor="studentID">
-                                    Registration ID
-                                </label>
-                                <input
-                                    id="studentID"
-                                    type="text"
-                                    placeholder="Enter registration ID"
-                                    value={studentID}
-                                    onChange={(e) => setStudentID(e.target.value)}
-                                    readOnly
-                                    className="w-full text-black border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-100 cursor-not-allowed"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium mb-1 text-black" htmlFor="fullName">
-                                    Full Name
-                                </label>
-                                <input
-                                    id="fullName"
-                                    type="text"
-                                    placeholder="Enter full name"
-                                    value={fullName}
-                                    onChange={(e) => setFullName(e.target.value)}
-                                    readOnly
-                                    className="w-full text-black border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-100 cursor-not-allowed"
-                                />
-                            </div>
-                        </div>
-                        <div className="grid grid-cols-2 gap-4 mb-4">
-                            <div>
-                                <label className="block text-sm font-medium mb-1 text-black" htmlFor="gradeLevel">
-                                    Grade Level
-                                </label>
-                                <div className="w-full text-black border border-gray-300 rounded px-3 py-2 text-sm bg-gray-100 flex items-center">
-                                    {gradeLevel || 'Not selected'}
+                        {selectedRegistration ? (
+                            <div className="space-y-6">
+                                {/* Basic Information */}
+                                <div>
+                                    <h3 className="text-md font-semibold mb-3 text-gray-800 border-b pb-2">Basic Information</h3>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="block text-sm font-medium mb-1 text-black">Registration ID</label>
+                                            <div className="w-full text-black border border-gray-300 rounded px-3 py-2 text-sm bg-gray-100">
+                                                {selectedRegistration.id}
+                                            </div>
+                                        </div>
+                                        <div>
+                                            {/* <label className="block text-sm font-medium mb-1 text-black">Student Number</label>
+                                            <div className="w-full text-black border border-gray-300 rounded px-3 py-2 text-sm bg-gray-100">
+                                                {selectedRegistration.id}
+                                            </div> */}
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium mb-1 text-black">First Name</label>
+                                            <div className="w-full text-black border border-gray-300 rounded px-3 py-2 text-sm bg-gray-100">
+                                                {selectedRegistration.firstName}
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium mb-1 text-black">Middle Name</label>
+                                            <div className="w-full text-black border border-gray-300 rounded px-3 py-2 text-sm bg-gray-100">
+                                                {selectedRegistration.middleName || 'N/A'}
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium mb-1 text-black">Family Name</label>
+                                            <div className="w-full text-black border border-gray-300 rounded px-3 py-2 text-sm bg-gray-100">
+                                                {selectedRegistration.familyName}
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium mb-1 text-black">Email Address</label>
+                                            <div className="w-full text-black border border-gray-300 rounded px-3 py-2 text-sm bg-gray-100">
+                                                {selectedRegistration.email}
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium mb-1 text-black" htmlFor="status">
-                                    Registration Status
-                                </label>
-                                <div className="w-full text-black border border-gray-300 rounded px-3 py-2 text-sm bg-gray-100">
-                                    {status || 'Not selected'}
+
+                                {/* Personal Information */}
+                                <div>
+                                    <h3 className="text-md font-semibold mb-3 text-gray-800 border-b pb-2">Personal Information</h3>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="block text-sm font-medium mb-1 text-black">Birthdate</label>
+                                            <div className="w-full text-black border border-gray-300 rounded px-3 py-2 text-sm bg-gray-100">
+                                                {new Date(selectedRegistration.birthdate).toLocaleDateString()}
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium mb-1 text-black">Place of Birth</label>
+                                            <div className="w-full text-black border border-gray-300 rounded px-3 py-2 text-sm bg-gray-100">
+                                                {selectedRegistration.placeOfBirth}
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium mb-1 text-black">Age</label>
+                                            <div className="w-full text-black border border-gray-300 rounded px-3 py-2 text-sm bg-gray-100">
+                                                {selectedRegistration.age}
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium mb-1 text-black">Gender</label>
+                                            <div className="w-full text-black border border-gray-300 rounded px-3 py-2 text-sm bg-gray-100">
+                                                {selectedRegistration.gender}
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div className="mb-4">
-                            <label className="block text-sm font-medium mb-1 text-black" htmlFor="email">
-                                Email Address
-                            </label>
-                            <input
-                                id="email"
-                                type="email"
-                                placeholder="Enter email address"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                readOnly
-                                className="w-full text-black border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-100 cursor-not-allowed"
-                            />
-                        </div>
-                        {/* <div className="mb-4">
-                            <span className="block text-sm font-medium mb-2 text-black">Requirements</span>
-                            <div className="flex flex-col space-y-1">
-                                <label className="inline-flex items-center">
-                                    <input
-                                        type="checkbox"
-                                        name="birthCertificate"
-                                        checked={requirements.birthCertificate}
-                                        onChange={handleRequirementChange}
-                                        className="form-checkbox"
-                                    />
-                                    <span className="ml-2 text-sm text-black">Birth Certificate</span>
-                                </label>
-                                <label className="inline-flex items-center">
-                                    <input
-                                        type="checkbox"
-                                        name="f137"
-                                        checked={requirements.f137}
-                                        onChange={handleRequirementChange}
-                                        className="form-checkbox"
-                                    />
-                                    <span className="ml-2 text-sm text-black">F-137</span>
-                                </label>
-                                <label className="inline-flex items-center">
-                                    <input
-                                        type="checkbox"
-                                        name="f138"
-                                        checked={requirements.f138}
-                                        onChange={handleRequirementChange}
-                                        className="form-checkbox"
-                                    />
-                                    <span className="ml-2 text-sm text-black">F-138</span>
-                                </label>
-                                <label className="inline-flex items-center">
-                                    <input
-                                        type="checkbox"
-                                        name="goodMoral"
-                                        checked={requirements.goodMoral}
-                                        onChange={handleRequirementChange}
-                                        className="form-checkbox"
-                                    />
-                                    <span className="ml-2 text-sm text-black">Good Moral</span>
-                                </label>
-                                <label className="inline-flex items-center">
-                                    <input
-                                        type="checkbox"
-                                        name="privacyForm"
-                                        checked={requirements.privacyForm}
-                                        onChange={handleRequirementChange}
-                                        className="form-checkbox"
-                                    />
-                                    <span className="ml-2 text-sm text-black">Privacy Form</span>
-                                </label>
-                            </div>
-                        </div> */}
-                        <div className="flex space-x-4">
-                            <button
-                                onClick={handleRegister}
-                                className="bg-red-800 text-white px-4 py-2 rounded text-sm flex items-center space-x-2 hover:bg-red-900"
-                            >
-                                <svg
-                                    className="w-4 h-4"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    viewBox="0 0 24 24"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                >
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"></path>
-                                </svg>
-                                <span>Approve Registration</span>
-                            </button>
-                            {/* <button
-                                onClick={handleNotify}
-                                disabled={isNotificationLoading}
-                                className="bg-yellow-400 text-black px-4 py-2 rounded text-sm flex items-center space-x-2 hover:bg-yellow-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                                {isNotificationLoading ? (
-                                    <>
-                                        <div className="animate-spin h-4 w-4 border-2 border-black border-t-transparent rounded-full"></div>
-                                        <span>Sending...</span>
-                                    </>
-                                ) : (
-                                    <>
+
+                                {/* Address Information */}
+                                <div>
+                                    <h3 className="text-md font-semibold mb-3 text-gray-800 border-b pb-2">Address Information</h3>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="block text-sm font-medium mb-1 text-black">Street Address</label>
+                                            <div className="w-full text-black border border-gray-300 rounded px-3 py-2 text-sm bg-gray-100">
+                                                {selectedRegistration.streetAddress}
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium mb-1 text-black">City</label>
+                                            <div className="w-full text-black border border-gray-300 rounded px-3 py-2 text-sm bg-gray-100">
+                                                {selectedRegistration.city}
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium mb-1 text-black">State/Province</label>
+                                            <div className="w-full text-black border border-gray-300 rounded px-3 py-2 text-sm bg-gray-100">
+                                                {selectedRegistration.stateProvince}
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium mb-1 text-black">Postal Code</label>
+                                            <div className="w-full text-black border border-gray-300 rounded px-3 py-2 text-sm bg-gray-100">
+                                                {selectedRegistration.postalCode}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Academic Information */}
+                                <div>
+                                    <h3 className="text-md font-semibold mb-3 text-gray-800 border-b pb-2">Academic Information</h3>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="block text-sm font-medium mb-1 text-black">School Year</label>
+                                            <div className="w-full text-black border border-gray-300 rounded px-3 py-2 text-sm bg-gray-100">
+                                                {selectedRegistration.schoolYear.year}
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium mb-1 text-black">Grade Level</label>
+                                            <div className="w-full text-black border border-gray-300 rounded px-3 py-2 text-sm bg-gray-100">
+                                                {selectedRegistration.gradeLevel}
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium mb-1 text-black">Registration Type</label>
+                                            <div className="w-full text-black border border-gray-300 rounded px-3 py-2 text-sm bg-gray-100">
+                                                {selectedRegistration.registrationType}
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium mb-1 text-black">Registration Status</label>
+                                            <div className="w-full text-black border border-gray-300 rounded px-3 py-2 text-sm bg-gray-100">
+                                                <span className={`px-2 py-1 rounded-full text-xs font-medium ${selectedRegistration.status === 'APPROVED'
+                                                    ? 'bg-green-100 text-green-800'
+                                                    : selectedRegistration.status === 'PENDING'
+                                                        ? 'bg-yellow-100 text-yellow-800'
+                                                        : 'bg-red-100 text-red-800'
+                                                    }`}>
+                                                    {selectedRegistration.status}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Payment Information */}
+                                <div>
+                                    <h3 className="text-md font-semibold mb-3 text-gray-800 border-b pb-2">Payment Information</h3>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="block text-sm font-medium mb-1 text-black">Mode of Payment</label>
+                                            <div className="w-full text-black border border-gray-300 rounded px-3 py-2 text-sm bg-gray-100">
+                                                {selectedRegistration.modeOfPayment}
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium mb-1 text-black">Amount Payable</label>
+                                            <div className="w-full text-black border border-gray-300 rounded px-3 py-2 text-sm bg-gray-100">
+                                                ₱{selectedRegistration.amountPayable}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Contact Numbers */}
+                                {selectedRegistration.contactNumbers.length > 0 && (
+                                    <div>
+                                        <h3 className="text-md font-semibold mb-3 text-gray-800 border-b pb-2">Contact Numbers</h3>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                                            {selectedRegistration.contactNumbers.map((contact: any, index: number) => (
+                                                <div key={contact.id}>
+                                                    <label className="block text-sm font-medium mb-1 text-black">Contact {index + 1}</label>
+                                                    <div className="w-full text-black border border-gray-300 rounded px-3 py-2 text-sm bg-gray-100">
+                                                        {contact.number}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Guardians */}
+                                {selectedRegistration.guardians.length > 0 && (
+                                    <div>
+                                        <h3 className="text-md font-semibold mb-3 text-gray-800 border-b pb-2">Guardians</h3>
+                                        <div className="space-y-4">
+                                            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                                            {selectedRegistration.guardians.map((guardian: any, index: number) => (
+                                                <div key={guardian.id} className="border border-gray-200 rounded p-3 bg-gray-50 text-black">
+                                                    <h4 className="font-medium text-sm text-gray-700 mb-2">Guardian {index + 1}</h4>
+                                                    <div className="grid grid-cols-2 gap-4 text-sm">
+                                                        <div>
+                                                            <strong>Name:</strong> {guardian.firstName} {guardian.middleName ? guardian.middleName + ' ' : ''}{guardian.familyName}
+                                                        </div>
+                                                        <div>
+                                                            <strong>Relation:</strong> {guardian.relationToStudent}
+                                                        </div>
+                                                        <div className="col-span-2">
+                                                            <strong>Occupation:</strong> {guardian.occupation}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Registration Dates */}
+                                <div>
+                                    <h3 className="text-md font-semibold mb-3 text-gray-800 border-b pb-2">Registration Dates</h3>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="block text-sm font-medium mb-1 text-black">Created At</label>
+                                            <div className="w-full text-black border border-gray-300 rounded px-3 py-2 text-sm bg-gray-100">
+                                                {new Date(selectedRegistration.createdAt).toLocaleString()}
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium mb-1 text-black">Last Updated</label>
+                                            <div className="w-full text-black border border-gray-300 rounded px-3 py-2 text-sm bg-gray-100">
+                                                {new Date(selectedRegistration.updatedAt).toLocaleString()}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Action Buttons */}
+                                <div className="flex space-x-4 pt-4 border-t">
+                                    <button
+                                        onClick={handleRegister}
+                                        disabled={selectedRegistration.status === 'APPROVED'}
+                                        className={`px-4 py-2 rounded text-sm flex items-center space-x-2 ${selectedRegistration.status === 'APPROVED'
+                                            ? 'bg-gray-400 cursor-not-allowed'
+                                            : 'bg-red-800 hover:bg-red-900'
+                                            } text-white`}
+                                    >
                                         <svg
                                             className="w-4 h-4"
                                             fill="none"
@@ -542,20 +608,30 @@ const RegisterCoursePage: React.FC = () => {
                                             viewBox="0 0 24 24"
                                             xmlns="http://www.w3.org/2000/svg"
                                         >
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"></path>
                                         </svg>
-                                        <span>Notify Missing Requirements</span>
-                                    </>
-                                )}
-                            </button> */}
-                            <button
-                                onClick={handleRejectRegistration}
-                                className="bg-gray-600 text-white px-4 py-2 rounded text-sm flex items-center space-x-2 hover:bg-gray-700"
-                            >
-                                <X className="w-4 h-4" />
-                                <span>Reject Registration</span>
-                            </button>
-                        </div>
+                                        <span>
+                                            {selectedRegistration.status === 'APPROVED' ? 'Already Approved' : 'Approve Registration'}
+                                        </span>
+                                    </button>
+                                    <button
+                                        onClick={handleRejectRegistration}
+                                        disabled={selectedRegistration.status !== 'PENDING'}
+                                        className={`px-4 py-2 rounded text-sm flex items-center space-x-2 ${selectedRegistration.status !== 'PENDING'
+                                            ? 'bg-gray-400 cursor-not-allowed'
+                                            : 'bg-gray-600 hover:bg-gray-700'
+                                            } text-white`}
+                                    >
+                                        <X className="w-4 h-4" />
+                                        <span>Reject Registration</span>
+                                    </button>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="text-center py-8 text-gray-500">
+                                <p>Select a registration from the table above to view details</p>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

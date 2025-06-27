@@ -3,13 +3,13 @@
 import React from "react";
 import { X } from "lucide-react";
 
-interface ParentInfo {
-  familyName: string;
-  firstName: string;
-  middleName: string;
-  occupation: string;
-  relation: string;
-}
+// interface ParentInfo {
+//   familyName: string;
+//   firstName: string;
+//   middleName: string;
+//   occupation: string;
+//   relation: string;
+// }
 
 interface SchoolInfo {
   name: string;
