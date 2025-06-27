@@ -6,10 +6,10 @@ import StudentHealthHistoryPage from "./healthhistory";
 import FatherBackgroundPage from "./fatherbackground";
 import MotherBackgroundPage from "./motherbackground";
 import GuardianBackgroundPage from "./guardianbackground";
-import Image from "next/image";
 
 export default function StudentApplicationPagedForm() {
   const [page, setPage] = useState(0);
+  const [confirmed, setConfirmed] = useState(false);
 
   if (page === 5) {
     return <GuardianBackgroundPage onBack={() => setPage(4)} />;
@@ -35,28 +35,12 @@ export default function StudentApplicationPagedForm() {
     <div className="w-full min-h-screen bg-[#f7f7f7] flex flex-col items-center py-8">
       {/* Header */}
       <div className="w-full max-w-6xl flex flex-col items-center mb-6">
-        <div className="flex items-center w-full justify-between mb-2">
-          <div className="flex items-center gap-3">
-            <Image
-              src="/assets/sjsfi_logo.svg"
-              alt="SJSFI Logo"
-              width={90}
-              height={90}
-              className="mb-4"
-            />
-            <div>
-              <h1 className="text-2xl md:text-3xl font-bold tracking-widest text-[#a10000]">SAINT JOSEPH SCHOOL OF FAIRVIEW INC.</h1>
-              <p className="text-xs md:text-sm text-[#a10000] font-semibold tracking-wide">Atherton St. cor. Pound St. Ph.8 North Fairview, Q.C,</p>
-            </div>
-          </div>
-          <div className="text-right text-xs md:text-sm text-[#a10000] font-semibold">
-            Tel. No. 461-3272 | 461-3346
-          </div>
-        </div>
         <div className="w-full flex items-center gap-4 mt-2">
           <button className="bg-[#a10000] text-white px-8 py-2 rounded-md font-semibold text-md shadow hover:bg-[#7a0000] transition">Cancel</button>
           <div className="flex-1 flex justify-center">
-            <div className="rounded-md shadow px-8 py-2 font-bold text-lg tracking-wide border border-gray-200 bg-gray-100 text-black">STUDENT APPLICATION FORM</div>
+            <h1 className="w-full bg-white rounded-md py-2 px-6 font-bold text-black text-lg tracking-widest text-center flex-grow ml-3 shadow">
+              STUDENT APPLICATION FORM
+            </h1>
           </div>
         </div>
       </div>
@@ -74,16 +58,27 @@ export default function StudentApplicationPagedForm() {
             <li>Php 300.00 testing fee (non-refundable)</li>
           </ol>
         </div>
-        <div className="flex items-center mt-2">
-          <input type="checkbox" className="checkbox checkbox-md mr-2 border-[#a10000] text-[#a10000]" />
-          <span className="text-[#a10000] text-base md:text-lg">I hereby confirm that I have completed all the required tasks and have all the necessary items.</span>
-        </div>
+        <label className="mt-8 flex items-start space-x-2 text-red-800 text-sm max-w-3xl cursor-pointer">
+          <input
+            type="checkbox"
+            checked={confirmed}
+            onChange={() => setConfirmed(!confirmed)}
+            className="mt-1"
+          />
+          <span>
+            I hereby confirm that I have completed all the required tasks and have all the necessary items.
+          </span>
+        </label>
       </div>
 
       {/* Continue Button */}
       <div className="w-full max-w-6xl flex justify-end mt-8">
         <button
-          className="bg-[#a10000] text-white px-10 py-2 rounded-md font-semibold text-lg shadow hover:bg-[#7a0000] transition"
+          type="button"
+          disabled={!confirmed}
+          className={`bg-red-800 text-white px-6 py-2 rounded-md ${
+            confirmed ? 'hover:bg-red-900 cursor-pointer' : 'opacity-50 cursor-not-allowed'
+          }`}
           onClick={() => setPage(1)}
         >
           Continue
