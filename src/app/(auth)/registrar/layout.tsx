@@ -29,11 +29,11 @@ const NAVIGATION_ITEMS = [
         label: "Student Registration",
         icon: PencilLine,
     },
-    {
-        href: "/registrar/student-application",
-        label: "Student Application",
-        icon: FileUser,
-    },
+   // {
+    //    href: "/registrar/student-application",
+    //    label: "Student Application",
+ //       icon: FileUser,
+  //  },
     {
         href: "/registrar/student-information",
         label: "Student Information",
