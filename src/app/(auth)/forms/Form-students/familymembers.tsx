@@ -1,11 +1,11 @@
 import React from "react";
 
-interface StudentHealthHistoryPageProps {
+interface StudentFamilyMembersPageProps {
   onBack?: () => void;
   onNext?: () => void;
 }
 
-export default function StudentHealthHistoryPage({ onBack, onNext }: StudentHealthHistoryPageProps) {
+export default function StudentFamilyMembersPage({ onBack, onNext }: StudentFamilyMembersPageProps) {
   return (
     <div className=" flex min-h-screen flex-col items-center py-8">
       {/* Header */}
@@ -29,46 +29,55 @@ export default function StudentHealthHistoryPage({ onBack, onNext }: StudentHeal
       <div className="w-full bg-white rounded-lg shadow p-8 border border-gray-200 flex flex-col gap-6">
         {/* Section Title */}
         <div className="w-full flex justify-center">
-          <div className="font-bold text-lg tracking-wide py-2 text-white bg-[#a10000] rounded w-full text-center">HEALTH HISTORY</div>
+          <div className="font-bold text-lg tracking-wide py-2 text-white bg-[#a10000] rounded w-full text-center">FAMILY MEMBERS: SIBLINGS</div>
         </div>
 
-        {/* Health History Fields */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="flex flex-col gap-4">
+        {/* Sibling Info Fields */}
+        <fieldset className="border border-gray-300 rounded p-4">
+          <legend className="block text-sm font-medium mb-1 text-black px-2">Sibling #1</legend>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pb-4">
             <div>
-              <label className="block text-sm font-medium mb-1 text-black">Childhood Diseases:</label>
+              <label className="block text-sm font-medium mb-1 text-black">Family Name:</label>
               <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1 text-black">Other Medical Conditions:</label>
-              <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
-            </div>
-          </div>
-          <div className="flex flex-col gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-1 text-black">Allergies:</label>
+              <label className="block text-sm font-medium mb-1 text-black">First Name:</label>
               <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1 text-black">Immunizations:</label>
+              <label className="block text-sm font-medium mb-1 text-black">Middle Name:</label>
               <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
             </div>
           </div>
-        </div>
 
-        {/* Physical Handicaps / Special Needs */}
-        <div>
-          <label className="block text-sm font-medium mb-1 text-black">Any Physical handicaps or special needs which should be taken in consideration (please specify):</label>
-          <div className="relative">
-            <textarea
-              rows={5}
-              maxLength={250}
-              placeholder="Answer Here..."
-              className="input input-bordered w-full text-black border border-gray-300 rounded px-2 py-1 resize-none pt-2"
-            />
-            <span className="absolute bottom-2 right-4 text-xs text-gray-400">250</span>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-1 text-black">Birth Date:</label>
+              <input type="date" className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1 text-black">Age:</label>
+              <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1 text-black">Gr./ Yr. Level:</label>
+              <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1 text-black">School Employer:</label>
+              <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+            </div>
           </div>
-        </div>
+        </fieldset>
+
+      <div className="w-full flex justify-left mt-8">
+        <button
+          className="bg-red-800 text-white px-6 py-2 rounded-md shadow hover:bg-[#7a0000] transition"
+        >
+          Add Sibling
+        </button>
+      </div>
+  
       </div>
 
       {/* Next Page Button */}

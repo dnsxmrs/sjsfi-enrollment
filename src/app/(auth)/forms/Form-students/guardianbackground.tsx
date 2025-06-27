@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import Image from "next/image";
 
 interface GuardianBackgroundPageProps {
   onBack?: () => void;
+  onNext?: () => void;
 }
 
-export default function GuardianBackgroundPage({ onBack }: GuardianBackgroundPageProps) {
+export default function GuardianBackgroundPage({ onBack, onNext }: GuardianBackgroundPageProps) {
   const [status, setStatus] = useState("");
   const [otherStatus, setOtherStatus] = useState("");
 
@@ -224,7 +224,12 @@ export default function GuardianBackgroundPage({ onBack }: GuardianBackgroundPag
 
       {/* Next Page Button */}
       <div className="w-full flex justify-end mt-8">
-        <button className="bg-red-800 text-white px-6 py-2 rounded-md shadow hover:bg-[#7a0000] transition">Next Page</button>
+        <button
+          className="bg-red-800 text-white px-6 py-2 rounded-md shadow hover:bg-[#7a0000] transition"
+          onClick={onNext}
+        >
+          Next Page
+        </button>
       </div>
     </div>
   );
