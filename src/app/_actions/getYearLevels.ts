@@ -9,7 +9,7 @@ export async function getYearLevels() {
                 deletedAt: null, // Only non-deleted year levels
             },
             orderBy: {
-                id: 'asc' // Order by ID to maintain insertion order
+                createdAt: 'desc' // Order by creation date to maintain insertion order
             }
         });
 

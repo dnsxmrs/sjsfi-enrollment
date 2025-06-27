@@ -4,9 +4,9 @@ import { prisma } from "@/lib/prisma";
 
 export async function getSchoolYears() {
     try {
-        const schoolYears = await prisma.schoolYear.findMany({
+        const schoolYears = await prisma.academicTerm.findMany({
             where: {
-                status: 'active', // Only active school years
+                status: 'ACTIVE', // Only active school years
                 deletedAt: null, // Only non-deleted students
             },
         });
@@ -29,7 +29,7 @@ export async function getSchoolYears() {
 
 export async function getSchoolAllYears() {
     try {
-        const schoolYears = await prisma.schoolYear.findMany({
+        const schoolYears = await prisma.academicTerm.findMany({
             where: {
                 deletedAt: null, // Only non-deleted school years
             },
