@@ -6,14 +6,19 @@ import StudentHealthHistoryPage from "./healthhistory";
 import FatherBackgroundPage from "./fatherbackground";
 import MotherBackgroundPage from "./motherbackground";
 import GuardianBackgroundPage from "./guardianbackground";
-import FamilyMembersPage from "./familymembers";
+import StudentFamilyMembersPage from "./familymembers";
+import StudentEducationalBackgroundPage from "./educationalbackground";
 
 export default function StudentApplicationPagedForm() {
   const [page, setPage] = useState(0);
   const [confirmed, setConfirmed] = useState(false);
 
+  if (page === 7) {
+    return <StudentEducationalBackgroundPage onBack={() => setPage(6)} />;
+  }
+
   if (page === 6) {
-    return <FamilyMembersPage onBack={() => setPage(5)} />;
+    return <StudentFamilyMembersPage onBack={() => setPage(5)} onNext={() => setPage(7)}/>;
   }
 
   if (page === 5) {
