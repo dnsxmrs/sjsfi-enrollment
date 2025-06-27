@@ -13,7 +13,7 @@ import {
     Newspaper,
     Scale,
     Shield,
-    FileUser
+    // FileUser
 } from "lucide-react";
 import Image from "next/image";
 import { UserButton } from "@clerk/nextjs";
