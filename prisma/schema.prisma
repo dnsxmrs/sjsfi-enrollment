@@ -269,6 +269,7 @@ model Registration {
   createdAt      DateTime            @default(now())
   updatedAt      DateTime            @updatedAt
   deletedAt      DateTime?
+  registrationcode RegistrationCode[]
 }
 
 model Guardian {
@@ -404,6 +405,8 @@ model RegistrationCode {
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
   deletedAt        DateTime?
+  registrationId   Int?
+  registration     Registration? @relation(fields: [registrationId], references: [id])
 }
 
 model GeneralPolicy {
