@@ -5,7 +5,7 @@ import LoginFooter from "@/components/atoms/LoginFooter";
 import ActionButton from "@/components/atoms/ActionButton";
 import { useState } from "react";
 import { useSignIn } from "@clerk/nextjs";
-import { facultyEmailExists } from "../actions/handleFacultyLogin";
+// import { facultyEmailExists } from "../actions/handleFacultyLogin";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import Link from "next/link";
