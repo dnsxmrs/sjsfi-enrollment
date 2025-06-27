@@ -67,8 +67,6 @@ export default function StudentPersonalDataPage({ onBack, onNext }: StudentPerso
           </div>
         </div>
 
-        
-
         {/* Name Fields */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>

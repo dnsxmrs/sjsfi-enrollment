@@ -180,6 +180,14 @@ export default function StudentTransfereePage({ onBack, onNext }: StudentTransfe
         >
           Review & Submit Application
         </button>
+        {/* Temporary button to access Medical History Page */}
+        <button
+          className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700"
+          onClick={onNext}
+          hidden
+        >
+          Go to Medical History
+        </button>
       </div>
 
       <ReviewModalFormStudents
