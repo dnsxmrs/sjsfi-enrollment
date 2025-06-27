@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 interface StudentFamilyMembersPageProps {
   onBack?: () => void;
@@ -6,6 +6,14 @@ interface StudentFamilyMembersPageProps {
 }
 
 export default function StudentFamilyMembersPage({ onBack, onNext }: StudentFamilyMembersPageProps) {
+  // State to hold siblings array, initially with one sibling
+  const [siblings, setSiblings] = useState([{}]);
+
+  // Handler to add a new sibling
+  const addSibling = () => {
+    setSiblings([...siblings, {}]);
+  };
+
   return (
     <div className=" flex min-h-screen flex-col items-center py-8">
       {/* Header */}
@@ -33,51 +41,53 @@ export default function StudentFamilyMembersPage({ onBack, onNext }: StudentFami
         </div>
 
         {/* Sibling Info Fields */}
-        <fieldset className="border border-gray-300 rounded p-4">
-          <legend className="block text-sm font-medium mb-1 text-black px-2">Sibling #1</legend>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pb-4">
-            <div>
-              <label className="block text-sm font-medium mb-1 text-black">Family Name:</label>
-              <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+        {siblings.map((_, index) => (
+          <fieldset key={index} className="border border-gray-300 rounded p-4">
+            <legend className="block text-sm font-medium mb-1 text-black px-2">{`Sibling #${index + 1}`}</legend>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pb-4">
+              <div>
+                <label className="block text-sm font-medium mb-1 text-black">Family Name:</label>
+                <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1 text-black">First Name:</label>
+                <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1 text-black">Middle Name:</label>
+                <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+              </div>
             </div>
-            <div>
-              <label className="block text-sm font-medium mb-1 text-black">First Name:</label>
-              <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1 text-black">Middle Name:</label>
-              <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
-            </div>
-          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-1 text-black">Birth Date:</label>
-              <input type="date" className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-1 text-black">Birth Date:</label>
+                <input type="date" className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1 text-black">Age:</label>
+                <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1 text-black">Gr./ Yr. Level:</label>
+                <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1 text-black">School Employer:</label>
+                <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
+              </div>
             </div>
-            <div>
-              <label className="block text-sm font-medium mb-1 text-black">Age:</label>
-              <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1 text-black">Gr./ Yr. Level:</label>
-              <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1 text-black">School Employer:</label>
-              <input type="text" placeholder="Answer Here..." className="border border-gray-300 rounded px-2 py-1 w-full text-black" />
-            </div>
-          </div>
-        </fieldset>
+          </fieldset>
+        ))}
 
-      <div className="w-full flex justify-left mt-8">
-        <button
-          className="bg-red-800 text-white px-6 py-2 rounded-md shadow hover:bg-[#7a0000] transition"
-        >
-          Add Sibling
-        </button>
-      </div>
-  
+        <div className="w-full flex justify-left mt-8">
+          <button
+            className="bg-red-800 text-white px-6 py-2 rounded-md shadow hover:bg-[#7a0000] transition"
+            onClick={addSibling}
+          >
+            Add Sibling
+          </button>
+        </div>
       </div>
 
       {/* Next Page Button */}
