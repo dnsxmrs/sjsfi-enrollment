@@ -12,7 +12,12 @@ export default function StudentHealthHistoryPage({ onBack, onNext }: StudentHeal
       {/* Header */}
       <div className="w-full flex flex-col items-center mb-6">
         <div className="w-full flex items-center gap-4 mt-2">
-          <button className="bg-[#a10000] text-white px-8 py-2 rounded-md font-semibold text-md shadow hover:bg-[#7a0000] transition">Back</button>
+          <button
+            className="bg-[#a10000] text-white px-8 py-2 rounded-md font-semibold text-md shadow hover:bg-[#7a0000] transition"
+            onClick={onBack}
+          >
+            Back
+          </button>
           <div className="flex-1 flex justify-center">
             <h1 className="w-full bg-white rounded-md py-2 px-6 font-bold text-black text-lg tracking-widest text-center flex-grow ml-3 shadow">
               STUDENT APPLICATION FORM
