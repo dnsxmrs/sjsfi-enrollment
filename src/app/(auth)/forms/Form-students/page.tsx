@@ -8,13 +8,18 @@ import MotherBackgroundPage from "./motherbackground";
 import GuardianBackgroundPage from "./guardianbackground";
 import StudentFamilyMembersPage from "./familymembers";
 import StudentEducationalBackgroundPage from "./educationalbackground";
+import StudentTransfereePage from "./transferee";
 
 export default function StudentApplicationPagedForm() {
   const [page, setPage] = useState(0);
   const [confirmed, setConfirmed] = useState(false);
 
+  if (page === 8) {
+    return <StudentTransfereePage onBack={() => setPage(7)} />;
+  }
+
   if (page === 7) {
-    return <StudentEducationalBackgroundPage onBack={() => setPage(6)} />;
+    return <StudentEducationalBackgroundPage onBack={() => setPage(6)} onNext={() => setPage(8)}/>;
   }
 
   if (page === 6) {
