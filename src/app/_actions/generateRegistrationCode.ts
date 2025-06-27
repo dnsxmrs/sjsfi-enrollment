@@ -132,3 +132,53 @@ export async function validateRegistrationCode(code: string): Promise<{
         };
     }
 }
+
+export async function generateRegistrationCodeForRegistration(registrationId: number): Promise<{
+    success: boolean;
+    code?: string;
+    registrationCodeId?: number;
+    error?: string;
+}> {
+    try {
+        const code = await generateUniqueCode();
+
+        // Convert to UTC+8 (Philippine local time)
+        const now = new Date();
+        const phTime = new Date(now.getTime() + 8 * 60 * 60 * 1000);
+
+        // 1 hour expiration from PH time
+        const expirationDate = new Date(phTime.getTime() + 60 * 60 * 1000);
+
+        console.log(`Generated registration code: ${code} at ${phTime.toISOString()} for registrationId: ${registrationId}`);
+
+        // Use a transaction to ensure both code creation and status update
+        const result = await prisma.$transaction(async (tx) => {
+            const created = await tx.registrationCode.create({
+                data: {
+                    registrationCode: code,
+                    status: 'active',
+                    expirationDate: expirationDate,
+                    createdAt: phTime,
+                    registrationId: registrationId
+                }
+            });
+            await tx.registration.update({
+                where: { id: registrationId },
+                data: { status: 'approved', updatedAt: phTime }
+            });
+            return created;
+        });
+
+        return {
+            success: true,
+            code: code,
+            registrationCodeId: result.id
+        };
+    } catch (error) {
+        console.error('Error generating registration code for registration:', error);
+        return {
+            success: false,
+            error: 'Failed to generate registration code for registration'
+        };
+    }
+}

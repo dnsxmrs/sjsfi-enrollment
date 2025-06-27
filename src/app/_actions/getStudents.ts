@@ -26,6 +26,7 @@ export async function getStudents() {
         // console.log("Students fetched successfully:", registration.length); // Transform the data to match the expected format
         const formattedStudents = registration.map((regis) => ({
             id: regis.studentNo,
+            registrationId: regis.id,
             firstName: regis.firstName,
             middleName: regis.middleName,
             familyName: regis.familyName,

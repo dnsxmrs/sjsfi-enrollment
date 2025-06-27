@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Eye, Trash, Copy, Check, X, Mail } from 'lucide-react';
 import { getStudents } from '@/app/_actions/getStudents';
 import { sendMissingRequirementsNotification, getMissingRequirements } from '@/app/_actions/sendNotification';
-import { generateRegistrationCode } from '@/app/_actions/generateRegistrationCode';
+import { generateRegistrationCode, generateRegistrationCodeForRegistration } from '@/app/_actions/generateRegistrationCode';
 import toast from 'react-hot-toast';
 
 const RegisterCoursePage: React.FC = () => {
@@ -15,6 +15,7 @@ const RegisterCoursePage: React.FC = () => {
     const [status, setStatus] = useState(''); // This will hold the registration status
     const [students, setStudents] = useState<Array<{
         id: string;
+        registrationId: number;
         firstName: string;
         familyName: string;
         gradeLevel: string;
@@ -39,6 +40,7 @@ const RegisterCoursePage: React.FC = () => {
         email: string;
         missingReqs: string[];
     }>({ fullName: '', email: '', missingReqs: [] });
+    const [selectedRegistrationId, setSelectedRegistrationId] = useState<number | null>(null);
 
     // Fetch students on component mount
     useEffect(() => {
@@ -67,9 +69,35 @@ const RegisterCoursePage: React.FC = () => {
         });
     };
 
-    const handleRegister = () => {
-        // Placeholder for register student logic
-        toast('Register Student clicked');
+    const handleRegister = async () => {
+        if (!selectedRegistrationId) {
+            toast.error('No registration selected.');
+            return;
+        }
+        try {
+            const result = await generateRegistrationCodeForRegistration(selectedRegistrationId);
+            if (result.success && result.code) {
+                toast.success(`Registration Code Generated: ${result.code}`, {
+                    duration: 5000,
+                });
+                setGeneratedCode(result.code);
+                // Refresh students list and update selected status
+                const refreshed = await getStudents();
+                if (refreshed.success) {
+                    setStudents(refreshed.students);
+                    // Find the updated student and update status in form
+                    const updated = refreshed.students.find(s => s.registrationId === selectedRegistrationId);
+                    if (updated) {
+                        setStatus(updated.status);
+                    }
+                }
+            } else {
+                toast.error(`Failed to generate registration code: ${result.error || 'Unknown error occurred'}`);
+            }
+        } catch (error) {
+            console.error('Error generating registration code:', error);
+            toast.error('An error occurred while generating the registration code. Please try again.');
+        }
     };
 
     const handleGenerateRegistration = async () => {
@@ -170,6 +198,7 @@ const RegisterCoursePage: React.FC = () => {
 
     const handleViewStudent = (student: {
         id: string;
+        registrationId: number;
         firstName: string;
         familyName: string;
         gradeLevel: string;
@@ -182,6 +211,7 @@ const RegisterCoursePage: React.FC = () => {
         setGradeLevel(student.gradeLevel);
         setEmail(student.email);
         setStatus(student.status);
+        setSelectedRegistrationId(student.registrationId);
 
         // For requirements, we'll set them to false as default since we don't have this data
         // You can modify this logic based on your actual data structure
