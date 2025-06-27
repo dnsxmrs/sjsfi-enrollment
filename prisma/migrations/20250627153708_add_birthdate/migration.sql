@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Student" ADD COLUMN     "birthdate" DATE NOT NULL DEFAULT CURRENT_TIMESTAMP;
