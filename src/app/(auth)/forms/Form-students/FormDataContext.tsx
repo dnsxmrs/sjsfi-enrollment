@@ -150,6 +150,7 @@ export interface FormData {
         reasonForTransfer: string;
         disciplinaryActions: string;
     };
+    registrationCode: string,
 }
 
 // Create context for form data

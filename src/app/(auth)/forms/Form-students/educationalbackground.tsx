@@ -32,6 +32,8 @@ export default function StudentEducationalBackgroundPage({ onBack, onNext }: Stu
       [field]: value
     };
     updateFormData('educationalBackground', updatedSchools);
+    console.log(`Updated ${field} to: ${value}`);
+    console.log(formData);
   };
 
   // Handler to remove a school
@@ -86,9 +88,9 @@ export default function StudentEducationalBackgroundPage({ onBack, onNext }: Stu
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pb-4">
               <div>
                 <label className="block text-sm font-medium mb-1 text-black">Gr./ Yr. Level:</label>
-                <input 
-                  type="number" 
-                  placeholder="Answer Here..." 
+                <input
+                  type="number"
+                  placeholder="Answer Here..."
                   className="border border-gray-300 rounded px-2 py-1 w-full text-black"
                   value={school.gradeYearLevel}
                   onChange={(e) => updateSchool(index, 'gradeYearLevel', e.target.value)}
@@ -96,9 +98,9 @@ export default function StudentEducationalBackgroundPage({ onBack, onNext }: Stu
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1 text-black">Name of School:</label>
-                <input 
-                  type="text" 
-                  placeholder="Answer Here..." 
+                <input
+                  type="text"
+                  placeholder="Answer Here..."
                   className="border border-gray-300 rounded px-2 py-1 w-full text-black"
                   value={school.schoolName}
                   onChange={(e) => updateSchool(index, 'schoolName', e.target.value)}
@@ -106,9 +108,9 @@ export default function StudentEducationalBackgroundPage({ onBack, onNext }: Stu
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1 text-black">School Address:</label>
-                <input 
-                  type="text" 
-                  placeholder="Answer Here..." 
+                <input
+                  type="text"
+                  placeholder="Answer Here..."
                   className="border border-gray-300 rounded px-2 py-1 w-full text-black"
                   value={school.schoolAddress}
                   onChange={(e) => updateSchool(index, 'schoolAddress', e.target.value)}
@@ -116,9 +118,9 @@ export default function StudentEducationalBackgroundPage({ onBack, onNext }: Stu
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1 text-black">Inclusive Years:</label>
-                <input 
-                  type="text" 
-                  placeholder="YYYY-YYYY" 
+                <input
+                  type="text"
+                  placeholder="YYYY-YYYY"
                   className="border border-gray-300 rounded px-2 py-1 w-full text-black"
                   value={school.inclusiveYears}
                   onChange={(e) => updateSchool(index, 'inclusiveYears', e.target.value)}
@@ -138,13 +140,13 @@ export default function StudentEducationalBackgroundPage({ onBack, onNext }: Stu
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Column Left */}  
+          {/* Column Left */}
           <div className="flex flex-col gap-4">
             <div>
               <label className="block text-sm font-medium mb-1 text-black">Honors/ Awards Recieved:</label>
-              <input 
-                type="text" 
-                placeholder="Answer Here..." 
+              <input
+                type="text"
+                placeholder="Answer Here..."
                 className="border border-gray-300 rounded px-2 py-1 w-full text-black"
                 value={educationalBackground[0]?.honorsAwardsReceived || ""}
                 onChange={(e) => updateSchool(0, 'honorsAwardsReceived', e.target.value)}
@@ -152,7 +154,7 @@ export default function StudentEducationalBackgroundPage({ onBack, onNext }: Stu
             </div>
           </div>
 
-          
+
 
           {/* Column Right */}
           <div className="flex flex-col gap-4">
@@ -161,40 +163,40 @@ export default function StudentEducationalBackgroundPage({ onBack, onNext }: Stu
                 <fieldset className="border border-gray-300 rounded p-4">
                   <div className="flex items-center space-x-4 text-black">
                     <label className="text-sm font-medium whitespace-nowrap md:col-span-1">Attended Summer Classes A.Y.</label>
-                    <input 
-                      type="text" 
-                      placeholder="Answer Here..." 
+                    <input
+                      type="text"
+                      placeholder="Answer Here..."
                       className="border border-gray-300 rounded px-2 py-1 w-32 text-black"
                       value={educationalBackground[0]?.honorsAwardsReceived || ""}
                       onChange={(e) => updateSchool(0, 'honorsAwardsReceived', e.target.value)}
                     />
                     <label className="inline-flex items-center space-x-1">
-                      <input 
-                        type="radio" 
-                        name="choice" 
+                      <input
+                        type="radio"
+                        name="choice"
                         value="yes"
                       />
                       <span className="font-semibold">Yes</span>
                     </label>
                     <label className="inline-flex items-center space-x-1">
-                      <input 
-                        type="radio" 
-                        name="choice" 
+                      <input
+                        type="radio"
+                        name="choice"
                         value="no"
                       />
                       <span className="font-semibold">No</span>
                     </label>
                   </div>
                 </fieldset>
+              </div>
             </div>
-            </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-4">
               <div>
                 <label className="block text-sm font-medium mb-1 text-black">Gr./ Yr. Level Repeated:</label>
-                <input 
-                  type="number" 
-                  placeholder="Answer Here..." 
+                <input
+                  type="number"
+                  placeholder="Answer Here..."
                   className="border border-gray-300 rounded px-2 py-1 w-full text-black"
                   value={educationalBackground[0]?.gradeYearLevelRepeated || ""}
                   onChange={(e) => updateSchool(0, 'gradeYearLevelRepeated', e.target.value)}
@@ -202,9 +204,9 @@ export default function StudentEducationalBackgroundPage({ onBack, onNext }: Stu
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1 text-black">No. of Subjects Failed:</label>
-                <input 
-                  type="number" 
-                  placeholder="Answer Here..." 
+                <input
+                  type="number"
+                  placeholder="Answer Here..."
                   className="border border-gray-300 rounded px-2 py-1 w-full text-black"
                   value={educationalBackground[0]?.numberOfSubjectsFailed || ""}
                   onChange={(e) => updateSchool(0, 'numberOfSubjectsFailed', e.target.value)}
@@ -217,14 +219,14 @@ export default function StudentEducationalBackgroundPage({ onBack, onNext }: Stu
       </div>
 
       {/* Next Page Button */}
-        <div className="w-full flex justify-end mt-8">
-          <button
-            className="bg-red-800 text-white px-6 py-2 rounded-md shadow hover:bg-[#7a0000] transition"
-            onClick={onNext}
-          >
-            Next Page
-          </button>
-        </div>
+      <div className="w-full flex justify-end mt-8">
+        <button
+          className="bg-red-800 text-white px-6 py-2 rounded-md shadow hover:bg-[#7a0000] transition"
+          onClick={onNext}
+        >
+          Next Page
+        </button>
+      </div>
     </div>
   );
 }

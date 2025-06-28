@@ -11,7 +11,6 @@ export default function StudentTransfereePage({ onBack, onNext }: StudentTransfe
   const { formData, updateFormData } = useFormData();
   const { transferee } = formData;
   const [showReviewModal, setShowReviewModal] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleInputChange = (field: keyof typeof transferee, value: string) => {
     updateFormData('transferee', {
@@ -28,14 +27,14 @@ export default function StudentTransfereePage({ onBack, onNext }: StudentTransfe
         [field]: value
       }
     });
+    console.log(`Updated ${field} to: ${value}`);
+    console.log(formData);
   };
 
-  const handleFinalSubmit = () => {
-    setIsSubmitting(true);
-    // TODO: Implement submission logic here, e.g., send data to server
-    // After submission:
-    setIsSubmitting(false);
-    setShowReviewModal(false);
+  const handleSubmitSuccess = (applicationId: number) => {
+    console.log('Application submitted successfully with ID:', applicationId);
+    // You can add navigation or other success handling here
+    // For example: router.push('/forms/success');
   };
 
   return (
@@ -66,76 +65,76 @@ export default function StudentTransfereePage({ onBack, onNext }: StudentTransfe
 
         {/* Previous School Fields */}
         <fieldset className="border border-gray-300 rounded p-4">
-            <legend className="block text-sm font-medium mb-1 text-black px-2">Previous School:</legend>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pb-4">
-                <div>
-                <label className="block text-sm font-medium mb-1 text-black">Name of School:</label>
-                <input 
-                  type="text" 
-                  placeholder="Answer Here..." 
-                  className="border border-gray-300 rounded px-2 py-1 w-full text-black"
-                  value={transferee.previousSchool.name}
-                  onChange={(e) => handleSchoolChange('previousSchool', 'name', e.target.value)}
-                />
-                </div>
-                <div>
-                <label className="block text-sm font-medium mb-1 text-black">School Address:</label>
-                <input 
-                  type="text" 
-                  placeholder="Answer Here..." 
-                  className="border border-gray-300 rounded px-2 py-1 w-full text-black"
-                  value={transferee.previousSchool.address}
-                  onChange={(e) => handleSchoolChange('previousSchool', 'address', e.target.value)}
-                />
-                </div>
-                <div>
-                <label className="block text-sm font-medium mb-1 text-black">Gr./ Yr. Level:</label>
-                <input 
-                  type="number" 
-                  placeholder="Answer Here..." 
-                  className="border border-gray-300 rounded px-2 py-1 w-full text-black"
-                  value={transferee.previousSchool.gradeYearLevel}
-                  onChange={(e) => handleSchoolChange('previousSchool', 'gradeYearLevel', e.target.value)}
-                />
-                </div>
+          <legend className="block text-sm font-medium mb-1 text-black px-2">Previous School:</legend>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pb-4">
+            <div>
+              <label className="block text-sm font-medium mb-1 text-black">Name of School:</label>
+              <input
+                type="text"
+                placeholder="Answer Here..."
+                className="border border-gray-300 rounded px-2 py-1 w-full text-black"
+                value={transferee.previousSchool.name}
+                onChange={(e) => handleSchoolChange('previousSchool', 'name', e.target.value)}
+              />
             </div>
+            <div>
+              <label className="block text-sm font-medium mb-1 text-black">School Address:</label>
+              <input
+                type="text"
+                placeholder="Answer Here..."
+                className="border border-gray-300 rounded px-2 py-1 w-full text-black"
+                value={transferee.previousSchool.address}
+                onChange={(e) => handleSchoolChange('previousSchool', 'address', e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1 text-black">Gr./ Yr. Level:</label>
+              <input
+                type="number"
+                placeholder="Answer Here..."
+                className="border border-gray-300 rounded px-2 py-1 w-full text-black"
+                value={transferee.previousSchool.gradeYearLevel}
+                onChange={(e) => handleSchoolChange('previousSchool', 'gradeYearLevel', e.target.value)}
+              />
+            </div>
+          </div>
         </fieldset>
 
         {/* Present School Fields */}
         <fieldset className="border border-gray-300 rounded p-4">
-            <legend className="block text-sm font-medium mb-1 text-black px-2">Present School:</legend>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pb-4">
-                <div>
-                <label className="block text-sm font-medium mb-1 text-black">Name of School:</label>
-                <input 
-                  type="text" 
-                  placeholder="Answer Here..." 
-                  className="border border-gray-300 rounded px-2 py-1 w-full text-black"
-                  value={transferee.presentSchool.name}
-                  onChange={(e) => handleSchoolChange('presentSchool', 'name', e.target.value)}
-                />
-                </div>
-                <div>
-                <label className="block text-sm font-medium mb-1 text-black">School Address:</label>
-                <input 
-                  type="text" 
-                  placeholder="Answer Here..." 
-                  className="border border-gray-300 rounded px-2 py-1 w-full text-black"
-                  value={transferee.presentSchool.address}
-                  onChange={(e) => handleSchoolChange('presentSchool', 'address', e.target.value)}
-                />
-                </div>
-                <div>
-                <label className="block text-sm font-medium mb-1 text-black">Gr./ Yr. Level:</label>
-                <input 
-                  type="number" 
-                  placeholder="Answer Here..." 
-                  className="border border-gray-300 rounded px-2 py-1 w-full text-black"
-                  value={transferee.presentSchool.gradeYearLevel}
-                  onChange={(e) => handleSchoolChange('presentSchool', 'gradeYearLevel', e.target.value)}
-                />
-                </div>
+          <legend className="block text-sm font-medium mb-1 text-black px-2">Present School:</legend>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pb-4">
+            <div>
+              <label className="block text-sm font-medium mb-1 text-black">Name of School:</label>
+              <input
+                type="text"
+                placeholder="Answer Here..."
+                className="border border-gray-300 rounded px-2 py-1 w-full text-black"
+                value={transferee.presentSchool.name}
+                onChange={(e) => handleSchoolChange('presentSchool', 'name', e.target.value)}
+              />
             </div>
+            <div>
+              <label className="block text-sm font-medium mb-1 text-black">School Address:</label>
+              <input
+                type="text"
+                placeholder="Answer Here..."
+                className="border border-gray-300 rounded px-2 py-1 w-full text-black"
+                value={transferee.presentSchool.address}
+                onChange={(e) => handleSchoolChange('presentSchool', 'address', e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1 text-black">Gr./ Yr. Level:</label>
+              <input
+                type="number"
+                placeholder="Answer Here..."
+                className="border border-gray-300 rounded px-2 py-1 w-full text-black"
+                value={transferee.presentSchool.gradeYearLevel}
+                onChange={(e) => handleSchoolChange('presentSchool', 'gradeYearLevel', e.target.value)}
+              />
+            </div>
+          </div>
         </fieldset>
 
         {/* Reason for Transfer */}
@@ -170,7 +169,7 @@ export default function StudentTransfereePage({ onBack, onNext }: StudentTransfe
           </div>
         </div>
       </div>
-      
+
 
       {/* Next Page Button */}
       <div className="w-full flex justify-end mt-8 space-x-4">
@@ -193,8 +192,7 @@ export default function StudentTransfereePage({ onBack, onNext }: StudentTransfe
       <ReviewModalFormStudents
         show={showReviewModal}
         onClose={() => setShowReviewModal(false)}
-        onSubmit={handleFinalSubmit}
-        isSubmitting={isSubmitting}
+        onSubmitSuccess={handleSubmitSuccess}
         personalData={formData.personalData}
         transferee={formData.transferee}
         healthHistory={formData.healthHistory}
@@ -203,6 +201,7 @@ export default function StudentTransfereePage({ onBack, onNext }: StudentTransfe
         guardianBackground={formData.guardianBackground}
         familyMembers={formData.familyMembers}
         educationalBackground={formData.educationalBackground}
+        registrationCode={formData.registrationCode}
       />
     </div>
   );

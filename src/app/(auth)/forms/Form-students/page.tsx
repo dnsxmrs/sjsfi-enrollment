@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { FormDataContext, FormData } from "./FormDataContext";
 import StudentPersonalDataPage from "./personaldata";
 import StudentHealthHistoryPage from "./healthhistory";
@@ -16,6 +17,15 @@ import MedicalHistoryPage2 from "../Forms-medical/medicalhistoryP2";
 export default function StudentApplicationPagedForm() {
   const [page, setPage] = useState(0);
   const [confirmed, setConfirmed] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isMounted, setIsMounted] = useState(false);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Ensure component is mounted before using router
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Initialize form data state
   const [formData, setFormData] = useState<FormData>({
@@ -165,7 +175,43 @@ export default function StudentApplicationPagedForm() {
       reasonForTransfer: "",
       disciplinaryActions: "",
     },
+    registrationCode: "",
   });
+
+  // Handle registration code from search params and redirection
+  useEffect(() => {
+    if (!isMounted) return;
+
+    const code = searchParams.get('code');
+
+    if (!code) {
+      // Redirect to forms/home if no registration code is provided
+      const redirectToHome = () => {
+        try {
+          router.replace('/forms/home');
+        } catch (error) {
+          console.error('Router error:', error);
+          // Fallback: use window.location if router fails
+          if (typeof window !== 'undefined') {
+            window.location.replace('/forms/home');
+          }
+        }
+      };
+
+      // Use setTimeout to ensure router is ready
+      setTimeout(redirectToHome, 100);
+      return;
+    }
+
+    // Store the registration code immediately in form data
+    setFormData(prev => ({
+      ...prev,
+      registrationCode: code
+    }));
+
+    // Set loading to false after processing
+    setIsLoading(false);
+  }, [isMounted, searchParams, router]);
 
   // Function to update form data
   const updateFormData = <K extends keyof FormData>(section: K, data: FormData[K]) => {
@@ -175,18 +221,34 @@ export default function StudentApplicationPagedForm() {
     }));
   };
 
+  // Show loading screen while checking registration code or mounting
+  if (!isMounted || isLoading) {
+    return (
+      <div className="w-full min-h-screen bg-[#f7f7f7] flex flex-col items-center justify-center">
+        <div className="bg-white rounded-lg shadow p-8 border border-gray-200">
+          <div className="flex items-center space-x-3">
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-red-800"></div>
+            <span className="text-gray-700">
+              {!isMounted ? 'Loading...' : 'Validating registration code...'}
+            </span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (page === 10) {
     return <MedicalHistoryPage2 onBack={() => setPage(9)} />;
   }
 
   if (page === 9) {
-    return <MedicalHistoryPage1 onBack={() => setPage(8)} onNext={() => setPage(10)}/>;
+    return <MedicalHistoryPage1 onBack={() => setPage(8)} onNext={() => setPage(10)} />;
   }
 
   if (page === 8) {
     return (
       <FormDataContext.Provider value={{ formData, updateFormData }}>
-        <StudentTransfereePage onBack={() => setPage(7)} onNext={() => setPage(9)}/>
+        <StudentTransfereePage onBack={() => setPage(7)} onNext={() => setPage(9)} />
       </FormDataContext.Provider>
     );
   }
@@ -194,7 +256,7 @@ export default function StudentApplicationPagedForm() {
   if (page === 7) {
     return (
       <FormDataContext.Provider value={{ formData, updateFormData }}>
-        <StudentEducationalBackgroundPage onBack={() => setPage(6)} onNext={() => setPage(8)}/>
+        <StudentEducationalBackgroundPage onBack={() => setPage(6)} onNext={() => setPage(8)} />
       </FormDataContext.Provider>
     );
   }
@@ -202,7 +264,7 @@ export default function StudentApplicationPagedForm() {
   if (page === 6) {
     return (
       <FormDataContext.Provider value={{ formData, updateFormData }}>
-        <StudentFamilyMembersPage onBack={() => setPage(5)} onNext={() => setPage(7)}/>
+        <StudentFamilyMembersPage onBack={() => setPage(5)} onNext={() => setPage(7)} />
       </FormDataContext.Provider>
     );
   }
@@ -264,6 +326,19 @@ export default function StudentApplicationPagedForm() {
 
         {/* Card */}
         <div className="w-full bg-white rounded-lg shadow p-10 border border-gray-200 flex flex-col gap-8">
+          {/* Registration Code Display */}
+          {formData.registrationCode && (
+            <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+              <h3 className="font-semibold text-blue-800 mb-2">Registration Information</h3>
+              <p className="text-blue-700">
+                <span className="font-medium">Registration Code:</span>{" "}
+                <span className="font-mono bg-blue-100 px-2 py-1 rounded text-blue-800">
+                  {formData.registrationCode}
+                </span>
+              </p>
+            </div>
+          )}
+
           <div>
             <p className="font-semibold text-lg md:text-xl mb-6 text-black">
               Before continuing with the student application, please ensure you have the following:
@@ -293,9 +368,8 @@ export default function StudentApplicationPagedForm() {
           <button
             type="button"
             disabled={!confirmed}
-            className={`bg-red-800 text-white px-6 py-2 rounded-md ${
-              confirmed ? 'hover:bg-red-900 cursor-pointer' : 'opacity-50 cursor-not-allowed'
-            }`}
+            className={`bg-red-800 text-white px-6 py-2 rounded-md ${confirmed ? 'hover:bg-red-900 cursor-pointer' : 'opacity-50 cursor-not-allowed'
+              }`}
             onClick={() => setPage(1)}
           >
             Continue

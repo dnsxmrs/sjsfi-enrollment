@@ -16,6 +16,8 @@ export default function GuardianBackgroundPage({ onBack, onNext }: GuardianBackg
       ...guardianBackground,
       [field]: value
     });
+    console.log(`Updated ${field} to: ${value}`);
+    console.log(formData);
   };
 
   const handleStatusChange = (status: string) => {
@@ -55,9 +57,9 @@ export default function GuardianBackgroundPage({ onBack, onNext }: GuardianBackg
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Family Name:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here..." 
+            <input
+              type="text"
+              placeholder="Answer Here..."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={guardianBackground.familyName}
               onChange={(e) => handleInputChange('familyName', e.target.value)}
@@ -65,9 +67,9 @@ export default function GuardianBackgroundPage({ onBack, onNext }: GuardianBackg
           </div>
           <div>
             <label className="block text-sm font-medium mb-1 text-black">First Name:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here..." 
+            <input
+              type="text"
+              placeholder="Answer Here..."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={guardianBackground.firstName}
               onChange={(e) => handleInputChange('firstName', e.target.value)}
@@ -75,9 +77,9 @@ export default function GuardianBackgroundPage({ onBack, onNext }: GuardianBackg
           </div>
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Middle Name:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here..." 
+            <input
+              type="text"
+              placeholder="Answer Here..."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={guardianBackground.middleName}
               onChange={(e) => handleInputChange('middleName', e.target.value)}
@@ -88,8 +90,8 @@ export default function GuardianBackgroundPage({ onBack, onNext }: GuardianBackg
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Birth Date:</label>
-            <input 
-              type="date" 
+            <input
+              type="date"
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={guardianBackground.birthDate}
               onChange={(e) => handleInputChange('birthDate', e.target.value)}
@@ -97,9 +99,9 @@ export default function GuardianBackgroundPage({ onBack, onNext }: GuardianBackg
           </div>
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Place of Birth:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here..." 
+            <input
+              type="text"
+              placeholder="Answer Here..."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={guardianBackground.placeOfBirth}
               onChange={(e) => handleInputChange('placeOfBirth', e.target.value)}
@@ -107,9 +109,9 @@ export default function GuardianBackgroundPage({ onBack, onNext }: GuardianBackg
           </div>
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Age:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here..." 
+            <input
+              type="text"
+              placeholder="Answer Here..."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={guardianBackground.age}
               onChange={(e) => handleInputChange('age', e.target.value)}
@@ -117,9 +119,9 @@ export default function GuardianBackgroundPage({ onBack, onNext }: GuardianBackg
           </div>
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Nationality:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here..." 
+            <input
+              type="text"
+              placeholder="Answer Here..."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={guardianBackground.nationality}
               onChange={(e) => handleInputChange('nationality', e.target.value)}
@@ -127,9 +129,9 @@ export default function GuardianBackgroundPage({ onBack, onNext }: GuardianBackg
           </div>
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Religion:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here..." 
+            <input
+              type="text"
+              placeholder="Answer Here..."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={guardianBackground.religion}
               onChange={(e) => handleInputChange('religion', e.target.value)}
@@ -140,9 +142,9 @@ export default function GuardianBackgroundPage({ onBack, onNext }: GuardianBackg
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Landline Number:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here..." 
+            <input
+              type="text"
+              placeholder="Answer Here..."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={guardianBackground.landlineNumber}
               onChange={(e) => handleInputChange('landlineNumber', e.target.value)}
@@ -150,9 +152,9 @@ export default function GuardianBackgroundPage({ onBack, onNext }: GuardianBackg
           </div>
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Mobile Number:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here..." 
+            <input
+              type="text"
+              placeholder="Answer Here..."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={guardianBackground.mobileNumber}
               onChange={(e) => handleInputChange('mobileNumber', e.target.value)}
@@ -160,9 +162,9 @@ export default function GuardianBackgroundPage({ onBack, onNext }: GuardianBackg
           </div>
           <div>
             <label className="block text-sm font-medium mb-1 text-black">E-mail Address:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here..." 
+            <input
+              type="text"
+              placeholder="Answer Here..."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={guardianBackground.emailAddress}
               onChange={(e) => handleInputChange('emailAddress', e.target.value)}
@@ -173,9 +175,9 @@ export default function GuardianBackgroundPage({ onBack, onNext }: GuardianBackg
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="md:col-span-1">
             <label className="block text-sm font-medium mb-1 text-black">Home Address:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here..." 
+            <input
+              type="text"
+              placeholder="Answer Here..."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={guardianBackground.homeAddress}
               onChange={(e) => handleInputChange('homeAddress', e.target.value)}
@@ -183,9 +185,9 @@ export default function GuardianBackgroundPage({ onBack, onNext }: GuardianBackg
           </div>
           <div className="md:col-span-1">
             <label className="block text-sm font-medium mb-1 text-black">City:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here..." 
+            <input
+              type="text"
+              placeholder="Answer Here..."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={guardianBackground.city}
               onChange={(e) => handleInputChange('city', e.target.value)}
@@ -193,9 +195,9 @@ export default function GuardianBackgroundPage({ onBack, onNext }: GuardianBackg
           </div>
           <div className="md:col-span-1">
             <label className="block text-sm font-medium mb-1 text-black">State/ Province:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here..." 
+            <input
+              type="text"
+              placeholder="Answer Here..."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={guardianBackground.stateProvince}
               onChange={(e) => handleInputChange('stateProvince', e.target.value)}
@@ -203,9 +205,9 @@ export default function GuardianBackgroundPage({ onBack, onNext }: GuardianBackg
           </div>
           <div className="md:col-span-1">
             <label className="block text-sm font-medium mb-1 text-black">Zip/ Postal Code:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here..." 
+            <input
+              type="text"
+              placeholder="Answer Here..."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={guardianBackground.zipPostalCode}
               onChange={(e) => handleInputChange('zipPostalCode', e.target.value)}
@@ -216,9 +218,9 @@ export default function GuardianBackgroundPage({ onBack, onNext }: GuardianBackg
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Educational Attainment/ Course:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here..." 
+            <input
+              type="text"
+              placeholder="Answer Here..."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={guardianBackground.educationalAttainmentCourse}
               onChange={(e) => handleInputChange('educationalAttainmentCourse', e.target.value)}
@@ -226,9 +228,9 @@ export default function GuardianBackgroundPage({ onBack, onNext }: GuardianBackg
           </div>
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Occupational/ Position Held:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here..." 
+            <input
+              type="text"
+              placeholder="Answer Here..."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={guardianBackground.occupationalPositionHeld}
               onChange={(e) => handleInputChange('occupationalPositionHeld', e.target.value)}
@@ -239,9 +241,9 @@ export default function GuardianBackgroundPage({ onBack, onNext }: GuardianBackg
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Employer/ Company:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here..." 
+            <input
+              type="text"
+              placeholder="Answer Here..."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={guardianBackground.employerCompany}
               onChange={(e) => handleInputChange('employerCompany', e.target.value)}
@@ -249,9 +251,9 @@ export default function GuardianBackgroundPage({ onBack, onNext }: GuardianBackg
           </div>
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Company Address:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here..." 
+            <input
+              type="text"
+              placeholder="Answer Here..."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={guardianBackground.companyAddress}
               onChange={(e) => handleInputChange('companyAddress', e.target.value)}
@@ -262,9 +264,9 @@ export default function GuardianBackgroundPage({ onBack, onNext }: GuardianBackg
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Company City:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here..." 
+            <input
+              type="text"
+              placeholder="Answer Here..."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={guardianBackground.city}//palitan toh
               onChange={(e) => handleInputChange('city', e.target.value)}
@@ -272,9 +274,9 @@ export default function GuardianBackgroundPage({ onBack, onNext }: GuardianBackg
           </div>
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Business Telephone Number:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here..." 
+            <input
+              type="text"
+              placeholder="Answer Here..."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={guardianBackground.businessTelephoneNumber}
               onChange={(e) => handleInputChange('businessTelephoneNumber', e.target.value)}
@@ -282,9 +284,9 @@ export default function GuardianBackgroundPage({ onBack, onNext }: GuardianBackg
           </div>
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Annual Income:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here..." 
+            <input
+              type="text"
+              placeholder="Answer Here..."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={guardianBackground.annualIncome}
               onChange={(e) => handleInputChange('annualIncome', e.target.value)}
@@ -292,9 +294,9 @@ export default function GuardianBackgroundPage({ onBack, onNext }: GuardianBackg
           </div>
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Relation to Applicant:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here..." 
+            <input
+              type="text"
+              placeholder="Answer Here..."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={guardianBackground.relationToApplicant}
               onChange={(e) => handleInputChange('relationToApplicant', e.target.value)}
@@ -304,8 +306,8 @@ export default function GuardianBackgroundPage({ onBack, onNext }: GuardianBackg
 
         {/* Status of Parent */}
         <div>
-        <fieldset className="border border-gray-300 rounded p-2">
-          <legend className="block text-sm font-medium mb-1 text-black px-2">Status of Parent:</legend>
+          <fieldset className="border border-gray-300 rounded p-2">
+            <legend className="block text-sm font-medium mb-1 text-black px-2">Status of Parent:</legend>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-2">
               <label className="flex items-center gap-2 text-black font-medium">
                 <input

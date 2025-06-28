@@ -32,6 +32,8 @@ export default function StudentFamilyMembersPage({ onBack, onNext }: StudentFami
       [field]: value
     };
     updateFormData('familyMembers', updatedSiblings);
+    console.log(`Updated ${field} to: ${value}`);
+    console.log(formData);
   };
 
   // Handler to remove a sibling
@@ -86,9 +88,9 @@ export default function StudentFamilyMembersPage({ onBack, onNext }: StudentFami
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pb-4">
               <div>
                 <label className="block text-sm font-medium mb-1 text-black">Family Name:</label>
-                <input 
-                  type="text" 
-                  placeholder="Answer Here..." 
+                <input
+                  type="text"
+                  placeholder="Answer Here..."
                   className="border border-gray-300 rounded px-2 py-1 w-full text-black"
                   value={sibling.familyName}
                   onChange={(e) => updateSibling(index, 'familyName', e.target.value)}
@@ -96,9 +98,9 @@ export default function StudentFamilyMembersPage({ onBack, onNext }: StudentFami
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1 text-black">First Name:</label>
-                <input 
-                  type="text" 
-                  placeholder="Answer Here..." 
+                <input
+                  type="text"
+                  placeholder="Answer Here..."
                   className="border border-gray-300 rounded px-2 py-1 w-full text-black"
                   value={sibling.firstName}
                   onChange={(e) => updateSibling(index, 'firstName', e.target.value)}
@@ -106,9 +108,9 @@ export default function StudentFamilyMembersPage({ onBack, onNext }: StudentFami
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1 text-black">Middle Name:</label>
-                <input 
-                  type="text" 
-                  placeholder="Answer Here..." 
+                <input
+                  type="text"
+                  placeholder="Answer Here..."
                   className="border border-gray-300 rounded px-2 py-1 w-full text-black"
                   value={sibling.middleName}
                   onChange={(e) => updateSibling(index, 'middleName', e.target.value)}
@@ -119,8 +121,8 @@ export default function StudentFamilyMembersPage({ onBack, onNext }: StudentFami
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div>
                 <label className="block text-sm font-medium mb-1 text-black">Birth Date:</label>
-                <input 
-                  type="date" 
+                <input
+                  type="date"
                   className="border border-gray-300 rounded px-2 py-1 w-full text-black"
                   value={sibling.birthDate}
                   onChange={(e) => updateSibling(index, 'birthDate', e.target.value)}
@@ -128,9 +130,9 @@ export default function StudentFamilyMembersPage({ onBack, onNext }: StudentFami
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1 text-black">Age:</label>
-                <input 
-                  type="text" 
-                  placeholder="Answer Here..." 
+                <input
+                  type="text"
+                  placeholder="Answer Here..."
                   className="border border-gray-300 rounded px-2 py-1 w-full text-black"
                   value={sibling.age}
                   onChange={(e) => updateSibling(index, 'age', e.target.value)}
@@ -138,9 +140,9 @@ export default function StudentFamilyMembersPage({ onBack, onNext }: StudentFami
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1 text-black">Gr./ Yr. Level:</label>
-                <input 
-                  type="text" 
-                  placeholder="Answer Here..." 
+                <input
+                  type="text"
+                  placeholder="Answer Here..."
                   className="border border-gray-300 rounded px-2 py-1 w-full text-black"
                   value={sibling.gradeYearLevel}
                   onChange={(e) => updateSibling(index, 'gradeYearLevel', e.target.value)}
@@ -148,9 +150,9 @@ export default function StudentFamilyMembersPage({ onBack, onNext }: StudentFami
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1 text-black">School Employer:</label>
-                <input 
-                  type="text" 
-                  placeholder="Answer Here..." 
+                <input
+                  type="text"
+                  placeholder="Answer Here..."
                   className="border border-gray-300 rounded px-2 py-1 w-full text-black"
                   value={sibling.schoolEmployer}
                   onChange={(e) => updateSibling(index, 'schoolEmployer', e.target.value)}

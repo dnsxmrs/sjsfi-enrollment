@@ -1,7 +1,10 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { X } from "lucide-react";
+import { submitStudentApplication } from "@/app/_actions/submitStudentApplication";
+import { toast } from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 // interface ParentInfo {
 //   familyName: string;
@@ -73,8 +76,8 @@ interface EducationalBackground {
 interface ReviewModalFormStudentsProps {
   show: boolean;
   onClose: () => void;
-  onSubmit: () => void;
-  isSubmitting: boolean;
+  onSubmitSuccess?: (applicationId: number) => void;
+  registrationCode?: string; // Add registration code prop
 
   personalData: {
     academicYear: string;
@@ -129,8 +132,8 @@ interface ReviewModalFormStudentsProps {
 const ReviewModalFormStudents: React.FC<ReviewModalFormStudentsProps> = ({
   show,
   onClose,
-  onSubmit,
-  isSubmitting,
+  onSubmitSuccess,
+  registrationCode,
   personalData,
   transferee,
   healthHistory,
@@ -140,6 +143,43 @@ const ReviewModalFormStudents: React.FC<ReviewModalFormStudentsProps> = ({
   familyMembers,
   educationalBackground,
 }) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
+
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+    
+    try {
+      const applicationData = {
+        personalData,
+        healthHistory,
+        fatherBackground,
+        motherBackground,
+        guardianBackground,
+        transferee,
+        familyMembers,
+        educationalBackground,
+        registrationCode
+      };
+
+      const result = await submitStudentApplication(applicationData);
+
+      if (result.success && result.applicationId) {
+        toast.success(result.message || "Application submitted successfully!");
+        onSubmitSuccess?.(result.applicationId);
+        onClose();
+        router.push(`/forms/home`);
+      } else {
+        toast.error(result.error || "Failed to submit application. Please try again.");
+      }
+    } catch (error) {
+      console.error("Submit error:", error);
+      toast.error("An unexpected error occurred. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   if (!show) return null;
 
   return (
@@ -164,6 +204,16 @@ const ReviewModalFormStudents: React.FC<ReviewModalFormStudentsProps> = ({
           </p>
 
           <div className="space-y-6 text-sm text-black">
+            {/* Registration Code */}
+            {registrationCode && (
+              <div className="bg-blue-50 p-3 rounded border border-blue-200">
+                <h4 className="font-semibold text-blue-800 mb-2">Registration Information</h4>
+                <div className="grid grid-cols-1 gap-2">
+                  <div><span className="font-medium text-blue-700">Registration Code Used:</span> <span className="font-mono bg-blue-100 px-2 py-1 rounded text-blue-800">{registrationCode}</span></div>
+                </div>
+              </div>
+            )}
+
             {/* Personal Data */}
             <div className="bg-gray-50 p-3 rounded">
               <h4 className="font-semibold text-gray-800 mb-2">Personal Data</h4>
@@ -383,7 +433,7 @@ const ReviewModalFormStudents: React.FC<ReviewModalFormStudentsProps> = ({
             </button>
             <button
               type="button"
-              onClick={onSubmit}
+              onClick={handleSubmit}
               disabled={isSubmitting}
               className={`px-6 py-2 rounded text-white transition ${
                 isSubmitting ? "bg-gray-400 cursor-not-allowed" : "bg-green-600 hover:bg-green-700"

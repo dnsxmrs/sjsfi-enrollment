@@ -1,6 +1,6 @@
-import { logSystemAction } from "@/lib/systemLogger";
+'use server';
 
-'use server'
+import { logSystemAction } from "@/lib/systemLogger";
 
 export async function getActiveSubjects() {
     try {

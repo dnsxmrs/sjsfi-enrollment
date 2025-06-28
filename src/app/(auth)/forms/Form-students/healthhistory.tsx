@@ -15,6 +15,8 @@ export default function StudentHealthHistoryPage({ onBack, onNext }: StudentHeal
       ...healthHistory,
       [field]: value
     });
+    console.log(`Updated ${field} to: ${value}`);
+    console.log(formData);
   };
 
   return (
@@ -48,9 +50,9 @@ export default function StudentHealthHistoryPage({ onBack, onNext }: StudentHeal
           <div className="flex flex-col gap-4">
             <div>
               <label className="block text-sm font-medium mb-1 text-black">Childhood Diseases:</label>
-              <input 
-                type="text" 
-                placeholder="Answer Here..." 
+              <input
+                type="text"
+                placeholder="Answer Here..."
                 className="border border-gray-300 rounded px-2 py-1 w-full text-black"
                 value={healthHistory.childhoodDiseases}
                 onChange={(e) => handleInputChange('childhoodDiseases', e.target.value)}
@@ -58,9 +60,9 @@ export default function StudentHealthHistoryPage({ onBack, onNext }: StudentHeal
             </div>
             <div>
               <label className="block text-sm font-medium mb-1 text-black">Other Medical Conditions:</label>
-              <input 
-                type="text" 
-                placeholder="Answer Here..." 
+              <input
+                type="text"
+                placeholder="Answer Here..."
                 className="border border-gray-300 rounded px-2 py-1 w-full text-black"
                 value={healthHistory.otherMedicalConditions}
                 onChange={(e) => handleInputChange('otherMedicalConditions', e.target.value)}
@@ -70,9 +72,9 @@ export default function StudentHealthHistoryPage({ onBack, onNext }: StudentHeal
           <div className="flex flex-col gap-4">
             <div>
               <label className="block text-sm font-medium mb-1 text-black">Allergies:</label>
-              <input 
-                type="text" 
-                placeholder="Answer Here..." 
+              <input
+                type="text"
+                placeholder="Answer Here..."
                 className="border border-gray-300 rounded px-2 py-1 w-full text-black"
                 value={healthHistory.allergies}
                 onChange={(e) => handleInputChange('allergies', e.target.value)}
@@ -80,9 +82,9 @@ export default function StudentHealthHistoryPage({ onBack, onNext }: StudentHeal
             </div>
             <div>
               <label className="block text-sm font-medium mb-1 text-black">Immunizations:</label>
-              <input 
-                type="text" 
-                placeholder="Answer Here..." 
+              <input
+                type="text"
+                placeholder="Answer Here..."
                 className="border border-gray-300 rounded px-2 py-1 w-full text-black"
                 value={healthHistory.immunizations}
                 onChange={(e) => handleInputChange('immunizations', e.target.value)}
