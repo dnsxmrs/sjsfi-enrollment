@@ -1,5 +1,7 @@
 "use server";
 
+import { logSystemAction } from "@/lib/systemLogger";
+
 export async function getStudentsByGradeLevel() {
     try {
         // Note: Student model doesn't have gradeLevel field in current schema
@@ -49,6 +51,18 @@ export async function getStudentsByGradeLevel() {
             }
         }));
 
+        // Log the system action for fetching students by grade level (mock)
+        await logSystemAction({
+            actionCategory: "SYSTEM",
+            actionType: "VIEW",
+            actionDescription: `Fetched mock student distribution by grade level. Total students: ${totalStudents}`,
+            targetType: "REPORT",
+            targetId: "mock-students-by-grade-level",
+            status: "SUCCESS",
+            severityLevel: "LOW",
+            metadata: { totalStudents, gradeLevels: detailedData.length }
+        });
+
         console.log("Mock student distribution data returned successfully:", detailedData.length, "grade levels");
         console.log("Total students:", totalStudents);
 
@@ -66,6 +80,17 @@ export async function getStudentsByGradeLevel() {
             message: "Returning mock data - gradeLevel field not implemented in Student model schema",
         };
     } catch (error) {
+        // Log the error in system logger
+        await logSystemAction({
+            actionCategory: "SYSTEM",
+            actionType: "VIEW",
+            actionDescription: `Error fetching students by grade level: ${error}`,
+            targetType: "REPORT",
+            targetId: "mock-students-by-grade-level",
+            status: "FAILED",
+            severityLevel: "LOW",
+            errorMessage: String(error)
+        });
         console.error("Error in getStudentsByGradeLevel:", error);
         return {
             success: false,

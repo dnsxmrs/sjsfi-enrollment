@@ -1,6 +1,7 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
+import { logSystemAction } from '@/lib/systemLogger'
 
 /**
  * Generates a unique registration code in the format REG-XXXXXXXX
@@ -67,11 +68,34 @@ export async function generateRegistrationCode(): Promise<{
             }
         });
 
+        // Log the system action for generating registration code
+        await logSystemAction({
+            actionCategory: "REGISTRATION",
+            actionType: "CREATE",
+            actionDescription: `Generated registration code: ${code}`,
+            targetType: "REGISTRATION_CODE",
+            targetId: code,
+            status: "SUCCESS",
+            severityLevel: "LOW",
+            metadata: { expirationDate: expirationDate.toISOString() }
+        });
+
         return {
             success: true,
             code: code
         };
     } catch (error) {
+        // Log the error in system logger
+        await logSystemAction({
+            actionCategory: "REGISTRATION",
+            actionType: "CREATE",
+            actionDescription: `Error generating registration code: ${error}`,
+            targetType: "REGISTRATION_CODE",
+            targetId: "unknown",
+            status: "FAILED",
+            severityLevel: "LOW",
+            errorMessage: String(error)
+        });
         console.error('Error generating registration code:', error);
         return {
             success: false,
@@ -194,11 +218,34 @@ export async function generateApplicationCode(RegistrationId: string): Promise<{
             }
         });
 
+        // Log the system action for generating application code
+        await logSystemAction({
+            actionCategory: "REGISTRATION",
+            actionType: "CREATE",
+            actionDescription: `Generated application code: ${code} for registrationId: ${RegistrationId}`,
+            targetType: "APPLICATION_CODE",
+            targetId: code,
+            status: "SUCCESS",
+            severityLevel: "LOW",
+            metadata: { expirationDate: expirationDate.toISOString(), registrationId: RegistrationId }
+        });
+
         return {
             success: true,
             code: code
         };
     } catch (error) {
+        // Log the error in system logger
+        await logSystemAction({
+            actionCategory: "REGISTRATION",
+            actionType: "CREATE",
+            actionDescription: `Error generating application code for registrationId ${RegistrationId}: ${error}`,
+            targetType: "APPLICATION_CODE",
+            targetId: "unknown",
+            status: "FAILED",
+            severityLevel: "LOW",
+            errorMessage: String(error)
+        });
         console.error('Error generating application code for application:', error);
         return {
             success: false,

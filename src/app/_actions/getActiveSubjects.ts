@@ -1,3 +1,5 @@
+import { logSystemAction } from "@/lib/systemLogger";
+
 'use server'
 
 export async function getActiveSubjects() {
@@ -153,6 +155,18 @@ export async function getActiveSubjects() {
             },
         ];
 
+        // Log the system action for fetching active subjects (mock)
+        await logSystemAction({
+            actionCategory: "SYSTEM",
+            actionType: "VIEW",
+            actionDescription: `Fetched mock active subjects. Total subjects: ${mockSubjects.length}`,
+            targetType: "REPORT",
+            targetId: "mock-active-subjects",
+            status: "SUCCESS",
+            severityLevel: "LOW",
+            metadata: { count: mockSubjects.length }
+        });
+
         console.log("Mock subject data returned successfully:", mockSubjects.length, "subjects");
         return {
             success: true,
@@ -162,6 +176,18 @@ export async function getActiveSubjects() {
             message: "Returning mock data - Subject model not implemented in database schema",
         };
     } catch (error) {
+        // Log the error in system logger
+        await logSystemAction({
+            actionCategory: "SYSTEM",
+            actionType: "VIEW",
+            actionDescription: `Error fetching active subjects: ${error}`,
+            targetType: "REPORT",
+            targetId: "mock-active-subjects",
+            status: "FAILED",
+            severityLevel: "LOW",
+            errorMessage: String(error)
+        });
+
         console.error("Error in getActiveSubjects:", error);
         return {
             success: false,

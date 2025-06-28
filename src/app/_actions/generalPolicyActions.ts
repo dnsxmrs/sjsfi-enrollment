@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { logSystemAction } from "@/lib/systemLogger";
 
 export async function getGeneralPolicy() {
     try {
@@ -13,12 +14,35 @@ export async function getGeneralPolicy() {
             }
         });
 
+        // Log the system action for fetching general policy
+        await logSystemAction({
+            actionCategory: "SYSTEM",
+            actionType: "VIEW",
+            actionDescription: `Fetched general policy. Policy ID: ${policy?.id ?? 'none'}`,
+            targetType: "GENERAL_POLICY",
+            targetId: String(policy?.id ?? 'none'),
+            status: "SUCCESS",
+            severityLevel: "LOW"
+        });
+
         return {
             success: true,
             policy,
             message: 'General policy fetched successfully'
         };
     } catch (error) {
+        // Log the error in system logger
+        await logSystemAction({
+            actionCategory: "SYSTEM",
+            actionType: "VIEW",
+            actionDescription: `Error fetching general policy: ${error}`,
+            targetType: "GENERAL_POLICY",
+            targetId: "unknown",
+            status: "FAILED",
+            severityLevel: "LOW",
+            errorMessage: String(error)
+        });
+
         console.error('Error fetching general policy:', error);
 
         return {
@@ -71,12 +95,35 @@ export async function saveGeneralPolicy(content: string) {
             });
         }
 
+        // Log the system action for saving general policy
+        await logSystemAction({
+            actionCategory: "SYSTEM",
+            actionType: existingPolicy ? "UPDATE" : "CREATE",
+            actionDescription: `${existingPolicy ? 'Updated' : 'Created'} general policy. Policy ID: ${policy.id}`,
+            targetType: "GENERAL_POLICY",
+            targetId: String(policy.id),
+            status: "SUCCESS",
+            severityLevel: "LOW"
+        });
+
         return {
             success: true,
             policy,
             message: 'General policy saved successfully'
         };
     } catch (error) {
+        // Log the error in system logger
+        await logSystemAction({
+            actionCategory: "SYSTEM",
+            actionType: "UPDATE",
+            actionDescription: `Error saving general policy: ${error}`,
+            targetType: "GENERAL_POLICY",
+            targetId: "unknown",
+            status: "FAILED",
+            severityLevel: "LOW",
+            errorMessage: String(error)
+        });
+
         console.error('Error saving general policy:', error);
         return {
             success: false,
