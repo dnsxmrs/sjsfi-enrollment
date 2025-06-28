@@ -1,4 +1,3 @@
-// app/api/xr/user-access-lookup/route.ts
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { rateLimiter } from "@/lib/limiter";
@@ -7,8 +6,7 @@ import crypto from "crypto";
 
 const SHARED_SECRET = process.env.SJSFI_SHARED_SECRET || "";
 const VALID_API_KEYS = {
-    // 'sis': process.env.SJSFI_SIS_API_KEY,
-    hrms: process.env.SJSFI_HRMS_API_KEY, // don't use self apikey
+    lms: process.env.SJSFI_LMS_API_KEY,
 };
 
 function verifySignature(
@@ -34,9 +32,9 @@ function verifySignature(
     }
 }
 
-export async function GET(request: NextRequest) {
+export async function POST(request: NextRequest) {
     const requestId = crypto.randomUUID().slice(0, 8);
-    console.log(`[${requestId}] GET /api/xr/getStudents called`);
+    console.log(`[${requestId}] POST /api/xyz/getStudent called`);
 
     // Get client IP from headers
     const userIP = await getClientIp();
@@ -60,7 +58,7 @@ export async function GET(request: NextRequest) {
         );
     }
 
-    // Check for API key in the Authorization header and if it matches a valid trusted key
+    // Check for API key in the Authorization header
     const auth = request.headers.get("authorization") || "";
     const apiKey = auth.split(" ")[1];
     console.log(`[${requestId}] API key check:`, {
@@ -84,6 +82,7 @@ export async function GET(request: NextRequest) {
             { status: 401 }
         );
     }
+
     const timestamp = request.headers.get("x-timestamp") || "";
     const signature = request.headers.get("x-signature") || "";
 
@@ -145,10 +144,43 @@ export async function GET(request: NextRequest) {
     }
 
     try {
+        // Parse the request body to get the email
+        let requestData;
+        try {
+            requestData = JSON.parse(rawBody);
+        } catch (parseError) {
+            console.error(`[${requestId}] Failed to parse request body:`, parseError);
+            return Response.json(
+                {
+                    error: "Invalid JSON in request body",
+                    requestId,
+                    timestamp: new Date().toISOString(),
+                },
+                { status: 400 }
+            );
+        }
 
-        // selects all students with their student id, name, section, grade, account status (active, inactive, graduated, disabled, etc.)
-        const user = await prisma.user.findMany({
-            where: { role: 'STUDENT' },
+        const { email } = requestData;
+        if (!email) {
+            console.error(`[${requestId}] Missing email in request body`);
+            return Response.json(
+                {
+                    error: "Missing email in request body",
+                    requestId,
+                    timestamp: new Date().toISOString(),
+                },
+                { status: 400 }
+            );
+        }
+
+        console.log(`[${requestId}] Looking up student with email:`, email);
+
+        // Find the student by email
+        const student = await prisma.user.findFirst({
+            where: { 
+                email: email,
+                role: 'STUDENT'
+            },
             select: {
                 id: true,
                 firstName: true,
@@ -163,13 +195,11 @@ export async function GET(request: NextRequest) {
             },
         });
 
-        if (!user) {
-            console.log(`[${requestId}] User not found:`, {
-                errorType: "USER_NOT_FOUND",
-            });
+        if (!student) {
+            console.log(`[${requestId}] Student not found for email:`, email);
             return Response.json(
                 {
-                    error: "Not found",
+                    error: "Student not found",
                     requestId,
                     timestamp: new Date().toISOString(),
                 },
@@ -177,18 +207,26 @@ export async function GET(request: NextRequest) {
             );
         }
 
-        // Transform the response to flatten student data
-        const userJson = JSON.stringify(user);
-
-        console.log(`[${requestId}] Students found and transformed successfully:`, {
-            responseSize: userJson.length,
+        console.log(`[${requestId}] Student found:`, {
+            studentId: student.id,
+            email: student.email,
+            role: student.role,
         });
 
+        // Return the student data with Role field (as expected by access.ts)
         return Response.json({
-            ...JSON.parse(userJson),
+            Role: [student.role], // Wrap in array as expected by access.ts
+            Student: {
+                id: student.id,
+                firstName: student.firstName,
+                familyName: student.familyName,
+                email: student.email,
+                studentNumber: student.student?.studentNumber,
+            },
             requestId,
             timestamp: new Date().toISOString(),
         });
+
     } catch (dbError) {
         console.error(`[${requestId}] Database error occurred:`, {
             error: dbError,
@@ -219,8 +257,5 @@ export async function GET(request: NextRequest) {
         );
     } finally {
         console.log(`[${requestId}] Request completed`);
-        if (process.env.NODE_ENV === "development") {
-            // await prisma.$disconnect();
-        }
     }
 }
