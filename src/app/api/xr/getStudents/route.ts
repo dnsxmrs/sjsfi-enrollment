@@ -9,6 +9,7 @@ const SHARED_SECRET = process.env.SJSFI_SHARED_SECRET || "";
 const VALID_API_KEYS = {
     // 'sis': process.env.SJSFI_SIS_API_KEY,
     hrms: process.env.SJSFI_HRMS_API_KEY, // don't use self apikey
+    lms: process.env.SJSFI_LMS_API_KEY,
 };
 
 function verifySignature(
