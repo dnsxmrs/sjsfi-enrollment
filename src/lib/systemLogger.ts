@@ -264,7 +264,7 @@ export async function getChangedFields(oldValues: LogData, newValues: LogData): 
 }
 
 // Utility function to sanitize sensitive data
-export function sanitizeForLogging(data: LogData, sensitiveFields: string[] = []): LogData {
+export async function sanitizeForLogging(data: LogData, sensitiveFields: string[] = []): Promise<LogData> {
     if (!data || typeof data !== 'object') return data;
 
     const defaultSensitiveFields = [
