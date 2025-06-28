@@ -1,8 +1,11 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { logSystemAction } from "@/lib/systemLogger";
 
 export async function getSchoolYears() {
+    let logStatus: 'SUCCESS' | 'FAILED' = 'SUCCESS';
+    let logError: string | undefined = undefined;
     try {
         const schoolYears = await prisma.academicTerm.findMany({
             where: {
@@ -11,23 +14,46 @@ export async function getSchoolYears() {
             },
         });
 
+        await logSystemAction({
+            actionCategory: 'SYSTEM',
+            actionType: 'VIEW',
+            actionDescription: 'Fetch active school years',
+            targetType: 'AcademicTerm',
+            targetId: 'all',
+            status: 'SUCCESS',
+            severityLevel: 'LOW',
+        });
+
         return {
             success: true,
             schoolYears,
             message: 'School years fetched successfully'
         };
     } catch (error) {
+        logStatus = 'FAILED';
+        logError = error instanceof Error ? error.message : 'Failed to fetch school years';
+        await logSystemAction({
+            actionCategory: 'SYSTEM',
+            actionType: 'VIEW',
+            actionDescription: 'Fetch active school years',
+            targetType: 'AcademicTerm',
+            targetId: 'all',
+            status: 'FAILED',
+            errorMessage: logError,
+            severityLevel: 'LOW',
+        });
         console.error('Error fetching school years:', error);
-
         return {
             success: false,
             schoolYears: [],
-            error: error instanceof Error ? error.message : 'Failed to fetch school years'
+            error: logError
         };
     }
 }
 
 export async function getSchoolAllYears() {
+    let logStatus: 'SUCCESS' | 'FAILED' = 'SUCCESS';
+    let logError: string | undefined = undefined;
     try {
         const schoolYears = await prisma.academicTerm.findMany({
             where: {
@@ -39,18 +65,39 @@ export async function getSchoolAllYears() {
             ]
         });
 
+        await logSystemAction({
+            actionCategory: 'SYSTEM',
+            actionType: 'VIEW',
+            actionDescription: 'Fetch all school years',
+            targetType: 'AcademicTerm',
+            targetId: 'all',
+            status: 'SUCCESS',
+            severityLevel: 'LOW',
+        });
+
         return {
             success: true,
             schoolYears,
             message: 'School years fetched successfully'
         };
     } catch (error) {
+        logStatus = 'FAILED';
+        logError = error instanceof Error ? error.message : 'Failed to fetch school years';
+        await logSystemAction({
+            actionCategory: 'SYSTEM',
+            actionType: 'VIEW',
+            actionDescription: 'Fetch all school years',
+            targetType: 'AcademicTerm',
+            targetId: 'all',
+            status: 'FAILED',
+            errorMessage: logError,
+            severityLevel: 'LOW',
+        });
         console.error('Error fetching school years:', error);
-
         return {
             success: false,
             schoolYears: [],
-            error: error instanceof Error ? error.message : 'Failed to fetch school years'
+            error: logError
         };
     }
 }

@@ -1,5 +1,7 @@
 "use server";
 
+import { logSystemAction } from "@/lib/systemLogger";
+
 export type FacultyResult = {
     success: boolean;
     error?: string;
@@ -17,17 +19,47 @@ export async function facultyEmailExists(
     email: string,
     origin: string
 ): Promise<FacultyResult> {
+    let logStatus: "SUCCESS" | "FAILED" = "SUCCESS";
+    let logError: string | undefined = undefined;
+    let logRole: string | undefined = undefined;
+    let logActionDescription = `Faculty login attempt from ${origin}`;
     try {
         // only allow requests with email and origin
         if (!email || !origin) {
-            console.warn("Validation error: Missing email or origin");
-            return { success: false, error: "Missing email or origin" };
+            logStatus = "FAILED";
+            logError = "Missing email or origin";
+            await logSystemAction({
+                actionCategory: "AUTH",
+                actionType: "LOGIN",
+                actionDescription: logActionDescription,
+                targetType: "USER",
+                targetId: email,
+                targetName: email,
+                status: logStatus,
+                errorMessage: logError,
+                severityLevel: "LOW",
+                metadata: { origin },
+            });
+            return { success: false, error: logError };
         }
 
         // Allow requests from 'faculty' and 'registrar' origins
         const allowedOrigins = ["faculty", "registrar"];
         if (!allowedOrigins.includes(origin)) {
-            console.warn(`Invalid origin attempt: ${origin}`);
+            logStatus = "FAILED";
+            logError = `Invalid origin attempt: ${origin}`;
+            await logSystemAction({
+                actionCategory: "AUTH",
+                actionType: "LOGIN",
+                actionDescription: logActionDescription,
+                targetType: "USER",
+                targetId: email,
+                targetName: email,
+                status: logStatus,
+                errorMessage: logError,
+                severityLevel: "LOW",
+                metadata: { origin },
+            });
             return { success: false, error: "Invalid origin attempt." };
         }
 
@@ -36,14 +68,26 @@ export async function facultyEmailExists(
 
         // Step 2: Handle different error scenarios
         if (!userAccessResult.success) {
+            logStatus = "FAILED";
+            logError = userAccessResult.error || "User verification failed";
+            await logSystemAction({
+                actionCategory: "AUTH",
+                actionType: "LOGIN",
+                actionDescription: logActionDescription,
+                targetType: "USER",
+                targetId: email,
+                targetName: email,
+                status: logStatus,
+                errorMessage: logError,
+                severityLevel: "LOW",
+                metadata: { origin, source: userAccessResult.source ?? null },
+            });
             if (userAccessResult.source === "hrms") {
-                console.warn("HRMS lookup failed:", userAccessResult.error);
                 return {
                     success: false,
                     error: "Unable to verify user credentials with external system",
                 };
             } else {
-                console.warn("App lookup failed:", userAccessResult.error);
                 return {
                     success: false,
                     error: userAccessResult.error || "User verification failed",
@@ -57,27 +101,64 @@ export async function facultyEmailExists(
             !userAccessResult.role ||
             !allowedRoles.includes(userAccessResult.role)
         ) {
-            console.warn(
-                `Unauthorized login attempt for email: ${email}, role: ${userAccessResult.role}`
-            );
+            logStatus = "FAILED";
+            logError = `Access denied for this role`;
+            logRole = userAccessResult.role;
+            await logSystemAction({
+                actionCategory: "AUTH",
+                actionType: "LOGIN",
+                actionDescription: logActionDescription,
+                targetType: "USER",
+                targetId: email,
+                targetName: email,
+                status: logStatus,
+                errorMessage: logError,
+                severityLevel: "LOW",
+                metadata: { origin, role: logRole ?? null },
+            });
             return { success: false, error: "Access denied for this role" };
         }
 
         // make role lowercase
         const normalizedRole = userAccessResult.role.toLowerCase();
+        logRole = normalizedRole;
 
         // Step 4: If user exists and has an allowed role, return success
-        console.info(
-            `✅ Faculty user found: ${email} with role: ${normalizedRole}`
-        );
+        await logSystemAction({
+            actionCategory: "AUTH",
+            actionType: "LOGIN",
+            actionDescription: logActionDescription,
+            targetType: "USER",
+            targetId: email,
+            targetName: email,
+            status: "SUCCESS",
+            severityLevel: "LOW",
+            metadata: { origin, role: logRole ?? null },
+        });
 
-        // IMPORTANT: Return the role here!
         return {
             success: true,
             role: normalizedRole, // Make sure this is included
         };
     } catch (error) {
         // Log the error for debugging
+        logStatus = "FAILED";
+        logError =
+            error instanceof Error
+                ? error.message
+                : "Internal server error occurred";
+        await logSystemAction({
+            actionCategory: "AUTH",
+            actionType: "LOGIN",
+            actionDescription: logActionDescription,
+            targetType: "USER",
+            targetId: email,
+            targetName: email,
+            status: logStatus,
+            errorMessage: logError,
+            severityLevel: "LOW",
+            metadata: { origin },
+        });
         console.error("Internal server error in facultyEmailExists:", error);
         return { success: false, error: "Internal server error occurred" };
     }

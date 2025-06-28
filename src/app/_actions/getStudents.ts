@@ -1,8 +1,11 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { logSystemAction } from "@/lib/systemLogger";
 
 export async function getStudents() {
+    let logStatus: 'SUCCESS' | 'FAILED' = 'SUCCESS';
+    let logError: string | undefined = undefined;
     try {
         console.log("Fetching students from database...");
 
@@ -81,21 +84,45 @@ export async function getStudents() {
             updatedAt: regis.updatedAt.toISOString(), // Convert Date to string
         }));
 
+        await logSystemAction({
+            actionCategory: 'SYSTEM',
+            actionType: 'VIEW',
+            actionDescription: 'Fetch students (pending registrations)',
+            targetType: 'Registration',
+            targetId: 'all',
+            status: 'SUCCESS',
+            severityLevel: 'LOW',
+        });
+
         return {
             success: true,
             students: formattedStudents,
         };
     } catch (error) {
+        logStatus = 'FAILED';
+        logError = 'Failed to fetch students';
+        await logSystemAction({
+            actionCategory: 'SYSTEM',
+            actionType: 'VIEW',
+            actionDescription: 'Fetch students (pending registrations)',
+            targetType: 'Registration',
+            targetId: 'all',
+            status: 'FAILED',
+            errorMessage: logError,
+            severityLevel: 'LOW',
+        });
         console.error("Error fetching students:", error);
         return {
             success: false,
             students: [],
-            error: "Failed to fetch students",
+            error: logError,
         };
     }
 }
 
 export async function getApproveRegistrations() {
+    let logStatus: 'SUCCESS' | 'FAILED' = 'SUCCESS';
+    let logError: string | undefined = undefined;
     try {
         console.log("Fetching students from database...");
 
@@ -174,16 +201,38 @@ export async function getApproveRegistrations() {
             updatedAt: regis.updatedAt.toISOString(), // Convert Date to string
         }));
 
+        await logSystemAction({
+            actionCategory: 'SYSTEM',
+            actionType: 'VIEW',
+            actionDescription: 'Fetch students (approved registrations)',
+            targetType: 'Registration',
+            targetId: 'all',
+            status: 'SUCCESS',
+            severityLevel: 'LOW',
+        });
+
         return {
             success: true,
             students: formattedStudents,
         };
     } catch (error) {
+        logStatus = 'FAILED';
+        logError = 'Failed to fetch students';
+        await logSystemAction({
+            actionCategory: 'SYSTEM',
+            actionType: 'VIEW',
+            actionDescription: 'Fetch students (approved registrations)',
+            targetType: 'Registration',
+            targetId: 'all',
+            status: 'FAILED',
+            errorMessage: logError,
+            severityLevel: 'LOW',
+        });
         console.error("Error fetching students:", error);
         return {
             success: false,
             students: [],
-            error: "Failed to fetch students",
+            error: logError,
         };
     }
 }

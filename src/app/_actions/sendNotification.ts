@@ -2,6 +2,7 @@
 
 import { prisma } from '@/lib/prisma';
 import nodemailer from 'nodemailer';
+import { logSystemAction } from "@/lib/systemLogger";
 
 interface NotificationPayload {
     studentId: string;
@@ -378,6 +379,10 @@ async function sendSMSNotification(payload: NotificationPayload): Promise<{ succ
 
 // Main notification function
 export async function sendMissingRequirementsNotification(payload: NotificationPayload): Promise<NotificationResponse> {
+    let logStatus: 'SUCCESS' | 'FAILED' = 'SUCCESS';
+    let logError: string | undefined = undefined;
+    let logMethod: string = payload.notificationMethod;
+    let logDetails: any = {};
     try {
         let emailResult: { success: boolean; error?: string } = { success: true };
         let smsResult: { success: boolean; error?: string } = { success: true };
@@ -385,13 +390,15 @@ export async function sendMissingRequirementsNotification(payload: NotificationP
 
         // Send email notification
         if (payload.notificationMethod === 'email' || payload.notificationMethod === 'both') {
-            emailResult = await sendEmailNotification(payload); if (emailResult.success) {
+            emailResult = await sendEmailNotification(payload); 
+            if (emailResult.success) {
                 results.push('Email sent successfully');
-                // await logNotification(payload, 'sent', 'email');
             } else {
                 results.push(`Email failed: ${emailResult.error || 'Unknown error'}`);
-                // await logNotification(payload, 'failed', 'email');
+                logStatus = 'FAILED';
+                logError = emailResult.error || 'Unknown error';
             }
+            logDetails.email = emailResult;
         }
 
         // Send SMS notification
@@ -399,14 +406,35 @@ export async function sendMissingRequirementsNotification(payload: NotificationP
             smsResult = await sendSMSNotification(payload);
             if (smsResult.success) {
                 results.push('SMS sent successfully');
-                // await logNotification(payload, 'sent', 'sms');
             } else {
                 results.push(`SMS failed: ${smsResult.error || 'Unknown error'}`);
-                // await logNotification(payload, 'failed', 'sms');
+                logStatus = 'FAILED';
+                logError = smsResult.error || 'Unknown error';
             }
+            logDetails.sms = smsResult;
         }
 
         const overallSuccess = emailResult.success && smsResult.success;
+
+        // System log for notification attempt
+        await logSystemAction({
+            actionCategory: 'SYSTEM',
+            actionType: 'CREATE',
+            actionDescription: `Send missing requirements notification via ${logMethod}`,
+            targetType: 'STUDENT',
+            targetId: payload.studentId,
+            targetName: payload.studentName,
+            status: logStatus,
+            errorMessage: logError,
+            severityLevel: logStatus === 'SUCCESS' ? 'LOW' : 'MEDIUM',
+            metadata: {
+                email: payload.email,
+                phone: payload.phone ?? null,
+                missingRequirements: payload.missingRequirements,
+                notificationMethod: payload.notificationMethod,
+                details: logDetails
+            }
+        });
 
         return {
             success: overallSuccess,
@@ -416,10 +444,29 @@ export async function sendMissingRequirementsNotification(payload: NotificationP
 
     } catch (error) {
         console.error('Notification sending failed:', error);
+        logStatus = 'FAILED';
+        logError = error instanceof Error ? error.message : 'Unknown error';
+        await logSystemAction({
+            actionCategory: 'SYSTEM',
+            actionType: 'CREATE',
+            actionDescription: `Send missing requirements notification via ${logMethod}`,
+            targetType: 'STUDENT',
+            targetId: payload.studentId,
+            targetName: payload.studentName,
+            status: 'FAILED',
+            errorMessage: logError,
+            severityLevel: 'MEDIUM',
+            metadata: {
+                email: payload.email,
+                phone: payload.phone ?? null,
+                missingRequirements: payload.missingRequirements,
+                notificationMethod: payload.notificationMethod
+            }
+        });
         return {
             success: false,
             message: 'Failed to send notifications',
-            error: error instanceof Error ? error.message : 'Unknown error'
+            error: logError
         };
     } finally {
         await prisma.$disconnect();

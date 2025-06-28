@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { logDatabaseChange } from "@/lib/systemLoggerHelpers";
 
 const now = new Date();
 const phTime = new Date(now.getTime() + 8 * 60 * 60 * 1000);
@@ -29,13 +30,22 @@ export async function addYearLevel(name: string) {
             };
         }
 
-        const yearLevel = await prisma.yearLevel.create({
-            data: {
-                name: name.trim(),
-                createdAt: phTime,
-                updatedAt: phTime
+        // Use logDatabaseChange for logging
+        const yearLevel = await logDatabaseChange(
+            () => prisma.yearLevel.create({
+                data: {
+                    name: name.trim(),
+                    createdAt: phTime,
+                    updatedAt: phTime
+                }
+            }),
+            {
+                actionType: 'CREATE',
+                targetType: 'YearLevel',
+                targetId: name.trim(),
+                targetName: name.trim(),
             }
-        });
+        );
 
         return {
             success: true,
@@ -76,13 +86,25 @@ export async function updateYearLevel(id: number, name: string) {
             };
         }
 
-        const yearLevel = await prisma.yearLevel.update({
-            where: { id },
-            data: {
-                name: name.trim(),
-                updatedAt: phTime
+        // Fetch old values for logging
+        const oldYearLevel = await prisma.yearLevel.findUnique({ where: { id } });
+
+        const yearLevel = await logDatabaseChange(
+            () => prisma.yearLevel.update({
+                where: { id },
+                data: {
+                    name: name.trim(),
+                    updatedAt: phTime
+                }
+            }),
+            {
+                actionType: 'UPDATE',
+                targetType: 'YearLevel',
+                targetId: id.toString(),
+                targetName: name.trim(),
+                oldValues: oldYearLevel || undefined,
             }
-        });
+        );
 
         return {
             success: true,
@@ -100,13 +122,25 @@ export async function updateYearLevel(id: number, name: string) {
 
 export async function deleteYearLevel(id: number) {
     try {
+        // Fetch old values for logging
+        const oldYearLevel = await prisma.yearLevel.findUnique({ where: { id } });
+
         // Soft delete the year level
-        const yearLevel = await prisma.yearLevel.update({
-            where: { id },
-            data: {
-                deletedAt: phTime
+        const yearLevel = await logDatabaseChange(
+            () => prisma.yearLevel.update({
+                where: { id },
+                data: {
+                    deletedAt: phTime
+                }
+            }),
+            {
+                actionType: 'DELETE',
+                targetType: 'YearLevel',
+                targetId: id.toString(),
+                targetName: oldYearLevel?.name || id.toString(),
+                oldValues: oldYearLevel || undefined,
             }
-        });
+        );
 
         return {
             success: true,

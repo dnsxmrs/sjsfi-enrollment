@@ -1,8 +1,11 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { logSystemAction } from "@/lib/systemLogger";
 
 export async function getYearLevels() {
+    let logStatus: 'SUCCESS' | 'FAILED' = 'SUCCESS';
+    let logError: string | undefined = undefined;
     try {
         const yearLevels = await prisma.yearLevel.findMany({
             where: {
@@ -13,6 +16,16 @@ export async function getYearLevels() {
             }
         });
 
+        await logSystemAction({
+            actionCategory: 'SYSTEM',
+            actionType: 'VIEW',
+            actionDescription: 'Fetch all year levels',
+            targetType: 'YearLevel',
+            targetId: 'all',
+            status: 'SUCCESS',
+            severityLevel: 'LOW',
+        });
+
         return {
             success: true,
             yearLevels,
@@ -20,11 +33,22 @@ export async function getYearLevels() {
         };
     } catch (error) {
         console.error('Error fetching year levels:', error);
-
+        logStatus = 'FAILED';
+        logError = error instanceof Error ? error.message : 'Failed to fetch year levels';
+        await logSystemAction({
+            actionCategory: 'SYSTEM',
+            actionType: 'VIEW',
+            actionDescription: 'Fetch all year levels',
+            targetType: 'YearLevel',
+            targetId: 'all',
+            status: 'FAILED',
+            errorMessage: logError,
+            severityLevel: 'LOW',
+        });
         return {
             success: false,
             yearLevels: [],
-            error: error instanceof Error ? error.message : 'Failed to fetch year levels'
+            error: logError
         };
     }
 }
