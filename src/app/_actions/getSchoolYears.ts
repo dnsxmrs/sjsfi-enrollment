@@ -4,7 +4,6 @@ import { prisma } from "@/lib/prisma";
 import { logSystemAction } from "@/lib/systemLogger";
 
 export async function getSchoolYears() {
-    let logStatus: 'SUCCESS' | 'FAILED' = 'SUCCESS';
     let logError: string | undefined = undefined;
     try {
         const schoolYears = await prisma.academicTerm.findMany({
@@ -30,7 +29,6 @@ export async function getSchoolYears() {
             message: 'School years fetched successfully'
         };
     } catch (error) {
-        logStatus = 'FAILED';
         logError = error instanceof Error ? error.message : 'Failed to fetch school years';
         await logSystemAction({
             actionCategory: 'SYSTEM',
@@ -52,7 +50,6 @@ export async function getSchoolYears() {
 }
 
 export async function getSchoolAllYears() {
-    let logStatus: 'SUCCESS' | 'FAILED' = 'SUCCESS';
     let logError: string | undefined = undefined;
     try {
         const schoolYears = await prisma.academicTerm.findMany({
@@ -81,7 +78,6 @@ export async function getSchoolAllYears() {
             message: 'School years fetched successfully'
         };
     } catch (error) {
-        logStatus = 'FAILED';
         logError = error instanceof Error ? error.message : 'Failed to fetch school years';
         await logSystemAction({
             actionCategory: 'SYSTEM',

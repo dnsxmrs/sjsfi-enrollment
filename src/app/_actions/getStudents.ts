@@ -4,7 +4,6 @@ import { prisma } from "@/lib/prisma";
 import { logSystemAction } from "@/lib/systemLogger";
 
 export async function getStudents() {
-    let logStatus: 'SUCCESS' | 'FAILED' = 'SUCCESS';
     let logError: string | undefined = undefined;
     try {
         console.log("Fetching students from database...");
@@ -99,7 +98,6 @@ export async function getStudents() {
             students: formattedStudents,
         };
     } catch (error) {
-        logStatus = 'FAILED';
         logError = 'Failed to fetch students';
         await logSystemAction({
             actionCategory: 'SYSTEM',
@@ -121,7 +119,6 @@ export async function getStudents() {
 }
 
 export async function getApproveRegistrations() {
-    let logStatus: 'SUCCESS' | 'FAILED' = 'SUCCESS';
     let logError: string | undefined = undefined;
     try {
         console.log("Fetching students from database...");
@@ -216,7 +213,6 @@ export async function getApproveRegistrations() {
             students: formattedStudents,
         };
     } catch (error) {
-        logStatus = 'FAILED';
         logError = 'Failed to fetch students';
         await logSystemAction({
             actionCategory: 'SYSTEM',

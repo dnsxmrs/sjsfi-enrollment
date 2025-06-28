@@ -22,7 +22,7 @@ export async function facultyEmailExists(
     let logStatus: "SUCCESS" | "FAILED" = "SUCCESS";
     let logError: string | undefined = undefined;
     let logRole: string | undefined = undefined;
-    let logActionDescription = `Faculty login attempt from ${origin}`;
+    const logActionDescription = `Faculty login attempt from ${origin}`;
     try {
         // only allow requests with email and origin
         if (!email || !origin) {

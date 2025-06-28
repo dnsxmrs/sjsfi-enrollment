@@ -4,7 +4,6 @@ import { prisma } from "@/lib/prisma";
 import { logSystemAction } from "@/lib/systemLogger";
 
 export async function getYearLevels() {
-    let logStatus: 'SUCCESS' | 'FAILED' = 'SUCCESS';
     let logError: string | undefined = undefined;
     try {
         const yearLevels = await prisma.yearLevel.findMany({
@@ -33,7 +32,6 @@ export async function getYearLevels() {
         };
     } catch (error) {
         console.error('Error fetching year levels:', error);
-        logStatus = 'FAILED';
         logError = error instanceof Error ? error.message : 'Failed to fetch year levels';
         await logSystemAction({
             actionCategory: 'SYSTEM',

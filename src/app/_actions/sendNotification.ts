@@ -381,8 +381,11 @@ async function sendSMSNotification(payload: NotificationPayload): Promise<{ succ
 export async function sendMissingRequirementsNotification(payload: NotificationPayload): Promise<NotificationResponse> {
     let logStatus: 'SUCCESS' | 'FAILED' = 'SUCCESS';
     let logError: string | undefined = undefined;
-    let logMethod: string = payload.notificationMethod;
-    let logDetails: any = {};
+    const logMethod = payload.notificationMethod;
+    const logDetails: {
+        email?: { success: boolean; error?: string };
+        sms?: { success: boolean; error?: string };
+    } = {};
     try {
         let emailResult: { success: boolean; error?: string } = { success: true };
         let smsResult: { success: boolean; error?: string } = { success: true };
