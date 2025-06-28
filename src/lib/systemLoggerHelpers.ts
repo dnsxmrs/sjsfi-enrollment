@@ -1,6 +1,7 @@
 "use server";
 
-import { logSystemAction, LogSystemActionParams, getChangedFields, type LogData } from './systemLogger';
+import { logSystemAction, getChangedFields } from './systemLogger';
+import { LogSystemActionParams, LogData } from './systemLoggerTypes';
 
 // Helper wrapper for logging with performance timing
 export async function logWithTiming<T>(

@@ -15,6 +15,8 @@ export default function StudentPersonalDataPage({ onBack, onNext }: StudentPerso
       ...personalData,
       [field]: value
     });
+    console.log(`Updated ${field} to: ${value}`);
+    console.log(formData);
   };
 
   return (
@@ -38,7 +40,7 @@ export default function StudentPersonalDataPage({ onBack, onNext }: StudentPerso
 
       {/* Card */}
       <div className="w-full bg-white rounded-lg shadow p-8 border border-gray-200 flex flex-col gap-6">
-        
+
         {/* Section Title */}
         <div className="w-full flex justify-center">
           <div className="font-bold text-lg tracking-wide py-2 text-white bg-[#a10000] rounded w-full text-center">PERSONAL DATA</div>
@@ -47,9 +49,9 @@ export default function StudentPersonalDataPage({ onBack, onNext }: StudentPerso
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Academic Year:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here.." 
+            <input
+              type="text"
+              placeholder="Answer Here.."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={personalData.academicYear}
               onChange={(e) => handleInputChange('academicYear', e.target.value)}
@@ -57,9 +59,9 @@ export default function StudentPersonalDataPage({ onBack, onNext }: StudentPerso
           </div>
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Admission to Grade/ Year:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here.." 
+            <input
+              type="text"
+              placeholder="Answer Here.."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={personalData.admissionGradeYear}
               onChange={(e) => handleInputChange('admissionGradeYear', e.target.value)}
@@ -71,9 +73,9 @@ export default function StudentPersonalDataPage({ onBack, onNext }: StudentPerso
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Family Name:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here.." 
+            <input
+              type="text"
+              placeholder="Answer Here.."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={personalData.familyName}
               onChange={(e) => handleInputChange('familyName', e.target.value)}
@@ -81,9 +83,9 @@ export default function StudentPersonalDataPage({ onBack, onNext }: StudentPerso
           </div>
           <div>
             <label className="block text-sm font-medium mb-1 text-black">First Name:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here.." 
+            <input
+              type="text"
+              placeholder="Answer Here.."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={personalData.firstName}
               onChange={(e) => handleInputChange('firstName', e.target.value)}
@@ -91,9 +93,9 @@ export default function StudentPersonalDataPage({ onBack, onNext }: StudentPerso
           </div>
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Middle Name:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here.." 
+            <input
+              type="text"
+              placeholder="Answer Here.."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={personalData.middleName}
               onChange={(e) => handleInputChange('middleName', e.target.value)}
@@ -101,9 +103,9 @@ export default function StudentPersonalDataPage({ onBack, onNext }: StudentPerso
           </div>
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Nickname:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here.." 
+            <input
+              type="text"
+              placeholder="Answer Here.."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={personalData.nickname}
               onChange={(e) => handleInputChange('nickname', e.target.value)}
@@ -115,8 +117,8 @@ export default function StudentPersonalDataPage({ onBack, onNext }: StudentPerso
         <div className="grid grid-cols-1 md:grid-cols-7 gap-4 items-end">
           <div className="md:col-span-1">
             <label className="block text-sm font-medium mb-1 text-black">Birth Date:</label>
-            <input 
-              type="date" 
+            <input
+              type="date"
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={personalData.birthDate}
               onChange={(e) => handleInputChange('birthDate', e.target.value)}
@@ -124,9 +126,9 @@ export default function StudentPersonalDataPage({ onBack, onNext }: StudentPerso
           </div>
           <div className="md:col-span-2">
             <label className="block text-sm font-medium mb-1 text-black">Place of Birth:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here.." 
+            <input
+              type="text"
+              placeholder="Answer Here.."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={personalData.placeOfBirth}
               onChange={(e) => handleInputChange('placeOfBirth', e.target.value)}
@@ -134,9 +136,9 @@ export default function StudentPersonalDataPage({ onBack, onNext }: StudentPerso
           </div>
           <div className="md:col-span-1">
             <label className="block text-sm font-medium mb-1 text-black">Age:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here.." 
+            <input
+              type="text"
+              placeholder="Answer Here.."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={personalData.age}
               onChange={(e) => handleInputChange('age', e.target.value)}
@@ -144,9 +146,9 @@ export default function StudentPersonalDataPage({ onBack, onNext }: StudentPerso
           </div>
           <div className="md:col-span-1">
             <label className="block text-sm font-medium mb-1 text-black">Birth Order:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here.." 
+            <input
+              type="text"
+              placeholder="Answer Here.."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={personalData.birthOrder}
               onChange={(e) => handleInputChange('birthOrder', e.target.value)}
@@ -154,9 +156,9 @@ export default function StudentPersonalDataPage({ onBack, onNext }: StudentPerso
           </div>
           <div className="md:col-span-1">
             <label className="block text-sm font-medium mb-1 text-black">Number of Siblings:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here.." 
+            <input
+              type="text"
+              placeholder="Answer Here.."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={personalData.siblingsCount}
               onChange={(e) => handleInputChange('siblingsCount', e.target.value)}
@@ -166,9 +168,9 @@ export default function StudentPersonalDataPage({ onBack, onNext }: StudentPerso
             <legend className="block text-sm font-medium mb-1 text-black px-2">Sex:</legend>
             <div className="flex flex-col md:flex-row gap-4 mt-2 text-black">
               <label className="inline-flex items-center space-x-2">
-                <input 
-                  type="radio" 
-                  name="gender" 
+                <input
+                  type="radio"
+                  name="gender"
                   value="female"
                   checked={personalData.gender === "female"}
                   onChange={(e) => handleInputChange('gender', e.target.value)}
@@ -176,9 +178,9 @@ export default function StudentPersonalDataPage({ onBack, onNext }: StudentPerso
                 <span>Female</span>
               </label>
               <label className="inline-flex items-center space-x-2">
-                <input 
-                  type="radio" 
-                  name="gender" 
+                <input
+                  type="radio"
+                  name="gender"
                   value="male"
                   checked={personalData.gender === "male"}
                   onChange={(e) => handleInputChange('gender', e.target.value)}
@@ -193,9 +195,9 @@ export default function StudentPersonalDataPage({ onBack, onNext }: StudentPerso
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Nationality:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here.." 
+            <input
+              type="text"
+              placeholder="Answer Here.."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={personalData.nationality}
               onChange={(e) => handleInputChange('nationality', e.target.value)}
@@ -203,9 +205,9 @@ export default function StudentPersonalDataPage({ onBack, onNext }: StudentPerso
           </div>
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Religion:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here.." 
+            <input
+              type="text"
+              placeholder="Answer Here.."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={personalData.religion}
               onChange={(e) => handleInputChange('religion', e.target.value)}
@@ -213,9 +215,9 @@ export default function StudentPersonalDataPage({ onBack, onNext }: StudentPerso
           </div>
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Height:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here.." 
+            <input
+              type="text"
+              placeholder="Answer Here.."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={personalData.height}
               onChange={(e) => handleInputChange('height', e.target.value)}
@@ -223,9 +225,9 @@ export default function StudentPersonalDataPage({ onBack, onNext }: StudentPerso
           </div>
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Weight:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here.." 
+            <input
+              type="text"
+              placeholder="Answer Here.."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={personalData.weight}
               onChange={(e) => handleInputChange('weight', e.target.value)}
@@ -233,9 +235,9 @@ export default function StudentPersonalDataPage({ onBack, onNext }: StudentPerso
           </div>
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Blood Type:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here.." 
+            <input
+              type="text"
+              placeholder="Answer Here.."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={personalData.bloodType}
               onChange={(e) => handleInputChange('bloodType', e.target.value)}
@@ -247,43 +249,43 @@ export default function StudentPersonalDataPage({ onBack, onNext }: StudentPerso
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Languages/ Dialect spoken at home:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here.." 
+            <input
+              type="text"
+              placeholder="Answer Here.."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={personalData.languages}
               onChange={(e) => handleInputChange('languages', e.target.value)}
             />
           </div>
-          
+
           <div className="flex items-center gap-6 mt-6 md:mt-0">
             <fieldset className="border border-gray-300 rounded p-2">
-            <div className="flex flex-col md:flex-row gap-4 mt-2 text-black">
-              <input 
-                type="radio" 
-                name="status" 
-                className="radio radio-sm text-black bg-gray-100 border border-gray-300"
-                checked={personalData.status === "Legitimate"}
-                onChange={() => handleInputChange('status', "Legitimate")}
-              />
-              <label className="text-sm font-medium text-black">Legitimate</label>
-              <input 
-                type="radio" 
-                name="status" 
-                className="radio radio-sm text-black bg-gray-100 border border-gray-300"
-                checked={personalData.status === "Biological"}
-                onChange={() => handleInputChange('status', "Biological")}
-              />
-              <label className="text-sm font-medium text-black">Biological</label>
-              <input 
-                type="radio" 
-                name="status" 
-                className="radio radio-sm text-black bg-gray-100 border border-gray-300"
-                checked={personalData.status === "Adopted"}
-                onChange={() => handleInputChange('status', "Adopted")}
-              />
-              <label className="text-sm font-medium text-black">Adopted</label>
-            </div>
+              <div className="flex flex-col md:flex-row gap-4 mt-2 text-black">
+                <input
+                  type="radio"
+                  name="status"
+                  className="radio radio-sm text-black bg-gray-100 border border-gray-300"
+                  checked={personalData.status === "Legitimate"}
+                  onChange={() => handleInputChange('status', "Legitimate")}
+                />
+                <label className="text-sm font-medium text-black">Legitimate</label>
+                <input
+                  type="radio"
+                  name="status"
+                  className="radio radio-sm text-black bg-gray-100 border border-gray-300"
+                  checked={personalData.status === "Biological"}
+                  onChange={() => handleInputChange('status', "Biological")}
+                />
+                <label className="text-sm font-medium text-black">Biological</label>
+                <input
+                  type="radio"
+                  name="status"
+                  className="radio radio-sm text-black bg-gray-100 border border-gray-300"
+                  checked={personalData.status === "Adopted"}
+                  onChange={() => handleInputChange('status', "Adopted")}
+                />
+                <label className="text-sm font-medium text-black">Adopted</label>
+              </div>
             </fieldset>
           </div>
         </div>
@@ -292,9 +294,9 @@ export default function StudentPersonalDataPage({ onBack, onNext }: StudentPerso
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Landline Number:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here.." 
+            <input
+              type="text"
+              placeholder="Answer Here.."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={personalData.landline}
               onChange={(e) => handleInputChange('landline', e.target.value)}
@@ -302,9 +304,9 @@ export default function StudentPersonalDataPage({ onBack, onNext }: StudentPerso
           </div>
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Mobile Number:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here.." 
+            <input
+              type="text"
+              placeholder="Answer Here.."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={personalData.mobile}
               onChange={(e) => handleInputChange('mobile', e.target.value)}
@@ -312,9 +314,9 @@ export default function StudentPersonalDataPage({ onBack, onNext }: StudentPerso
           </div>
           <div>
             <label className="block text-sm font-medium mb-1 text-black">E-mail Address:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here.." 
+            <input
+              type="text"
+              placeholder="Answer Here.."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={personalData.email}
               onChange={(e) => handleInputChange('email', e.target.value)}
@@ -326,9 +328,9 @@ export default function StudentPersonalDataPage({ onBack, onNext }: StudentPerso
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <div className="md:col-span-2">
             <label className="block text-sm font-medium mb-1 text-black">Home Address:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here.." 
+            <input
+              type="text"
+              placeholder="Answer Here.."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={personalData.homeAddress}
               onChange={(e) => handleInputChange('homeAddress', e.target.value)}
@@ -336,9 +338,9 @@ export default function StudentPersonalDataPage({ onBack, onNext }: StudentPerso
           </div>
           <div>
             <label className="block text-sm font-medium mb-1 text-black">City:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here.." 
+            <input
+              type="text"
+              placeholder="Answer Here.."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={personalData.homeCity}
               onChange={(e) => handleInputChange('homeCity', e.target.value)}
@@ -346,9 +348,9 @@ export default function StudentPersonalDataPage({ onBack, onNext }: StudentPerso
           </div>
           <div>
             <label className="block text-sm font-medium mb-1 text-black">State/ Province:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here.." 
+            <input
+              type="text"
+              placeholder="Answer Here.."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={personalData.homeStateProvince}
               onChange={(e) => handleInputChange('homeStateProvince', e.target.value)}
@@ -356,9 +358,9 @@ export default function StudentPersonalDataPage({ onBack, onNext }: StudentPerso
           </div>
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Zip/ Postal Code:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here.." 
+            <input
+              type="text"
+              placeholder="Answer Here.."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={personalData.homeZip}
               onChange={(e) => handleInputChange('homeZip', e.target.value)}
@@ -370,9 +372,9 @@ export default function StudentPersonalDataPage({ onBack, onNext }: StudentPerso
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <div className="md:col-span-2">
             <label className="block text-sm font-medium mb-1 text-black">Provincial Address:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here.." 
+            <input
+              type="text"
+              placeholder="Answer Here.."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={personalData.provincialAddress}
               onChange={(e) => handleInputChange('provincialAddress', e.target.value)}
@@ -380,9 +382,9 @@ export default function StudentPersonalDataPage({ onBack, onNext }: StudentPerso
           </div>
           <div>
             <label className="block text-sm font-medium mb-1 text-black">City:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here.." 
+            <input
+              type="text"
+              placeholder="Answer Here.."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={personalData.provincialCity}
               onChange={(e) => handleInputChange('provincialCity', e.target.value)}
@@ -390,9 +392,9 @@ export default function StudentPersonalDataPage({ onBack, onNext }: StudentPerso
           </div>
           <div>
             <label className="block text-sm font-medium mb-1 text-black">State/ Province:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here.." 
+            <input
+              type="text"
+              placeholder="Answer Here.."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={personalData.provincialStateProvince}
               onChange={(e) => handleInputChange('provincialStateProvince', e.target.value)}
@@ -400,9 +402,9 @@ export default function StudentPersonalDataPage({ onBack, onNext }: StudentPerso
           </div>
           <div>
             <label className="block text-sm font-medium mb-1 text-black">Zip/ Postal Code:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here.." 
+            <input
+              type="text"
+              placeholder="Answer Here.."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={personalData.provincialZip}
               onChange={(e) => handleInputChange('provincialZip', e.target.value)}
@@ -414,9 +416,9 @@ export default function StudentPersonalDataPage({ onBack, onNext }: StudentPerso
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
           <div className="flex items-center gap-2">
             <label className="block text-sm font-medium mb-1 text-black">Talents/ Special Skills:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here.." 
+            <input
+              type="text"
+              placeholder="Answer Here.."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={personalData.talents}
               onChange={(e) => handleInputChange('talents', e.target.value)}
@@ -425,9 +427,9 @@ export default function StudentPersonalDataPage({ onBack, onNext }: StudentPerso
           </div>
           <div className="flex items-center gap-2">
             <label className="block text-sm font-medium mb-1 text-black">Hobbies and Interests:</label>
-            <input 
-              type="text" 
-              placeholder="Answer Here.." 
+            <input
+              type="text"
+              placeholder="Answer Here.."
               className="border border-gray-300 rounded px-2 py-1 w-full text-black"
               value={personalData.hobbies}
               onChange={(e) => handleInputChange('hobbies', e.target.value)}
