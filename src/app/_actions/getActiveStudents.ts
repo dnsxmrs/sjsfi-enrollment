@@ -8,7 +8,6 @@ export async function getActiveStudents() {
         console.log("Fetching count of active students...");
         const activeStudentCount = await prisma.student.count({
             where: {
-                status: "active",
                 deletedAt: null,
             },
         });

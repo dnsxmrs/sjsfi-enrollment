@@ -56,7 +56,7 @@ export async function logDatabaseChange<T extends Record<string, unknown>>(
         // Prepare log data
         const newValues = result ? (result as LogData) : undefined;
         const changedFields = params.oldValues && newValues
-            ? getChangedFields(params.oldValues, newValues)
+            ? await getChangedFields(params.oldValues, newValues)
             : undefined;
 
         await logSystemAction({
@@ -143,7 +143,7 @@ export async function logRegistrationEvent(params: {
     errorMessage?: string;
 }) {
     const changedFields = params.oldValues && params.newValues
-        ? getChangedFields(params.oldValues, params.newValues)
+        ? await getChangedFields(params.oldValues, params.newValues)
         : undefined;
 
     await logSystemAction({
@@ -181,7 +181,7 @@ export async function logAcademicTermEvent(params: {
     errorMessage?: string;
 }) {
     const changedFields = params.oldValues && params.newValues
-        ? getChangedFields(params.oldValues, params.newValues)
+        ? await getChangedFields(params.oldValues, params.newValues)
         : undefined;
 
     await logSystemAction({
@@ -219,7 +219,7 @@ export async function logUserEvent(params: {
     errorMessage?: string;
 }) {
     const changedFields = params.oldValues && params.newValues
-        ? getChangedFields(params.oldValues, params.newValues)
+        ? await getChangedFields(params.oldValues, params.newValues)
         : undefined;
 
     await logSystemAction({

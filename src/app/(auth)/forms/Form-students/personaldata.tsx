@@ -1,5 +1,5 @@
 import React from "react";
-import { useFormData } from "./page";
+import { useFormData } from "./FormDataContext";
 
 interface StudentPersonalDataPageProps {
   onBack?: () => void;

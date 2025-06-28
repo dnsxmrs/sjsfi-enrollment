@@ -248,7 +248,7 @@ async function fallbackLogger(params: LogSystemActionParams, error: Error | unkn
 }
 
 // Utility function to compare objects and get changed fields
-export function getChangedFields(oldValues: LogData, newValues: LogData): string[] {
+export async function getChangedFields(oldValues: LogData, newValues: LogData): Promise<string[]> {
     if (!oldValues || !newValues) return [];
 
     const changedFields: string[] = [];
@@ -264,7 +264,7 @@ export function getChangedFields(oldValues: LogData, newValues: LogData): string
 }
 
 // Utility function to sanitize sensitive data
-export function sanitizeForLogging(data: LogData, sensitiveFields: string[] = []): LogData {
+export async function sanitizeForLogging(data: LogData, sensitiveFields: string[] = []): Promise<LogData> {
     if (!data || typeof data !== 'object') return data;
 
     const defaultSensitiveFields = [

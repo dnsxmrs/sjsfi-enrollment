@@ -7,7 +7,7 @@ import { getStudents } from '@/app/_actions/getStudents';
 interface Student {
     id: string;
     firstName: string;
-    middleName?: string;
+    middleName?: string | null;
     familyName: string;
     gradeLevel: string;
     status: string;
@@ -87,7 +87,9 @@ export default function StudentInformationPage() {
                                 Full Name
                             </label>
                             <div className="p-3 bg-gray-50 border border-gray-200 rounded-md">
-                                <p className="text-gray-900">{selectedStudent.firstName} {selectedStudent.familyName}</p>
+                                <p className="text-gray-900">
+                                    {selectedStudent.firstName} {selectedStudent.middleName || ''} {selectedStudent.familyName}
+                                </p>
                             </div>
                         </div>
 

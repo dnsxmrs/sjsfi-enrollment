@@ -362,7 +362,7 @@ const RegisterCoursePage: React.FC = () => {
                                         students.map((student) => (
                                             <tr key={student.id} className="border-b border-gray-200 text-black hover:bg-gray-50">
                                                 <td className="py-2">{student.id}</td>
-                                                <td className="py-2">{student.firstName} {student.middleName} {student.familyName}</td>
+                                                <td className="py-2">{student.firstName} {student.familyName}</td>
                                                 <td className="py-2">
                                                     <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
                                                         {student.gradeLevel}
