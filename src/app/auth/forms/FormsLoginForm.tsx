@@ -5,7 +5,7 @@ import LoginFooter from "@/components/atoms/LoginFooter";
 import ActionButton from "@/components/atoms/ActionButton";
 import { useState } from "react";
 import { useSignIn } from "@clerk/nextjs";
-import { facultyEmailExists } from "@/app/_actions/handleFacultyLogin";
+// import { facultyEmailExists } from "@/app/_actions/handleFacultyLogin";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import Link from "next/link";
@@ -44,19 +44,19 @@ export default function RegistrarLoginForm() {
             });
 
             // STEP 2: Check if the user exists with registrar access
-            const facultyCheck = await facultyEmailExists(
-                email_address,
-                "registrar" // Changed from "faculty" to "registrar" for registrar login
-            );
+            // const facultyCheck = await facultyEmailExists(
+            //     email_address,
+            //     "registrar" // Changed from "faculty" to "registrar" for registrar login
+            // );
 
-            if (!facultyCheck.success) {
-                setError(
-                    facultyCheck.error
-                        ? facultyCheck.error
-                        : "Invalid credentials."
-                );
-                return;
-            }
+            // if (!facultyCheck.success) {
+            //     setError(
+            //         facultyCheck.error
+            //             ? facultyCheck.error
+            //             : "Invalid credentials."
+            //     );
+            //     return;
+            // }
 
             // STEP 3: Now try to complete with password
             const result = await signInAttempt.attemptFirstFactor({
