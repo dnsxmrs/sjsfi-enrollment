@@ -248,7 +248,7 @@ async function fallbackLogger(params: LogSystemActionParams, error: Error | unkn
 }
 
 // Utility function to compare objects and get changed fields
-export function getChangedFields(oldValues: LogData, newValues: LogData): string[] {
+export async function getChangedFields(oldValues: LogData, newValues: LogData): Promise<string[]> {
     if (!oldValues || !newValues) return [];
 
     const changedFields: string[] = [];
